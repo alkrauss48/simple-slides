@@ -1,27 +1,28 @@
 <script setup lang="ts">
 import { ref, watch } from 'vue'
-import { useRouter } from 'vue-router'
+// import { useRouter } from 'vue-router'
+import { Link, router } from '@inertiajs/vue3'
 
 import { VisualMode, isDarkMode } from '../enums/visualMode.ts';
-import GithubIcon from './icons/GithubIcon.vue';
+import GithubIcon from '@/Components/icons/GithubIcon.vue';
 import { getVisualMode, setVisualMode } from '../utils/handleVisualMode.ts';
 
-const router = useRouter();
+// const router = useRouter();
 const visualMode = getVisualMode();
 
 const slidesUrl = ref<string>(localStorage.getItem('slidesUrl') ?? '');
 const darkMode = ref<boolean>(isDarkMode(visualMode));
 
 const back = () => {
-  router.back();
+  history.back();
 };
 
 const go = () => {
-  if (!slidesUrl.value) {
-    return;
-  }
+    if (!slidesUrl.value) {
+        return;
+    }
 
-  router.push(`/${btoa(slidesUrl.value)}`);
+    router.visit(`/${btoa(slidesUrl.value)}`);
 };
 
 watch(darkMode, async (newValue: boolean) => {
@@ -33,10 +34,10 @@ watch(darkMode, async (newValue: boolean) => {
 
 <template>
   <main>
-    <router-link
-      to="/"
+    <Link
+      href="/"
       class="button fixed top-6 left-8"
-      >Home</router-link>
+      >Home</Link>
     <button
       id="close"
       @click="back()"

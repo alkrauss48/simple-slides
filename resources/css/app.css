@@ -8,6 +8,10 @@ body {
   -moz-osx-font-smoothing: grayscale;
 }
 
+#app {
+    @apply dark:bg-zinc-900 dark:text-white;
+}
+
 .slide-arrow-button {
   @apply fixed bottom-6 w-0 h-0 touch-none border-y-[20px] border-y-transparent;
 }

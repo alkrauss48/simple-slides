@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\AdhocSlidesController;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\SettingsController;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
@@ -18,6 +19,7 @@ use Inertia\Inertia;
 */
 
 Route::get('/', [AdhocSlidesController::class, 'index'])->name('home');
+Route::get('/settings', [SettingsController::class, 'index'])->name('settings');
 
 Route::get('/dashboard', function () {
     return Inertia::render('Dashboard');

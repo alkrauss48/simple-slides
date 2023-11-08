@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\AdhocSlidesController;
 use App\Http\Controllers\ProfileController;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
@@ -16,15 +17,7 @@ use Inertia\Inertia;
 |
 */
 
-Route::get('/', function () {
-    $index = intval(request()->input('index'));
-    $progress = request()->input('progress');
-
-    return Inertia::render('Slides', [
-        'index' => $index,
-        'progress' => $progress,
-    ]);
-});
+Route::get('/', [AdhocSlidesController::class, 'index'])->name('home');
 
 Route::get('/dashboard', function () {
     return Inertia::render('Dashboard');
@@ -38,13 +31,4 @@ Route::middleware('auth')->group(function () {
 
 require __DIR__.'/auth.php';
 
-Route::get('/{slides}', function (string $slides) {
-    $index = intval(request()->input('index'));
-    $progress = request()->input('progress');
-
-    return Inertia::render('Slides', [
-        'index' => $index,
-        'progress' => $progress,
-        'slides' => $slides,
-    ]);
-});
+Route::get('/{slides}', [AdhocSlidesController::class, 'show'])->name('adhoc-slides.show');

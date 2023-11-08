@@ -6,16 +6,22 @@ import CogIcon from '@/Components/icons/CogIcon.vue';
 import ProgressType from '../enums/progressType.ts';
 import dataStore from '../store/dataStore.ts'
 import slideStore from '../store/slideStore.ts'
+import { usePage } from '@inertiajs/vue3'
+
+const page = usePage<{
+    props: {
+        index?: string,
+        progress?: ProgressType,
+    },
+}>();
 
 const props = defineProps<{
-  index?: string
-  progress?: ProgressType
   slides: string
 }>();
 
 const processQueryParams = (): void =>  {
-  slideStore.index = props.index ?? 0;
-  slideStore.progress = props.progress ?? ProgressType.Bar;
+  slideStore.index = page.props.index ?? 0;
+  slideStore.progress = page.props.progress ?? ProgressType.Bar;
 };
 
 const getSlidesUrl = (): string => {

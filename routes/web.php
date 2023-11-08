@@ -17,11 +17,12 @@ use Inertia\Inertia;
 */
 
 Route::get('/', function () {
-    return Inertia::render('Welcome', [
-        'canLogin' => Route::has('login'),
-        'canRegister' => Route::has('register'),
-        'laravelVersion' => Application::VERSION,
-        'phpVersion' => PHP_VERSION,
+    $index = intval(request()->input('index'));
+    $progress = request()->input('progress');
+
+    return Inertia::render('Slides', [
+        'index' => $index,
+        'progress' => $progress,
     ]);
 });
 
@@ -36,3 +37,14 @@ Route::middleware('auth')->group(function () {
 });
 
 require __DIR__.'/auth.php';
+
+Route::get('/{slides}', function (string $slides) {
+    $index = intval(request()->input('index'));
+    $progress = request()->input('progress');
+
+    return Inertia::render('Slides', [
+        'index' => $index,
+        'progress' => $progress,
+        'slides' => $slides,
+    ]);
+});

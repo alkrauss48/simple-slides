@@ -7,12 +7,14 @@ use Illuminate\Contracts\Auth\MustVerifyEmail as VerifyEmailContract;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Jeffgreco13\FilamentBreezy\Traits\TwoFactorAuthenticatable;
 use Laravel\Sanctum\HasApiTokens;
 
 class User extends Authenticatable implements VerifyEmailContract
 {
     use HasApiTokens, HasFactory, Notifiable;
     use MustVerifyEmail;
+    use TwoFactorAuthenticatable;
 
     /**
      * The attributes that are mass assignable.

@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { ref, onMounted } from 'vue'
-import { runTextFit, openAllLinksInNewTab } from '../utils/handleContent.ts';
+import { runTextFit, openAllLinksInNewTab } from '@/utils/handleContent.ts';
 
 defineProps<{
   content: string,

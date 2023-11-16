@@ -2,9 +2,9 @@
 import { onMounted } from 'vue'
 import { Link, usePage } from '@inertiajs/vue3'
 
+import CogIcon from '@/Components/icons/CogIcon.vue';
 import PreloadContent from '@/Components/PreloadContent.vue';
 import SlideView from '@/Components/SlideView.vue';
-import CogIcon from '@/Components/icons/CogIcon.vue';
 import ProgressType from '@/enums/progressType.ts';
 import dataStore from '@/store/dataStore.ts'
 import slideStore from '@/store/slideStore.ts'

@@ -1,8 +1,8 @@
 <script setup lang="ts">
 import { computed, CSSProperties } from 'vue'
 
-import dataStore from '../store/dataStore.ts'
-import slideStore from '../store/slideStore.ts'
+import dataStore from '@/store/dataStore.ts'
+import slideStore from '@/store/slideStore.ts'
 
 const percentage = computed<number>(() => {
   if (dataStore.data.length <= 1) {

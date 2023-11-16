@@ -1,13 +1,11 @@
 <script setup lang="ts">
 import { ref, watch } from 'vue'
-// import { useRouter } from 'vue-router'
 import { Link, router } from '@inertiajs/vue3'
 
-import { VisualMode, isDarkMode } from '../enums/visualMode.ts';
 import GithubIcon from '@/Components/icons/GithubIcon.vue';
-import { getVisualMode, setVisualMode } from '../utils/handleVisualMode.ts';
+import { VisualMode, isDarkMode } from '@/enums/visualMode.ts';
+import { getVisualMode, setVisualMode } from '@/utils/handleVisualMode.ts';
 
-// const router = useRouter();
 const visualMode = getVisualMode();
 
 const slidesUrl = ref<string>(localStorage.getItem('slidesUrl') ?? '');

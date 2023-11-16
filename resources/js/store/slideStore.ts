@@ -1,6 +1,6 @@
 import { reactive } from 'vue'
 
-import ProgressType from '../enums/progressType.ts';
+import ProgressType from '@/enums/progressType.ts';
 import dataStore from './dataStore.ts'
 
 const slideStore = reactive({

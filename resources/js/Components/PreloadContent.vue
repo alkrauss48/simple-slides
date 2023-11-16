@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import dataStore from '../store/dataStore.ts'
+import dataStore from '@/store/dataStore.ts'
 </script>
 
 <template>

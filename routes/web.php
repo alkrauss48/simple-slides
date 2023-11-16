@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\AdhocSlidesController;
+use App\Http\Controllers\PresentationController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\SettingsController;
 use Illuminate\Foundation\Application;
@@ -19,6 +20,9 @@ use Illuminate\Support\Facades\Route;
 
 Route::get('/', [AdhocSlidesController::class, 'index'])->name('home');
 Route::get('/settings', [SettingsController::class, 'index'])->name('settings');
+
+Route::get('/{user:username}/{slug}', [PresentationController::class, 'show'])
+    ->name('presentations.show');
 
 Route::redirect('/dashboard', '/admin');
 Route::redirect('/admin/login', '/login');

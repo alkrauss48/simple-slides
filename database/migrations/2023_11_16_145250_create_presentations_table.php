@@ -16,9 +16,11 @@ return new class extends Migration
             $table->string('title')->index();
             $table->string('slug')->index();
             $table->text('content')->nullable();
-            $table->boolean('is_published')->default(false);
+            $table->boolean('is_published')->default(false)->index();
             $table->foreignId('user_id')->index()->constrained();
             $table->timestamps();
+            $table->unique(['user_id', 'slug']);
+            $table->softDeletes();
         });
     }
 

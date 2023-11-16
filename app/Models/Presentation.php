@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\SoftDeletes;
 use Spatie\Sluggable\HasSlug;
 use Spatie\Sluggable\SlugOptions;
 
@@ -12,6 +13,18 @@ class Presentation extends Model
 {
     use HasFactory;
     use HasSlug;
+    use SoftDeletes;
+
+    /**
+     * The attributes that are not mass assignable.
+     *
+     * @var string[]
+     */
+    protected $guarded = [
+        'id',
+        'user_id',
+        'deleted_at',
+    ];
 
     /**
      * Get the options for generating the slug.
@@ -24,15 +37,15 @@ class Presentation extends Model
             ->saveSlugsTo('slug');
     }
 
-    /**
-     * Get the route key for the model.
-     *
-     * @return string
-     */
-    public function getRouteKeyName()
-    {
-        return 'slug';
-    }
+    // /**
+    //  * Get the route key for the model.
+    //  *
+    //  * @return string
+    //  */
+    // public function getRouteKeyName()
+    // {
+    //     return 'slug';
+    // }
 
     /**
      * The User that this record belongs to

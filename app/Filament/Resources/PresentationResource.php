@@ -39,8 +39,12 @@ class PresentationResource extends Resource
                     ->maxLength(255),
                 Forms\Components\Select::make('user_id')
                     ->relationship('user', 'name')
+                    ->default(auth()->id())
                     ->disabled(),
+                Forms\Components\Hidden::make('user_id')
+                    ->default(auth()->id()),
                 Forms\Components\Toggle::make('is_published')
+                    ->label('Published')
                     ->required(),
                 Forms\Components\MarkdownEditor::make('content')
                     ->columnSpanFull(),

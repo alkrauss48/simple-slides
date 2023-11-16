@@ -22,7 +22,6 @@ class Presentation extends Model
      */
     protected $guarded = [
         'id',
-        'user_id',
         'deleted_at',
     ];
 

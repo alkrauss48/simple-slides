@@ -20,6 +20,7 @@ class DatabaseSeeder extends Seeder
             ])->create([
                 'name' => 'Test User',
                 'email' => 'test@example.com',
+                'username' => 'test-user',
             ]);
 
         // Generate some extra users with presentations.

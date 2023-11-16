@@ -21,9 +21,8 @@ use Inertia\Inertia;
 Route::get('/', [AdhocSlidesController::class, 'index'])->name('home');
 Route::get('/settings', [SettingsController::class, 'index'])->name('settings');
 
-Route::get('/dashboard', function () {
-    return Inertia::render('Dashboard');
-})->middleware(['auth', 'verified'])->name('dashboard');
+Route::redirect('/dashboard', '/admin');
+Route::redirect('/admin/login', '/login');
 
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');

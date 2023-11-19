@@ -1,5 +1,7 @@
 {
     "compilerOptions": {
+        "types": ["vitest/globals"],
+
         "allowJs": true,
         "module": "ESNext",
         "moduleResolution": "bundler",
@@ -11,6 +13,7 @@
         "forceConsistentCasingInFileNames": true,
         "noEmit": true,
         "skipLibCheck": true,
+        "allowImportingTsExtensions": true,
         "paths": {
             "@/*": ["./resources/js/*"]
         }

@@ -1,8 +1,8 @@
 import { shallowMount, VueWrapper } from '@vue/test-utils'
 
-import ProgressBar from '../../components/ProgressBar.vue'
-import dataStore from '../../store/dataStore.ts'
-import slideStore from '../../store/slideStore.ts'
+import ProgressBar from '@/Components/ProgressBar.vue'
+import dataStore from '@/store/dataStore.ts'
+import slideStore from '@/store/slideStore.ts'
 
 const mountWrapper = () : VueWrapper<any> => {
   dataStore.data = Array(17).fill('');

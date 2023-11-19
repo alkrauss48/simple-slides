@@ -1,6 +1,6 @@
 import { shallowMount } from '@vue/test-utils'
 
-import SlideArrows from '../../components/SlideArrows.vue'
+import SlideArrows from '@/Components/SlideArrows.vue'
 
 test('emits "next" event', async () => {
   const wrapper = shallowMount(SlideArrows);

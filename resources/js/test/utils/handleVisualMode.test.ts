@@ -1,5 +1,5 @@
-import { VisualMode } from '../../enums/visualMode.ts';
-import { applyVisualMode, getVisualMode, setVisualMode } from '../../utils/handleVisualMode.ts'
+import { VisualMode } from '@/enums/visualMode.ts';
+import { applyVisualMode, getVisualMode, setVisualMode } from '@/utils/handleVisualMode.ts'
 
 afterEach(() => {
   localStorage.clear()

@@ -1,7 +1,7 @@
 import { shallowMount } from '@vue/test-utils'
 
-import dataStore from '../../store/dataStore.ts'
-import PreloadContent from '../../components/PreloadContent.vue'
+import dataStore from '@/store/dataStore.ts'
+import PreloadContent from '@/Components/PreloadContent.vue'
 
 test('shows the data as text', () => {
   dataStore.data = ['foo', 'bar', 'baz'];

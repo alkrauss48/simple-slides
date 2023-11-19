@@ -1,6 +1,6 @@
-import dataStore from '../../store/dataStore.ts';
-import { MOCK_INSTRUCTIONS_URL, MOCK_WINDOWS_INSTRUCTIONS_URL } from '../../mocks/handlers.ts';
-import { server } from '../../mocks/browser.ts';
+import dataStore from '@/store/dataStore.ts';
+import { MOCK_INSTRUCTIONS_URL, MOCK_WINDOWS_INSTRUCTIONS_URL } from '@/mocks/handlers.ts';
+import { server } from '@/mocks/browser.ts';
 
 beforeEach(() => {
   dataStore.reset()

@@ -1,5 +1,5 @@
-import ProgressType from '../../enums/progressType.ts'
-import slideStore from '../../store/slideStore.ts'
+import ProgressType from '@/enums/progressType.ts'
+import slideStore from '@/store/slideStore.ts'
 
 afterEach(() => {
   slideStore.reset()

@@ -1,4 +1,4 @@
-import { VisualMode, isDarkMode, isLightMode } from '../../enums/visualMode.ts';
+import { VisualMode, isDarkMode, isLightMode } from '@/enums/visualMode.ts';
 
 test('properly detects dark mode', async () => {
   expect(isDarkMode(VisualMode.Dark)).toBeTruthy();

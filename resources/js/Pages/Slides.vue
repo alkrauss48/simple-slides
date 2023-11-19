@@ -9,28 +9,26 @@ import ProgressType from '@/enums/progressType.ts';
 import dataStore from '@/store/dataStore.ts'
 import slideStore from '@/store/slideStore.ts'
 
-const page = usePage<{
-    props: {
-        index?: string,
-        progress?: ProgressType,
-        slides?: string
-        content?: string
-    },
+const props = defineProps<{
+    index?: number,
+    progress?: ProgressType,
+    slides?: string
+    content?: string
 }>();
 
 const processQueryParams = (): void =>  {
-    slideStore.index = page.props.index ?? 0;
-    slideStore.progress = page.props.progress ?? ProgressType.Bar;
+    slideStore.index = props.index ?? 0;
+    slideStore.progress = props.progress ?? ProgressType.Bar;
 };
 
 const getSlidesUrl = (): string => {
-    if (!page.props.slides) {
+    if (!props.slides) {
         localStorage.setItem('slidesUrl', '');
 
         return '/instructions.md';
     }
 
-    const url = atob(page.props.slides as string);
+    const url = atob(props.slides as string);
 
     localStorage.setItem('slidesUrl', url);
     return url;
@@ -39,8 +37,8 @@ const getSlidesUrl = (): string => {
 onMounted(async () => {
     processQueryParams();
 
-    if (page.props.content) {
-        dataStore.processData(page.props.content);
+    if (props.content) {
+        dataStore.processData(props.content);
         return;
     }
 

@@ -1,29 +1,9 @@
 import { shallowMount, VueWrapper } from '@vue/test-utils'
-import { useRouter } from 'vue-router'
 
-import SlideView from '../../components/SlideView.vue'
-import ProgressType from '../../enums/progressType.ts'
-import router from '../../router/index.ts'
-import { RouteNames } from '../../router/routes.ts';
-import dataStore from '../../store/dataStore.ts'
-import slideStore from '../../store/slideStore.ts'
-
-vi.mock('vue-router');
-
-vi.mocked(useRouter).mockReturnValue({
-  ...router,
-  replace: vi.fn(),
-  currentRoute: {
-    // @ts-ignore
-    value: {
-      name: RouteNames.Slides,
-    },
-  },
-})
-
-beforeEach(() => {
-  vi.mocked(useRouter().replace).mockReset()
-})
+import SlideView from '@/Components/SlideView.vue'
+import ProgressType from '@/enums/progressType.ts'
+import dataStore from '@/store/dataStore.ts'
+import slideStore from '@/store/slideStore.ts'
 
 // Incrementors
 
@@ -252,16 +232,4 @@ test('pressing $ takes you to the first slide', async () => {
   wrapper.vm.bindKeyDown({ key: '$' });
 
   expect(slideStore.index).toBe(dataStore.data.length - 1);
-});
-
-// SettingsPage
-
-test('pressing j while the route is SettingsPage does nothing', async () => {
-  const wrapper = mountWrapper();
-
-  wrapper.vm.router.currentRoute.value.name = RouteNames.Settings;
-
-  wrapper.vm.bindKeyDown({ key: 'j' });
-
-  expect(slideStore.index).toBe(1);
 });

@@ -37,8 +37,8 @@ const incrementContent = (count: number) : void => {
     // TODO: Either implement query params, or remove support for progress type
     // const query = buildQueryParams();
 
-    const url = new URL(location);
-    url.searchParams.set("index", slideStore.index);
+    const url = new URL(location.toString());
+    url.searchParams.set("index", slideStore.index.toString());
     history.replaceState({}, "", url);
 };
 

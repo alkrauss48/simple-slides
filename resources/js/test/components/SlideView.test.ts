@@ -1,22 +1,9 @@
 import { shallowMount, VueWrapper } from '@vue/test-utils'
-import { useRouter } from 'vue-router'
 
-import SlideView from '../../components/SlideView.vue'
-import ProgressType from '../../enums/progressType.ts'
-import router from '../../router/index.ts'
-import dataStore from '../../store/dataStore.ts'
-import slideStore from '../../store/slideStore.ts'
-
-vi.mock('vue-router');
-
-vi.mocked(useRouter).mockReturnValue({
-  ...router,
-  replace: vi.fn(),
-})
-
-beforeEach(() => {
-  vi.mocked(useRouter().replace).mockReset()
-})
+import SlideView from '@/Components/SlideView.vue'
+import ProgressType from '@/enums/progressType.ts'
+import dataStore from '@/store/dataStore.ts'
+import slideStore from '@/store/slideStore.ts'
 
 const mountWrapper = () : VueWrapper<any> => {
   dataStore.data = ['foo', 'bar', 'baz'];
@@ -51,7 +38,6 @@ test('incrementCount increments index and calls router replace', () => {
   wrapper.vm.incrementContent(1);
 
   expect(slideStore.index).toBe(2);
-  expect(useRouter().replace).toHaveBeenCalled();
 });
 
 test('incrementCount increments index only to max, and calls router replace', () => {
@@ -59,7 +45,6 @@ test('incrementCount increments index only to max, and calls router replace', ()
   wrapper.vm.incrementContent(5);
 
   expect(slideStore.index).toBe(2);
-  expect(useRouter().replace).toHaveBeenCalled();
 });
 
 test('incrementCount decrements index and calls router replace', () => {
@@ -67,7 +52,6 @@ test('incrementCount decrements index and calls router replace', () => {
   wrapper.vm.incrementContent(-1);
 
   expect(slideStore.index).toBe(0);
-  expect(useRouter().replace).toHaveBeenCalled();
 });
 
 test('incrementCount decrements index only to min, and calls router replace', () => {
@@ -75,7 +59,6 @@ test('incrementCount decrements index only to min, and calls router replace', ()
   wrapper.vm.incrementContent(-5);
 
   expect(slideStore.index).toBe(0);
-  expect(useRouter().replace).toHaveBeenCalled();
 });
 
 test('buildQueryParams includes index', () => {

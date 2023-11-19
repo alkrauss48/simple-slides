@@ -18,6 +18,7 @@ class PresentationFactory extends Factory
     {
         return [
             'title' => fake()->realText(50),
+            'description' => fake()->optional()->realText(100),
             'is_published' => fake()->boolean(),
             'content' => "# My Presentation\n\n**Slide 1**\n\n*Slide 2*\n\nSlide 3",
         ];

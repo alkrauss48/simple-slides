@@ -15,6 +15,7 @@ return new class extends Migration
             $table->id();
             $table->string('title')->index();
             $table->string('slug')->index();
+            $table->text('description')->nullable();
             $table->text('content')->nullable();
             $table->boolean('is_published')->default(false)->index();
             $table->foreignId('user_id')->index()->constrained();

@@ -7,6 +7,7 @@ use App\Models\Presentation;
 use Filament\Forms;
 use Filament\Forms\Components\Grid;
 use Filament\Forms\Components\Section;
+use Filament\Forms\Components\SpatieMediaLibraryFileUpload;
 use Filament\Forms\Form;
 use Filament\Forms\Get;
 use Filament\Resources\Resource;
@@ -62,10 +63,24 @@ class PresentationResource extends Resource
                                     ->helperText('You can always view your own presentations, but if they aren\'t published, then no one else can.')
                                     ->required(),
                                 Forms\Components\Textarea::make('description')
-                                    ->helperText('A short abstract of your presentation. This will be only be seen when sharing via social media. Limit is 160 characters.')
-                                    ->columnSpanFull()
-                                    ->placeholder('i.e. In this talk by Abraham Lincoln, we explore yada yada...')
+                                    ->helperText(
+                                        'A short abstract of your presentation. '
+                                        .'This will be only be seen when sharing via social media. '
+                                        .'Limit is 160 characters.'
+                                    )->placeholder('i.e. In this talk by Abraham Lincoln, we explore yada yada...')
                                     ->maxLength(160),
+                                SpatieMediaLibraryFileUpload::make('thumbnail')
+                                    ->image()
+                                    ->imageEditor()
+                                    ->imageResizeMode('cover')
+                                    ->imageCropAspectRatio('1.91:1')
+                                    ->preserveFilenames()
+                                    ->imageResizeTargetWidth('1200')
+                                    ->imageResizeTargetHeight('630')
+                                    ->helperText(
+                                        'Image Size: 1200 x 630. This will be only be seen when sharing via social media. '
+                                        .'If omitted, the default Simple Slides thumbnail will be used.'
+                                    ),
                             ]),
                     ]),
             ]);
@@ -82,6 +97,7 @@ class PresentationResource extends Resource
                     ->sortable()
                     ->searchable(),
                 Tables\Columns\ToggleColumn::make('is_published')
+                    ->label('Published')
                     ->sortable(),
                 Tables\Columns\TextColumn::make('user.name')
                     ->sortable(),

@@ -36,7 +36,7 @@ class PresentationResource extends Resource
                                 'md' => 2,
                             ]),
                         Section::make('Details')
-                            ->description('Prevent abuse by limiting the number of requests per period')
+                            ->description('All the metadata related to your presentation.')
                             ->columnSpan(1)
                             ->schema([
                                 Forms\Components\TextInput::make('title')

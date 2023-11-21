@@ -32,27 +32,44 @@ watch(darkMode, async (newValue: boolean) => {
 
 <template>
   <main>
-    <Link
-      href="/"
-      class="button fixed top-6 left-8"
-      >Home</Link>
-    <button
-      id="close"
-      @click="back()"
-      class="fixed top-6 right-8 text-4xl"
-    >✕</button>
+      <div class="fixed py-4 px-8 w-full bg-gray-200 dark:bg-gray-800 flex
+          justify-between border-b-1 border-gray-300">
+          <div class="flex items-center">
+              <Link
+                  href="/"
+                  class="w-10 h-10 text-4xl font-bold bg-white dark:bg-gray-900
+                  hover:bg-gray-100 dark:hover:bg-gray-800 text-center"
+                  >S</Link>
+              <Link
+                  :href="route('login')"
+                  class="hover:underline ml-8"
+                  >Login</Link>
+              <Link
+                  :href="route('register')"
+                  class="hover:underline ml-8"
+                  >Sign Up</Link>
+          </div>
+          <div class="flex items-center">
+              <div class="mr-8 flex items-center">
+                  <input type="checkbox" id="darkMode" v-model="darkMode">
+                  <label class="ml-4 font-bold" for="darkMode">Dark Mode?</label>
+              </div>
+              <button
+                  id="close"
+                  @click="back()"
+                  class="text-3xl"
+                  >✕</button>
+          </div>
+      </div>
     <form
       @submit.prevent="go()"
       class="h-[100dvh] flex flex-col justify-center items-center"
       action=""
       method="post"
     >
-        <div class="flex mb-8">
-          <input type="checkbox" id="darkMode" v-model="darkMode">
-          <label class="ml-4 font-bold" for="darkMode">Dark Mode?</label>
-        </div>
-        <hr class="border-1 border-black">
-        <p class="w-64 mb-8">Enter the URL to your markdown file below, and then click present.</p>
+        <h2 class="w-[30rem] mb-8 font-bold text-3xl text-center">Try out Simple Slides</h2>
+        <p class="w-64 mb-8">
+            Enter the URL to your markdown file below, and then click present.</p>
         <label for="slidesUrl">URL to your slides:</label>
         <textarea
           id="slidesUrl"
@@ -67,6 +84,9 @@ watch(darkMode, async (newValue: boolean) => {
         class="button"
         type="submit"
       >Present</button>
+        <p class="w-64 mt-8">
+            <small>Psst: Creating an account lets you better control the URL of your
+                slides, so it'll look better when sharing.</small></p>
     </form>
     <a
       href="https://github.com/alkrauss48/simple-slides"

@@ -18,6 +18,15 @@ const submit = () => {
     form.post(route('register'), {
         onFinish: () => {
             form.reset('password', 'password_confirmation');
+
+            // Note: Ideally this would be done on an `onSuccess` callback, but
+            // Inertia forms doesn't seem to be calling that. So this is the next
+            // best option.
+            if (form.hasErrors) {
+                return;
+            }
+
+            location.href = route('filament.admin.pages.dashboard');
         },
     });
 };

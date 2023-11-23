@@ -1,7 +1,8 @@
 <script setup lang="ts">
 import { onMounted } from 'vue'
-import { Link, usePage } from '@inertiajs/vue3'
+import { Link } from '@inertiajs/vue3'
 
+import AppHead from '@/Components/AppHead.vue';
 import CogIcon from '@/Components/icons/CogIcon.vue';
 import PreloadContent from '@/Components/PreloadContent.vue';
 import SlideView from '@/Components/SlideView.vue';
@@ -42,12 +43,15 @@ onMounted(async () => {
         return;
     }
 
-    dataStore.fetchAndProcessData(getSlidesUrl());
+    const slidesUrl = getSlidesUrl();
+    console.log(slidesUrl);
+    dataStore.fetchAndProcessData(slidesUrl);
 });
 </script>
 
 <template>
     <main>
+        <AppHead />
         <Link
             href="/settings"
             class="

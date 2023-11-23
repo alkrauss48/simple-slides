@@ -41,8 +41,7 @@ class ImageUploadResource extends Resource
                             ->collection('image')
                             ->required()
                             ->image()
-                            ->imageEditor()
-                            ->preserveFilenames(),
+                            ->imageEditor(),
                         Section::make('Details')
                             ->description('All the metadata related to your image.')
                             ->columnSpan(1)

@@ -78,7 +78,6 @@ class PresentationResource extends Resource
                                     ->imageEditor()
                                     ->imageResizeMode('cover')
                                     ->imageCropAspectRatio('1.91:1')
-                                    ->preserveFilenames()
                                     ->imageResizeTargetWidth('1200')
                                     ->imageResizeTargetHeight('630')
                                     ->helperText(

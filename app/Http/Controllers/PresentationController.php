@@ -22,6 +22,11 @@ class PresentationController extends Controller
 
         return Inertia::render('Slides', [
             'content' => $presentation->content,
+            'meta' => [
+                'title' => $presentation->title,
+                'description' => $presentation->description,
+                'imageUrl' => $presentation->getFirstMediaUrl('thumbnail'),
+            ],
         ]);
     }
 

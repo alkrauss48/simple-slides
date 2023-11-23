@@ -16,6 +16,9 @@ class AdhocSlidesController extends Controller
     {
         return Inertia::render('Slides', [
             'slides' => $slides,
+            'meta' => [
+                'title' => 'My Presentation',
+            ],
         ]);
     }
 }

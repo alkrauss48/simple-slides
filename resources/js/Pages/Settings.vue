@@ -41,11 +41,11 @@ watch(darkMode, async (newValue: boolean) => {
                   hover:bg-gray-100 dark:hover:bg-gray-800 text-center"
                   >S</Link>
               <Link
-                  :href="route('login')"
+                  href="/login"
                   class="hover:underline ml-4 md:ml-8"
                   >Login</Link>
               <Link
-                  :href="route('register')"
+                  href="/register"
                   class="hover:underline ml-8 hidden md:inline"
                   >Sign Up</Link>
           </div>
@@ -87,7 +87,7 @@ watch(darkMode, async (newValue: boolean) => {
         <p class="w-64 mt-8">
             <small>Psst:
               <Link
-                  :href="route('register')"
+                  href="/register"
                   class="underline hover:no-underline"
                   >Creating an account</Link>
                  lets you better control the URL of your

@@ -27,6 +27,7 @@ class User extends Authenticatable implements VerifyEmailContract
         'email',
         'username',
         'password',
+        'is_admin',
     ];
 
     /**
@@ -48,6 +49,11 @@ class User extends Authenticatable implements VerifyEmailContract
         'email_verified_at' => 'datetime',
         'password' => 'hashed',
     ];
+
+    public function isAdministrator(): bool
+    {
+        return $this->is_admin;
+    }
 
     /**
      * The image uploads that this user has.

@@ -23,6 +23,7 @@ class DatabaseSeeder extends Seeder
                 'name' => 'Test User',
                 'email' => 'test@example.com',
                 'username' => 'test-user',
+                'is_admin' => true,
             ]);
 
         // Generate some extra users with presentations.

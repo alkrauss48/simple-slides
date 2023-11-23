@@ -55,8 +55,9 @@ class PresentationResource extends Resource
                                     ->maxLength(255),
                                 Forms\Components\Select::make('user_id')
                                     ->relationship('user', 'name')
-                                    ->default(auth()->id())
-                                    ->disabled(),
+                                    ->hidden(fn () => ! auth()->user()->isAdministrator())
+                                    ->searchable()
+                                    ->default(auth()->id()),
                                 Forms\Components\Hidden::make('user_id')
                                     ->default(auth()->id()),
                                 Forms\Components\Toggle::make('is_published')
@@ -102,6 +103,7 @@ class PresentationResource extends Resource
                     ->label('Published')
                     ->sortable(),
                 Tables\Columns\TextColumn::make('user.name')
+                    ->hidden(fn () => ! auth()->user()->isAdministrator())
                     ->sortable(),
                 Tables\Columns\TextColumn::make('created_at')
                     ->dateTime()
@@ -155,15 +157,21 @@ class PresentationResource extends Resource
     }
 
     /**
-     * The User that this record belongs to
+     * Modify the base eloquent table query.
      *
      * @return Builder<Presentation>
      */
     public static function getEloquentQuery(): Builder
     {
-        return parent::getEloquentQuery()
+        $query = parent::getEloquentQuery()
             ->withoutGlobalScopes([
                 SoftDeletingScope::class,
             ]);
+
+        if (! auth()->user()->isAdministrator()) {
+            $query->where('user_id', auth()->id());
+        }
+
+        return $query;
     }
 }

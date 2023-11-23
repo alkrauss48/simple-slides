@@ -25,6 +25,8 @@ class PresentationResource extends Resource
 
     protected static ?string $navigationIcon = 'heroicon-o-presentation-chart-bar';
 
+    protected static ?string $navigationGroup = 'Main';
+
     public static function form(Form $form): Form
     {
         return $form

@@ -35,7 +35,7 @@ class UsernameComponent extends PersonalInfo
                     ->required()
                     ->rules(['string', 'lowercase', 'alpha_dash:ascii', 'max:255'])
                     ->helperText(
-                        'NOTE: Changing this will change the URL for your '
+                        'NOTE: Changing this will change the URL of your '
                         .'presentations, so be careful here. '
                         .'i.e. /{username}/{presentation}'
                     ),

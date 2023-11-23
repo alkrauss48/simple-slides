@@ -12,6 +12,7 @@ use Filament\Forms\Form;
 use Filament\Forms\Get;
 use Filament\Resources\Resource;
 use Filament\Tables;
+use Filament\Tables\Columns\SpatieMediaLibraryImageColumn;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
@@ -60,8 +61,7 @@ class PresentationResource extends Resource
                                     ->default(auth()->id()),
                                 Forms\Components\Toggle::make('is_published')
                                     ->label('Published')
-                                    ->helperText('You can always view your own presentations, but if they aren\'t published, then no one else can.')
-                                    ->required(),
+                                    ->helperText('You can always view your own presentations, but if they aren\'t published, then no one else can.'),
                                 Forms\Components\Textarea::make('description')
                                     ->helperText(
                                         'A short abstract of your presentation. '
@@ -70,6 +70,7 @@ class PresentationResource extends Resource
                                     )->placeholder('i.e. In this talk by Abraham Lincoln, we explore yada yada...')
                                     ->maxLength(160),
                                 SpatieMediaLibraryFileUpload::make('thumbnail')
+                                    ->collection('thumbnail')
                                     ->image()
                                     ->imageEditor()
                                     ->imageResizeMode('cover')
@@ -90,6 +91,7 @@ class PresentationResource extends Resource
     {
         return $table
             ->columns([
+                SpatieMediaLibraryImageColumn::make('thumbnail')->collection('thumbnail'),
                 Tables\Columns\TextColumn::make('title')
                     ->sortable()
                     ->searchable(),

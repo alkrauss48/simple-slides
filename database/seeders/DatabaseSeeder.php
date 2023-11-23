@@ -17,7 +17,9 @@ class DatabaseSeeder extends Seeder
         User::factory()
             ->hasPresentations(3, [
                 'is_published' => true,
-            ])->create([
+            ])
+            ->hasImageUploads(2)
+            ->create([
                 'name' => 'Test User',
                 'email' => 'test@example.com',
                 'username' => 'test-user',

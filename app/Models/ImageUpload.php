@@ -2,21 +2,17 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Illuminate\Database\Eloquent\SoftDeletes;
 use Spatie\MediaLibrary\HasMedia;
 use Spatie\MediaLibrary\InteractsWithMedia;
-use Spatie\Sluggable\HasSlug;
-use Spatie\Sluggable\SlugOptions;
 
-class Presentation extends Model implements HasMedia
+class ImageUpload extends Model implements HasMedia
 {
     use HasFactory;
-    use HasSlug;
     use InteractsWithMedia;
-    use SoftDeletes;
 
     /**
      * The attributes that are not mass assignable.
@@ -25,24 +21,24 @@ class Presentation extends Model implements HasMedia
      */
     protected $guarded = [
         'id',
-        'deleted_at',
     ];
 
     /**
-     * Get the options for generating the slug.
+     * Get the computed markdown URL for the image
+     *
+     * @return Attribute<string, string>
      */
-    public function getSlugOptions(): SlugOptions
+    protected function markdownUrl(): Attribute
     {
-        return SlugOptions::create()
-            ->generateSlugsFrom('title')
-            ->doNotGenerateSlugsOnUpdate()
-            ->saveSlugsTo('slug');
+        return Attribute::make(
+            get: fn (mixed $value, array $attributes) => "![{$attributes['alt_text']}]({$this->getFirstMediaUrl('image')})",
+        );
     }
 
     /**
      * The User that this record belongs to
      *
-     * @return BelongsTo<User, Presentation>
+     * @return BelongsTo<User, ImageUpload>
      */
     public function user(): BelongsTo
     {

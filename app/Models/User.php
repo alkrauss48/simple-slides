@@ -50,6 +50,16 @@ class User extends Authenticatable implements VerifyEmailContract
     ];
 
     /**
+     * The image uploads that this user has.
+     *
+     * @return HasMany<ImageUpload>
+     */
+    public function imageUploads(): HasMany
+    {
+        return $this->hasMany(ImageUpload::class);
+    }
+
+    /**
      * The presentations that this user has.
      *
      * @return HasMany<Presentation>

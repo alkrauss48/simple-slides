@@ -2,6 +2,7 @@
 
 namespace Database\Factories;
 
+use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
@@ -21,6 +22,7 @@ class PresentationFactory extends Factory
             'description' => fake()->optional()->realText(100),
             'is_published' => fake()->boolean(),
             'content' => "# My Presentation\n\n**Slide 1**\n\n*Slide 2*\n\nSlide 3",
+            'user_id' => User::factory(),
         ];
     }
 }

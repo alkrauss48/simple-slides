@@ -26,10 +26,15 @@ composer require laravel/sail --dev
 php artisan sail:install
 ```
 
+Then, set an alias for the `sail` command, to make it much shorter to use:
+```sh
+alias sail='[ -f sail ] && sh sail || sh vendor/bin/sail'
+```
+
 ## To Run
 ```sh
 # In one terminal:
-./vendor/bin/sail up
+sail up
 
 # Then, in another
 sail npm run dev

@@ -42,15 +42,15 @@ watch(darkMode, async (newValue: boolean) => {
                   >S</Link>
               <Link
                   :href="route('login')"
-                  class="hover:underline ml-8"
+                  class="hover:underline ml-4 md:ml-8"
                   >Login</Link>
               <Link
                   :href="route('register')"
-                  class="hover:underline ml-8"
+                  class="hover:underline ml-8 hidden md:inline"
                   >Sign Up</Link>
           </div>
           <div class="flex items-center">
-              <div class="mr-8 flex items-center">
+              <div class="mr-4 md:mr-8 flex items-center">
                   <input type="checkbox" id="darkMode" v-model="darkMode">
                   <label class="ml-4 font-bold" for="darkMode">Dark Mode?</label>
               </div>
@@ -67,7 +67,7 @@ watch(darkMode, async (newValue: boolean) => {
       action=""
       method="post"
     >
-        <h2 class="w-[30rem] mb-8 font-bold text-3xl text-center">Try out Simple Slides</h2>
+        <h2 class="w-[30rem] max-w-full mb-8 font-bold text-3xl text-center">Try out Simple Slides</h2>
         <p class="w-64 mb-8">
             Enter the URL to your markdown file below, and then click present.</p>
         <label for="slidesUrl">URL to your slides:</label>
@@ -85,8 +85,13 @@ watch(darkMode, async (newValue: boolean) => {
         type="submit"
       >Present</button>
         <p class="w-64 mt-8">
-            <small>Psst: Creating an account lets you better control the URL of your
-                slides, so it'll look better when sharing.</small></p>
+            <small>Psst:
+              <Link
+                  :href="route('register')"
+                  class="underline hover:no-underline"
+                  >Creating an account</Link>
+                 lets you better control the URL of your
+                presentation, so it'll look better when sharing.</small></p>
     </form>
     <a
       href="https://github.com/alkrauss48/simple-slides"

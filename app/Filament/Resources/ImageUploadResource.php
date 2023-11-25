@@ -4,6 +4,7 @@ namespace App\Filament\Resources;
 
 use App\Filament\Resources\ImageUploadResource\Pages;
 use App\Models\ImageUpload;
+use Closure;
 use Filament\Forms;
 use Filament\Forms\Components\Grid;
 use Filament\Forms\Components\Section;
@@ -41,7 +42,18 @@ class ImageUploadResource extends Resource
                             ->collection('image')
                             ->required()
                             ->image()
-                            ->imageEditor(),
+                            ->imageEditor()
+                            ->rules([
+                                function () {
+                                    return function (string $attribute, $value, Closure $fail) {
+                                        if (auth()->user()->can('upload')) {
+                                            return;
+                                        }
+
+                                        $fail(config('app-upload.limit_exceeded_message'));
+                                    };
+                                },
+                            ]),
                         Section::make('Details')
                             ->description('All the metadata related to your image.')
                             ->columnSpan(1)
@@ -118,6 +130,13 @@ class ImageUploadResource extends Resource
             'index' => Pages\ListImageUploads::route('/'),
             'create' => Pages\CreateImageUpload::route('/create'),
             'edit' => Pages\EditImageUpload::route('/{record}/edit'),
+        ];
+    }
+
+    public static function getWidgets(): array
+    {
+        return [
+            ImageUploadResource\Widgets\StatsOverview::class,
         ];
     }
 

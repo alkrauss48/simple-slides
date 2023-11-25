@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Auth\MustVerifyEmail;
 use Illuminate\Contracts\Auth\MustVerifyEmail as VerifyEmailContract;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
@@ -11,6 +12,7 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Jeffgreco13\FilamentBreezy\Traits\TwoFactorAuthenticatable;
 use Laravel\Sanctum\HasApiTokens;
+use Spatie\MediaLibrary\MediaCollections\Models\Media;
 
 class User extends Authenticatable implements VerifyEmailContract
 {
@@ -30,6 +32,7 @@ class User extends Authenticatable implements VerifyEmailContract
         'username',
         'password',
         'is_admin',
+        'image_uploaded_size',
     ];
 
     /**
@@ -55,6 +58,36 @@ class User extends Authenticatable implements VerifyEmailContract
     public function isAdministrator(): bool
     {
         return $this->is_admin;
+    }
+
+    public function modifyImageUploadedSize(int $size): void
+    {
+        $newSize = $this->image_uploaded_size + $size;
+
+        if ($newSize < 0) {
+            $newSize = 0;
+        }
+
+        $this->update(['image_uploaded_size' => $newSize]);
+    }
+
+    public function regenerateImageUploadedSize(): void
+    {
+        $size = Media::where(function (Builder $query) {
+            $imageUploadIds = $this->imageUploads()->pluck('id');
+
+            $query
+                ->where('model_type', \App\Models\ImageUpload::class)
+                ->whereIn('id', $imageUploadIds);
+        })->orWhere(function (Builder $query) {
+            $presentationIds = $this->presentations()->pluck('id');
+
+            $query
+                ->where('model_type', \App\Models\Presentation::class)
+                ->whereIn('id', $presentationIds);
+        })->sum('size');
+
+        $this->update(['image_uploaded_size' => $size]);
     }
 
     /**

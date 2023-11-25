@@ -16,4 +16,11 @@ class ListImageUploads extends ListRecords
             Actions\CreateAction::make(),
         ];
     }
+
+    protected function getHeaderWidgets(): array
+    {
+        return [
+            ImageUploadResource\Widgets\StatsOverview::class,
+        ];
+    }
 }

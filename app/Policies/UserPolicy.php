@@ -73,4 +73,13 @@ class UserPolicy
     {
         return false;
     }
+
+    /**
+     * Determine whether the user can upload more files.
+     */
+    public function upload(User $user): bool
+    {
+
+        return $user->image_uploaded_size >= config('app-upload.limit');
+    }
 }

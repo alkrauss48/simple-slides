@@ -4,6 +4,7 @@ namespace App\Filament\Resources;
 
 use App\Filament\Resources\PresentationResource\Pages;
 use App\Models\Presentation;
+use Closure;
 use Filament\Forms;
 use Filament\Forms\Components\Grid;
 use Filament\Forms\Components\Section;
@@ -80,6 +81,17 @@ class PresentationResource extends Resource
                                     ->imageCropAspectRatio('1.91:1')
                                     ->imageResizeTargetWidth('1200')
                                     ->imageResizeTargetHeight('630')
+                                    ->rules([
+                                        function () {
+                                            return function (string $attribute, $value, Closure $fail) {
+                                                if (auth()->user()->can('upload')) {
+                                                    return;
+                                                }
+
+                                                $fail(config('app-upload.limit_exceeded_message'));
+                                            };
+                                        },
+                                    ])
                                     ->helperText(
                                         'Image Size: 1200 x 630. This will be only be seen when sharing via social media. '
                                         .'If omitted, the default Simple Slides thumbnail will be used.'
@@ -128,7 +140,7 @@ class PresentationResource extends Resource
                         'user' => $record->user->username,
                         'slug' => $record->slug,
                     ]))
-                    ->icon('heroicon-o-presentation-chart-bar')
+                    ->icon('heroicon-o-arrow-top-right-on-square')
                     ->openUrlInNewTab(),
                 Tables\Actions\EditAction::make(),
             ])

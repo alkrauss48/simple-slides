@@ -19,7 +19,7 @@ class EditPresentation extends EditRecord
                     'user' => $record->user->username,
                     'slug' => $record->slug,
                 ]))
-                ->icon('heroicon-o-presentation-chart-bar')
+                ->icon('heroicon-o-arrow-top-right-on-square')
                 ->openUrlInNewTab(),
             Actions\DeleteAction::make(),
             Actions\ForceDeleteAction::make(),

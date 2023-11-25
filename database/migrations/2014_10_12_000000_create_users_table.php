@@ -17,6 +17,7 @@ return new class extends Migration
             $table->string('username')->unique()->index();
             $table->string('email')->unique()->index();
             $table->boolean('is_admin')->default(false)->index();
+            $table->integer('image_uploaded_size')->default(0)->index();
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password');
             $table->rememberToken();

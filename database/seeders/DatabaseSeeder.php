@@ -13,7 +13,16 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        // Generate the main user and their published presentations.
+        // Generate the main admin user.
+        User::factory()
+            ->create([
+                'name' => 'Admin User',
+                'email' => 'admin@example.com',
+                'username' => 'admin-user',
+                'is_admin' => true,
+            ]);
+
+        // Generate a non-admin user, with some content.
         User::factory()
             ->hasPresentations(3, [
                 'is_published' => true,
@@ -23,13 +32,17 @@ class DatabaseSeeder extends Seeder
                 'name' => 'Test User',
                 'email' => 'test@example.com',
                 'username' => 'test-user',
-                'is_admin' => true,
             ]);
 
-        // Generate some extra users with presentations.
+        // Generate some extra users with content.
         User::factory()
             ->count(4)
             ->has(Presentation::factory()->count(3))
+            ->hasImageUploads(1)
             ->create();
+
+        foreach (User::all() as $user) {
+            $user->regenerateImageUploadedSize();
+        }
     }
 }

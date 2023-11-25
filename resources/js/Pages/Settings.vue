@@ -11,6 +11,10 @@ const visualMode = getVisualMode();
 const slidesUrl = ref<string>(localStorage.getItem('slidesUrl') ?? '');
 const darkMode = ref<boolean>(isDarkMode(visualMode));
 
+const props = defineProps<{
+    auth?: any,
+}>();
+
 const back = () => {
   history.back();
 };
@@ -40,11 +44,12 @@ watch(darkMode, async (newValue: boolean) => {
                   class="w-10 h-10 text-4xl font-bold bg-white dark:bg-gray-900
                   hover:bg-gray-100 dark:hover:bg-gray-800 text-center"
                   >S</Link>
-              <Link
-                  href="/login"
+              <a
+                  href="/admin"
                   class="hover:underline ml-4 md:ml-8"
-                  >Login</Link>
+                  >{{ props.auth?.user ? 'Dashboard' : 'Login' }}</a>
               <Link
+                  v-if="!props.auth?.user"
                   href="/register"
                   class="hover:underline ml-8 hidden md:inline"
                   >Sign Up</Link>
@@ -89,8 +94,8 @@ watch(darkMode, async (newValue: boolean) => {
               <Link
                   href="/register"
                   class="underline hover:no-underline"
-                  >Creating an account</Link>
-                 lets you better control the URL of your
+                  >Creating a free account</Link>
+                 lets you control the URL of your
                 presentation, so it'll look better when sharing.</small></p>
     </form>
     <a

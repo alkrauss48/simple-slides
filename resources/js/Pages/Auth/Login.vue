@@ -30,7 +30,7 @@ const submit = () => {
                 return;
             }
 
-            location.href = route('filament.admin.pages.dashboard');
+            location.href = '/admin';
         },
     });
 };

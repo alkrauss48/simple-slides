@@ -28,4 +28,5 @@ Route::get('/settings', [SettingsController::class, 'index'])->name('settings');
 Route::get('/{user:username}/{slug}', [PresentationController::class, 'show'])
     ->name('presentations.show');
 
-Route::get('/{slides}', [AdhocSlidesController::class, 'show'])->name('adhoc-slides.show');
+Route::get('/{slides}', [AdhocSlidesController::class, 'show'])
+    ->name('adhoc-slides.show');

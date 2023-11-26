@@ -20,3 +20,15 @@ test('new users can register', function () {
     $this->assertAuthenticated();
     $response->assertRedirect(RouteServiceProvider::HOME);
 });
+
+test('users must register with a username', function () {
+    $response = $this->post('/register', [
+        'name' => 'Test User',
+        'email' => 'test@example.com',
+        'password' => 'password',
+        'password_confirmation' => 'password',
+    ]);
+
+    $this->assertGuest();
+    $response->assertSessionHasErrors(['username']);
+});

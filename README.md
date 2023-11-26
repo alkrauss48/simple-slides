@@ -59,10 +59,11 @@ sail npx vue-tsc
 
 ## Running the Tests
 ```sh
-sail npx vitest
+# Back-end (Laravel)
+sail artisan test
 
-# Alternatively, for test coverage, run:
-sail npm run test-coverage
+# Front-end (Vue)
+sail npx vitest
 ```
 
 ## Recommended IDE Setup

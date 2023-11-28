@@ -2,6 +2,8 @@
 
 namespace App\Models;
 
+use Filament\Models\Contracts\FilamentUser;
+use Filament\Panel;
 use Illuminate\Auth\MustVerifyEmail;
 use Illuminate\Contracts\Auth\MustVerifyEmail as VerifyEmailContract;
 use Illuminate\Database\Eloquent\Builder;
@@ -14,7 +16,7 @@ use Jeffgreco13\FilamentBreezy\Traits\TwoFactorAuthenticatable;
 use Laravel\Sanctum\HasApiTokens;
 use Spatie\MediaLibrary\MediaCollections\Models\Media;
 
-class User extends Authenticatable implements VerifyEmailContract
+class User extends Authenticatable implements FilamentUser, VerifyEmailContract
 {
     use HasApiTokens, HasFactory, Notifiable;
     use MustVerifyEmail;
@@ -58,6 +60,14 @@ class User extends Authenticatable implements VerifyEmailContract
     public function isAdministrator(): bool
     {
         return $this->is_admin;
+    }
+
+    /**
+     * Determine whether this user can access a given Filament panel
+     */
+    public function canAccessPanel(Panel $panel): bool
+    {
+        return true;
     }
 
     public function modifyImageUploadedSize(int $size): void

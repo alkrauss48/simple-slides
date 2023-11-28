@@ -30,6 +30,7 @@
         "nunomaduro/larastan": "^2.0",
         "pestphp/pest": "^2.0",
         "pestphp/pest-plugin-laravel": "^2.0",
+        "pestphp/pest-plugin-livewire": "^2.1",
         "spatie/laravel-ignition": "^2.0"
     },
     "autoload": {

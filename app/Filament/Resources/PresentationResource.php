@@ -36,6 +36,7 @@ class PresentationResource extends Resource
                     ->columns(3)
                     ->schema([
                         Forms\Components\MarkdownEditor::make('content')
+                            ->required()
                             ->columnSpan([
                                 'md' => 2,
                             ]),

@@ -79,7 +79,6 @@ class UserPolicy
      */
     public function upload(User $user): bool
     {
-
-        return $user->image_uploaded_size >= config('app-upload.limit');
+        return $user->image_uploaded_size < config('app-upload.limit');
     }
 }

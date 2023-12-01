@@ -88,13 +88,13 @@ class User extends Authenticatable implements FilamentUser, VerifyEmailContract
 
             $query
                 ->where('model_type', \App\Models\ImageUpload::class)
-                ->whereIn('id', $imageUploadIds);
+                ->whereIn('model_id', $imageUploadIds);
         })->orWhere(function (Builder $query) {
             $presentationIds = $this->presentations()->pluck('id');
 
             $query
                 ->where('model_type', \App\Models\Presentation::class)
-                ->whereIn('id', $presentationIds);
+                ->whereIn('model_id', $presentationIds);
         })->sum('size');
 
         $this->update(['image_uploaded_size' => $size]);

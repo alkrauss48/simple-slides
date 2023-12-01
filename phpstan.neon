@@ -6,3 +6,16 @@ parameters:
         - app/
 
     level: 7
+    ignoreErrors:
+        -
+            message: '#^Undefined variable\: \$this$#'
+            path: ./tests/*
+            reportUnmatched: false
+        -
+            message: '#^Function (something|<your Pest.php-defined util function name here>) not found\.$#'
+            path: ./tests/*
+            reportUnmatched: false
+        -
+            message: '#^Access to an undefined property#'
+            path: ./tests/*
+            reportUnmatched: false

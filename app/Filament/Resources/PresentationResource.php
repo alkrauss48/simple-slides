@@ -4,6 +4,7 @@ namespace App\Filament\Resources;
 
 use App\Filament\Resources\PresentationResource\Pages;
 use App\Models\Presentation;
+use App\Models\User;
 use Closure;
 use Filament\Forms;
 use Filament\Forms\Components\Grid;
@@ -85,7 +86,7 @@ class PresentationResource extends Resource
                                     ->rules([
                                         function () {
                                             return function (string $attribute, $value, Closure $fail) {
-                                                if (auth()->user()->can('upload')) {
+                                                if (auth()->user()->can('upload', User::class)) {
                                                     return;
                                                 }
 

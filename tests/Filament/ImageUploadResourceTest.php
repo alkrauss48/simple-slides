@@ -1,11 +1,11 @@
 <?php
 
 // Start - Edit these imports
-use App\Filament\Resources\PresentationResource as Resource;
-use App\Filament\Resources\PresentationResource\Pages\CreatePresentation as CreateResource;
-use App\Filament\Resources\PresentationResource\Pages\EditPresentation as EditResource;
-use App\Filament\Resources\PresentationResource\Pages\ListPresentations as ListResource;
-use App\Models\Presentation as Model;
+use App\Filament\Resources\ImageUploadResource as Resource;
+use App\Filament\Resources\ImageUploadResource\Pages\CreateImageUpload as CreateResource;
+use App\Filament\Resources\ImageUploadResource\Pages\EditImageUpload as EditResource;
+use App\Filament\Resources\ImageUploadResource\Pages\ListImageUploads as ListResource;
+use App\Models\ImageUpload as Model;
 // End
 use App\Models\User;
 use Illuminate\Http\UploadedFile;
@@ -16,7 +16,6 @@ beforeEach(function () {
     $this->user = User::factory()->create([
         'is_admin' => true,
     ]);
-
 });
 
 describe('admin users', function () {
@@ -48,10 +47,12 @@ describe('admin users', function () {
     it('can create a record', function () {
         $newData = Model::factory()->make();
 
+        Storage::fake();
+
         livewire(CreateResource::class)
             ->fillForm([
                 ...$newData->toArray(),
-                'thumbnail' => [
+                'image' => [
                     UploadedFile::fake()->image('avatar.jpg'),
                 ],
             ])
@@ -68,12 +69,13 @@ describe('admin users', function () {
             ->fillForm([
                 ...$newData->toArray(),
                 'title' => null,
-                'content' => null,
+                'alt_text' => null,
             ])
             ->call('create')
             ->assertHasFormErrors([
                 'title' => 'required',
-                'content' => 'required',
+                'alt_text' => 'required',
+                'image' => 'required',
             ]);
     });
 
@@ -95,9 +97,7 @@ describe('admin users', function () {
         ])
             ->assertFormSet([
                 'title' => $record->title,
-                'description' => $record->description,
-                'content' => $record->content,
-                'is_published' => $record->is_published,
+                'alt_text' => $record->alt_text,
                 'user_id' => $record->user_id,
             ]);
     });
@@ -106,12 +106,14 @@ describe('admin users', function () {
         $record = Model::factory()->create();
         $newData = Model::factory()->make();
 
+        Storage::fake();
+
         livewire(EditResource::class, [
             'record' => $record->getRouteKey(),
         ])
             ->fillForm([
                 ...$newData->toArray(),
-                'thumbnail' => [
+                'image' => [
                     UploadedFile::fake()->image('avatar.jpg'),
                 ],
             ])
@@ -120,72 +122,19 @@ describe('admin users', function () {
 
         expect($record->refresh())
             ->title->toBe($newData->title)
-            ->description->toBe($newData->description)
-            ->content->toBe($newData->content)
-            ->user_id->toBe($newData->user_id)
-            ->is_published->toBe($newData->is_published);
+            ->alt_text->toBe($newData->alt_text)
+            ->user_id->toBe($newData->user_id);
     });
 
-    it('can soft delete record', function () {
+    it('can delete a record', function () {
         $record = Model::factory()->create();
-
-        expect($record)
-            ->deleted_at->toBe(null);
 
         livewire(EditResource::class, [
             'record' => $record->getRouteKey(),
         ])
             ->callAction(\Filament\Actions\DeleteAction::class);
 
-        // $this->assertModelMissing($record);
-
-        expect($record->refresh())
-            ->deleted_at->not->toBe(null);
-    });
-
-    it('force delete is not an option if the record is not soft deleted', function () {
-        $record = Model::factory()->create();
-
-        livewire(EditResource::class, [
-            'record' => $record->getRouteKey(),
-        ])
-            ->assertActionHidden(\Filament\Actions\ForceDeleteAction::class);
-    });
-
-    it('restore is not an option if the record is not soft deleted', function () {
-        $record = Model::factory()->create();
-
-        livewire(EditResource::class, [
-            'record' => $record->getRouteKey(),
-        ])
-            ->assertActionHidden(\Filament\Actions\RestoreAction::class);
-    });
-
-    it('can force delete a soft-deleted record', function () {
-        $record = Model::factory()->create();
-
-        $record->delete();
-
-        livewire(EditResource::class, [
-            'record' => $record->getRouteKey(),
-        ])
-            ->callAction(\Filament\Actions\ForceDeleteAction::class);
-
         $this->assertModelMissing($record);
-    });
-
-    it('can restore a soft-deleted record', function () {
-        $record = Model::factory()->create();
-
-        $record->delete();
-
-        livewire(EditResource::class, [
-            'record' => $record->getRouteKey(),
-        ])
-            ->callAction(\Filament\Actions\RestoreAction::class);
-
-        expect($record->refresh())
-            ->deleted_at->toBe(null);
     });
 });
 
@@ -226,13 +175,17 @@ describe('non-admin users', function () {
         $this->get(Resource::getUrl('create'))->assertSuccessful();
     });
 
-    it('can create a record', function () {
-        $newData = Model::factory()->make();
+    it('can create a record if user has enough space', function () {
+        $newData = Model::factory()->make([
+            'user_id' => $this->nonAdmin->id,
+        ]);
+
+        Storage::fake();
 
         livewire(CreateResource::class)
             ->fillForm([
                 ...$newData->toArray(),
-                'thumbnail' => [
+                'image' => [
                     UploadedFile::fake()->image('avatar.jpg'),
                 ],
             ])
@@ -243,22 +196,43 @@ describe('non-admin users', function () {
     });
 
     it('can validate input', function () {
-        $newData = Model::factory()->make();
+        $newData = Model::factory()->make([
+            'user_id' => $this->nonAdmin->id,
+        ]);
 
         livewire(CreateResource::class)
             ->fillForm([
                 ...$newData->toArray(),
                 'title' => null,
-                'content' => null,
-                'image' => null, // Optional field
+                'alt_text' => null,
             ])
             ->call('create')
-            ->assertHasNoFormErrors([
-                'thumbnail',
-            ])
             ->assertHasFormErrors([
                 'title' => 'required',
-                'content' => 'required',
+                'alt_text' => 'required',
+                'image' => 'required',
+            ]);
+    });
+
+    it('prevents creation if user is out of space', function () {
+        $this->nonAdmin->update([
+            'image_uploaded_size' => (config('app-upload.limit') + 10),
+        ]);
+
+        $newData = Model::factory()->make([
+            'user_id' => $this->nonAdmin->id,
+        ]);
+
+        livewire(CreateResource::class)
+            ->fillForm([
+                ...$newData->toArray(),
+                'image' => [
+                    UploadedFile::fake()->image('avatar.jpg'),
+                ],
+            ])
+            ->call('create')
+            ->assertHasFormErrors([
+                'image',
             ]);
     });
 
@@ -292,9 +266,7 @@ describe('non-admin users', function () {
         ])
             ->assertFormSet([
                 'title' => $record->title,
-                'description' => $record->description,
-                'content' => $record->content,
-                'is_published' => $record->is_published,
+                'alt_text' => $record->alt_text,
                 'user_id' => $record->user_id,
             ]);
     });
@@ -303,14 +275,18 @@ describe('non-admin users', function () {
         $record = Model::factory()->create([
             'user_id' => $this->nonAdmin->id,
         ]);
-        $newData = Model::factory()->make();
+        $newData = Model::factory()->make([
+            'user_id' => $this->nonAdmin->id,
+        ]);
+
+        Storage::fake();
 
         livewire(EditResource::class, [
             'record' => $record->getRouteKey(),
         ])
             ->fillForm([
                 ...$newData->toArray(),
-                'thumbnail' => [
+                'image' => [
                     UploadedFile::fake()->image('avatar.jpg'),
                 ],
             ])
@@ -319,78 +295,20 @@ describe('non-admin users', function () {
 
         expect($record->refresh())
             ->title->toBe($newData->title)
-            ->description->toBe($newData->description)
-            ->content->toBe($newData->content)
-            ->is_published->toBe($newData->is_published);
+            ->alt_text->toBe($newData->alt_text)
+            ->user_id->toBe($newData->user_id);
     });
 
-    it('can soft delete record created by the user', function () {
+    it('can delete a record', function () {
         $record = Model::factory()->create([
             'user_id' => $this->nonAdmin->id,
         ]);
-
-        expect($record)
-            ->deleted_at->toBe(null);
 
         livewire(EditResource::class, [
             'record' => $record->getRouteKey(),
         ])
             ->callAction(\Filament\Actions\DeleteAction::class);
 
-        expect($record->refresh())
-            ->deleted_at->not->toBe(null);
-    });
-
-    it('force delete is not an option if the record is not soft deleted', function () {
-        $record = Model::factory()->create([
-            'user_id' => $this->nonAdmin->id,
-        ]);
-
-        livewire(EditResource::class, [
-            'record' => $record->getRouteKey(),
-        ])
-            ->assertActionHidden(\Filament\Actions\ForceDeleteAction::class);
-    });
-
-    it('restore is not an option if the record is not soft deleted', function () {
-        $record = Model::factory()->create([
-            'user_id' => $this->nonAdmin->id,
-        ]);
-
-        livewire(EditResource::class, [
-            'record' => $record->getRouteKey(),
-        ])
-            ->assertActionHidden(\Filament\Actions\RestoreAction::class);
-    });
-
-    it('can force delete a soft-deleted record created by the user', function () {
-        $record = Model::factory()->create([
-            'user_id' => $this->nonAdmin->id,
-        ]);
-
-        $record->delete();
-
-        livewire(EditResource::class, [
-            'record' => $record->getRouteKey(),
-        ])
-            ->callAction(\Filament\Actions\ForceDeleteAction::class);
-
         $this->assertModelMissing($record);
-    });
-
-    it('can restore a soft-deleted record created by the user', function () {
-        $record = Model::factory()->create([
-            'user_id' => $this->nonAdmin->id,
-        ]);
-
-        $record->delete();
-
-        livewire(EditResource::class, [
-            'record' => $record->getRouteKey(),
-        ])
-            ->callAction(\Filament\Actions\RestoreAction::class);
-
-        expect($record->refresh())
-            ->deleted_at->toBe(null);
     });
 });

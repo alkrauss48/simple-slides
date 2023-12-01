@@ -5,6 +5,7 @@ namespace Database\Factories;
 use App\Models\ImageUpload;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
+use Illuminate\Support\Facades\App;
 
 /**
  * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\ImageUpload>
@@ -16,8 +17,11 @@ class ImageUploadFactory extends Factory
      */
     public function configure(): static
     {
+        if (App::environment('testing')) {
+            return $this;
+        }
+
         return $this->afterCreating(function (ImageUpload $record) {
-            //$imageUrl = fake()->imageUrl(640, 480, null, true);
             $record
                 ->addMediaFromUrl('https://loremflickr.com/640/480')
                 ->toMediaCollection('image');

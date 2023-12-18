@@ -44,7 +44,6 @@ onMounted(async () => {
     }
 
     const slidesUrl = getSlidesUrl();
-    console.log(slidesUrl);
     dataStore.fetchAndProcessData(slidesUrl);
 });
 </script>

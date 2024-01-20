@@ -1,0 +1,72 @@
+services:
+    # TODO: Get nginx + php docker setup working for prod, instead of sail
+    #
+    # nginx:
+    #     build:
+    #         context: .
+    #         dockerfile: docker/php/Dockerfile
+    #         target: nginx-image
+    #     restart: unless-stopped
+    #     ports:
+    #         - 80:80
+    #     dpends_on:
+    #         - laravel
+    #
+    # laravel:
+    #     build:
+    #         context: .
+    #         dockerfile: docker/php/Dockerfile
+    #         target: php-image
+    #     env_file:
+    #        - .env.prod
+    #     depends_on:
+    #         - pgsql
+    #         - redis
+
+    laravel:
+        build:
+          context: .
+          dockerfile: docker/sail-prod/Dockerfile
+        env_file:
+            - .env.prod
+        ports:
+            - 80:80
+        depends_on:
+            - pgsql
+            - redis
+    pgsql:
+        image: 'postgres:15'
+        environment:
+            PGPASSWORD: '${DB_PASSWORD:-secret}'
+            POSTGRES_DB: '${DB_DATABASE}'
+            POSTGRES_USER: '${DB_USERNAME}'
+            POSTGRES_PASSWORD: '${DB_PASSWORD:-secret}'
+        # volumes:
+        #     - 'pgsql:/var/lib/postgresql/data'
+        healthcheck:
+            test:
+                - CMD
+                - pg_isready
+                - '-q'
+                - '-d'
+                - '${DB_DATABASE}'
+                - '-U'
+                - '${DB_USERNAME}'
+            retries: 3
+            timeout: 5s
+    redis:
+        image: 'redis:alpine'
+        volumes:
+            - 'redis:/data'
+        healthcheck:
+            test:
+                - CMD
+                - redis-cli
+                - ping
+            retries: 3
+            timeout: 5s
+volumes:
+    pgsql:
+        driver: local
+    redis:
+        driver: local

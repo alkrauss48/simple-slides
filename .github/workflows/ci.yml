@@ -1,0 +1,236 @@
+name: ci
+
+on: push
+
+env:
+  php_version: "8.2"
+  node_version: "20.x"
+
+jobs:
+  frontend-lint:
+    name: Front-end Lint
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      - name: Setup PHP, with composer and extensions
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: ${{ env.php_version }}
+          extensions: bcmath, dom, fileinfo, gd, imagick, mbstring, pgsql, zip
+          tools: composer, pecl
+      - name: Get composer cache directory
+        id: composer-cache
+        run: |
+          printf '::set-output name=dir::%s' "$(composer config cache-files-dir)"
+      - name: Cache Composer dependencies
+        uses: actions/cache@v3
+        with:
+          path: ${{ steps.composer-cache.outputs.dir }}
+          key: ${{ runner.os }}-composer-${{ hashFiles('**/composer.lock') }}
+          restore-keys: ${{ runner.os }}-composer-
+      - name: Install Composer dependencies
+        run: composer install --no-progress --no-suggest --prefer-dist --optimize-autoloader
+      - name: Install Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: ${{ env.node_version }}
+      - name: Cache frontend dependencies
+        uses: actions/cache@v3
+        with:
+          path: ~/.npm
+          key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-node-
+      - name: Install npm dependencies
+        run: npm ci --prefer-offline
+      - name: Run Typescript lint
+        run: node_modules/.bin/vue-tsc
+  backend-lint:
+    name: Back-end Lint
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Setup PHP, with composer and extensions
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: ${{ env.php_version }}
+          extensions: bcmath, dom, fileinfo, gd, imagick, mbstring, pgsql, zip
+          tools: composer, pecl
+      - name: Get composer cache directory
+        id: composer-cache
+        run: |
+          printf '::set-output name=dir::%s' "$(composer config cache-files-dir)"
+      - name: Cache Composer dependencies
+        uses: actions/cache@v3
+        with:
+          path: ${{ steps.composer-cache.outputs.dir }}
+          key: ${{ runner.os }}-composer-${{ hashFiles('**/composer.lock') }}
+          restore-keys: ${{ runner.os }}-composer-
+      - name: Install Composer dependencies
+        run: composer install --no-progress --no-suggest --prefer-dist --optimize-autoloader
+      - name: PHP Lint
+        run: ./vendor/bin/phpstan analyse
+  frontend-test:
+    name: Front-end Test
+    env:
+      LARAVEL_BYPASS_ENV_CHECK: 1
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      - name: Setup PHP, with composer and extensions
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: ${{ env.php_version }}
+          extensions: bcmath, dom, fileinfo, gd, imagick, mbstring, pgsql, zip
+          tools: composer, pecl
+      - name: Get composer cache directory
+        id: composer-cache
+        run: |
+          printf '::set-output name=dir::%s' "$(composer config cache-files-dir)"
+      - name: Cache Composer dependencies
+        uses: actions/cache@v3
+        with:
+          path: ${{ steps.composer-cache.outputs.dir }}
+          key: ${{ runner.os }}-composer-${{ hashFiles('**/composer.lock') }}
+          restore-keys: ${{ runner.os }}-composer-
+      - name: Install Composer dependencies
+        run: composer install --no-progress --no-suggest --prefer-dist --optimize-autoloader
+      - name: Install Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: ${{ env.node_version }}
+      - name: Cache frontend dependencies
+        uses: actions/cache@v3
+        with:
+          path: ~/.npm
+          key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-node-
+      - name: Install npm dependencies
+        run: npm ci --prefer-offline
+      - name: Run Vitest
+        run: node_modules/.bin/vitest --run
+  backend-test:
+    name: Back-end Test
+    runs-on: ubuntu-latest
+    env:
+      BROADCAST_DRIVER: log
+      CACHE_DRIVER: redis
+      DB_CONNECTION: pgsql
+      DB_DATABASE: laravel
+      DB_HOST: localhost
+      DB_PASSWORD: password
+      DB_USERNAME: username
+      QUEUE_CONNECTION: redis
+      REDIS_HOST: localhost
+      SESSION_DRIVER: redis
+    services:
+      postgres:
+        image: postgres:11-alpine
+        env:
+          POSTGRES_USER: username
+          POSTGRES_PASSWORD: password
+          POSTGRES_DB: laravel
+        ports:
+          - 5432/tcp
+        options: --health-cmd pg_isready --health-interval 10s --health-timeout 5s --health-retries 3
+      redis:
+        image: redis
+        ports:
+          - 6379/tcp
+        options: --health-cmd="redis-cli ping" --health-interval=10s --health-timeout=5s --health-retries=3
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Setup PHP, with composer and extensions
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: ${{ env.php_version }}
+          extensions: bcmath, dom, fileinfo, gd, imagick, mbstring, pgsql, zip
+          tools: composer, pecl
+      - uses: actions/setup-node@v3
+        with:
+          node-version: ${{ env.node_version }}
+      - name: Get composer cache directory
+        id: composer-cache
+        run: |
+          printf '::set-output name=dir::%s' "$(composer config cache-files-dir)"
+      - name: Cache Composer dependencies
+        uses: actions/cache@v3
+        with:
+          path: ${{ steps.composer-cache.outputs.dir }}
+          key: ${{ runner.os }}-composer-${{ hashFiles('**/composer.lock') }}
+          restore-keys: ${{ runner.os }}-composer-
+      - name: Prepare the application
+        env:
+          DB_PORT: ${{ job.services.postgres.ports[5432] }}
+          REDIS_PORT: ${{ job.services.redis.ports[6379] }}
+        run: |
+          cp .env.testing .env
+          rm -f .env.testing
+          echo "DB_PORT=$DB_PORT" >> $GITHUB_ENV
+          echo "REDIS_PORT=$REDIS_PORT" >> $GITHUB_ENV
+      - name: Install Composer dependencies
+        run: composer install --no-progress --no-suggest --prefer-dist --optimize-autoloader
+      - name: Cache frontend dependencies
+        uses: actions/cache@v3
+        with:
+          path: ~/.npm
+          key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-node-
+      - name: Install npm dependencies
+        run: npm ci --prefer-offline
+      - name: Publish public assets
+        run: php artisan vendor:publish --tag=public
+      - name: Build frontend
+        run: npm run build
+      - name: Generate app key
+        run: php artisan key:generate
+      - name: Clear Config
+        run: php artisan config:clear
+      - name: Run Migration
+        run: php artisan migrate -v
+      - name: Test with pest
+        run: vendor/bin/pest
+  build:
+    name: Build
+    needs: ['frontend-lint', 'backend-lint', 'frontend-test', 'backend-test']
+    runs-on: ubuntu-latest
+    steps:
+      -
+        name: Checkout
+        uses: actions/checkout@v4
+      -
+        name: Docker meta
+        id: meta
+        uses: docker/metadata-action@v4
+        with:
+          images: alkrauss48/simple-slides-sail
+          tags: |
+            type=ref,prefix=dev-,event=branch
+            type=semver,pattern={{version}}
+            type=semver,pattern={{major}}
+            type=semver,pattern={{major}}.{{minor}}
+      -
+        name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v2
+      -
+        name: Login to DockerHub
+        uses: docker/login-action@v2
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+      -
+        name: Build and push
+        id: docker_build
+        uses: docker/build-push-action@v4
+        with:
+          context: .
+          file: docker/sail-prod/Dockerfile
+          push: true
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}

@@ -1,5 +1,5 @@
 # PHP Builder
-FROM sail-8.2/app
+FROM realworldio/laravel-sail:8.2
 
 # Copy composer.lock and composer.json
 COPY composer.lock composer.json /var/www/html

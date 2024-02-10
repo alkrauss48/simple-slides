@@ -41,8 +41,8 @@ services:
             POSTGRES_DB: '${DB_DATABASE}'
             POSTGRES_USER: '${DB_USERNAME}'
             POSTGRES_PASSWORD: '${DB_PASSWORD:-secret}'
-        # volumes:
-        #     - 'pgsql:/var/lib/postgresql/data'
+        volumes:
+            - 'pgsql:/var/lib/postgresql/data'
         healthcheck:
             test:
                 - CMD

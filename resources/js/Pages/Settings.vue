@@ -2,6 +2,7 @@
 import { ref, watch } from 'vue'
 import { Link, router } from '@inertiajs/vue3'
 
+import AppHead from '@/Components/AppHead.vue';
 import GithubIcon from '@/Components/icons/GithubIcon.vue';
 import { VisualMode, isDarkMode } from '@/enums/visualMode.ts';
 import { getVisualMode, setVisualMode } from '@/utils/handleVisualMode.ts';
@@ -36,6 +37,7 @@ watch(darkMode, async (newValue: boolean) => {
 
 <template>
   <main>
+      <AppHead />
       <div class="fixed py-4 px-8 w-full bg-gray-200 dark:bg-gray-800 flex
           justify-between border-b-1 border-gray-300">
           <div class="flex items-center">

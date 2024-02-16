@@ -46,7 +46,16 @@ class PresentationResource extends Resource
                                 .'You can toggle your theme in the top right menu.'
                             ))->columnSpan([
                                 'md' => 2,
-                            ]),
+                            ])->disableToolbarButtons([
+                                'attachFiles',
+                            ])->saveUploadedFileAttachmentsUsing(function () {
+                                // Block images from being uploaded.
+                                // This prevents drag-and-drop uploads.
+                                return null;
+                            })->getUploadedAttachmentUrlUsing(function () {
+                                // Required to go along with a null `saveUploadedFileAttachmentsUsing`
+                                return null;
+                            }),
                         Section::make('Details')
                             ->description('All the metadata related to your presentation.')
                             ->columnSpan(1)

@@ -6,19 +6,10 @@ to continue
 Press the left arrow key
 to go back a slide
 
-Before we review how *you*
-can create your own simple slides...
+**Simple Slides** is a <span style="color: #ff7b00">**responsive**</span> and
+<span style="color: #ff7b00">**text-first**</span> presentation tool
 
-We need to review how
-**Simple Slides** itself
-works
-
-**Simple Slides** is based on
-the Takahashi Method
-
-The [Takahashi Method](https://en.wikipedia.org/wiki/Takahashi_method)
-is a way to present simple and elegant slides
-that favor text content
+that keeps your audience <span style="color: #00b300;">**engaged**</span>.
 
 With **Simple Slides**, each slide will expand
 the content to its
@@ -35,19 +26,21 @@ per slide
 
 And faster changing of slides
 
-Both of which keep
-your audience engaged
+Notice the bar on the bottom
+of the screen too
 
-The layout is handled
-automatically
+It measures your progress
 
-So you can focus more
-on the content itself
+You can refresh the page,
+and your current slide will stick. Try it!
+
+You can even share the URL,
+and it will load at the current slide
 
 **Simple Slides** uses
-**markdown** to render your slides
+**markdown** to render slides
 
-So you can do things like:
+So you can use things like:
 
 # Headings
 On top of content
@@ -71,16 +64,40 @@ code++; // wat
 And whatever else
 markdown supports!
 
-Notice the bar on the bottom
-of the screen too
+Ready to create your first
+**Simple Slides** presentation?
 
-It measures your progress
+It's easy and **free**
 
-You can refresh the page,
-and your current slide will stick. Try it!
+You can click that settings button in the top right corner
 
-You can even share the URL,
-and it will load at the current slide
+<span>&#8599;&#65039;</span>
+<br />Somewhere over there
+
+And either [sign up](/register) for an account
+
+Or enter a link to your own markdown file
+
+And **Simple Slides** will create a presentation for you!
+
+No account needed
+<span>&#127881;</span>
+
+That said, we ***do*** recommend creating an account.
+
+Signing up lets you:
+
+* Create and edit your presentations
+* Set the URL of your presentations
+* Upload images
+* Add social media sharing tags
+
+[Here's an example](https://v2.simpleslides.dev/thecodeboss/why-give-talks)
+of a real presentation
+
+And when creating your first presentation,
+
+You can use [these instructions](/instructions.md) themselves as an example!
 
 Finally, there are a few more
 hot keys than just the arrow keys:
@@ -94,42 +111,7 @@ b = go back 5 slides
 $ = go to end
 ```
 
-Now, let's show you
-how to use **Simple Slides**
-for your own slides!
-
-There's only 2 steps:
-
-1. Create a markdown file
-somewhere with a public URL
-
-The file can exist anywhere
-
-[These instructions](/instructions.md) themselves are
-a markdown file, so you can use
-them as an example
-
-2. Click that settings button in the top right corner
-
-<span>&#8599;&#65039;</span>
-<br />Somewhere over there
-
-Paste in the link to your markdown file
-
-And click present
-
-You did it!
-
-[Here's an example](https://simpleslides.dev/aHR0cHM6Ly9yYXcuZ2l0aHVidXNlcmNvbnRlbnQuY29tL2Fsa3JhdXNzNDgvdGFsa3MvbWFzdGVyL3NoZWNvZGVzLXdvcmtzaG9wLWludHJvL3ByZXNlbnRhdGlvbi5tZA==) of
-a different presentation
-
-Don't worry, we sanitize your markdown
-content
-
-So your audience doesn't have to worry
-about pesky cross-site scripting
-
-Thanks for reading
+That's it! Thanks for reading
 these instructions!
 
 You have a great

@@ -9,7 +9,7 @@ to go back a slide
 **Simple Slides** is a <span style="color: #ff7b00">**responsive**</span> and
 <span style="color: #ff7b00">**text-first**</span> presentation tool
 
-that keeps your audience <span style="color: #00b300;">**engaged**</span>.
+that keeps your audience <span style="color: #0084ff;">**engaged**</span>.
 
 With **Simple Slides**, each slide will expand
 the content to its

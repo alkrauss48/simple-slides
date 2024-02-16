@@ -18,6 +18,7 @@ use Filament\Tables\Columns\SpatieMediaLibraryImageColumn;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
+use Illuminate\Support\HtmlString;
 use Illuminate\Support\Str;
 use Illuminate\Validation\Rules\Unique;
 
@@ -38,7 +39,12 @@ class PresentationResource extends Resource
                     ->schema([
                         Forms\Components\MarkdownEditor::make('content')
                             ->required()
-                            ->columnSpan([
+                            ->helperText(new HtmlString(
+                                '<strong>Note</strong>: It\'s recommended to edit content '
+                                .'while using <strong>Light Theme</strong>; '
+                                .'syntax highlighting for Dark Theme isn\'t fully supported yet. '
+                                .'You can toggle your theme in the top right menu.'
+                            ))->columnSpan([
                                 'md' => 2,
                             ]),
                         Section::make('Details')

@@ -17,7 +17,9 @@ const props = defineProps<{
 }>();
 
 const back = () => {
-  history.back();
+    const url = localStorage.getItem('appCurrentUrl') ?? '/';
+
+    router.visit(url);
 };
 
 const go = () => {

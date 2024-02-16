@@ -46,6 +46,12 @@ onMounted(async () => {
     const slidesUrl = getSlidesUrl();
     dataStore.fetchAndProcessData(slidesUrl);
 });
+
+const onBeforeSettingsVisit = () => {
+    const fullPath = location.pathname + location.search;
+
+    localStorage.setItem('appCurrentUrl', fullPath);
+};
 </script>
 
 <template>
@@ -53,6 +59,7 @@ onMounted(async () => {
         <AppHead />
         <Link
             href="/settings"
+            :onBefore="onBeforeSettingsVisit"
             class="
             fixed top-6 right-8
             text-5xl text-gray-300/50

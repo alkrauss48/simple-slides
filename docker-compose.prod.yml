@@ -9,7 +9,7 @@ services:
     #     restart: unless-stopped
     #     ports:
     #         - 80:80
-    #     dpends_on:
+    #     depends_on:
     #         - laravel
     #
     # laravel:

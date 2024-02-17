@@ -76,10 +76,10 @@ watch(darkMode, async (newValue: boolean) => {
       action=""
       method="post"
     >
-        <h2 class="w-[30rem] max-w-full mb-8 font-bold text-3xl text-center">Try out Simple Slides</h2>
-        <p class="w-64 mb-8">
-            Enter the URL to your markdown file below, and then click present.</p>
-        <label for="slidesUrl">URL to your slides:</label>
+        <h2 class="w-[30rem] max-w-full mb-4 font-bold text-3xl text-center">Try out Simple Slides</h2>
+        <label for="slidesUrl" class="w-64 m-4">
+            Enter the URL to your markdown file below, and then click present.
+        </label>
         <textarea
           id="slidesUrl"
           class="w-64 p-2 my-4 border-solid border-2 border-black text-black"

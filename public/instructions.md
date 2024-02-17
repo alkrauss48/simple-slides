@@ -3,9 +3,6 @@ Welcome to
 Press the right arrow key
 to continue
 
-Press the left arrow key
-to go back a slide
-
 **Simple Slides** is a <span style="color: #ff7b00">**responsive**</span> and
 <span style="color: #ff7b00">**text-first**</span> presentation tool
 
@@ -38,7 +35,7 @@ You can even share the URL,
 and it will load at the current slide
 
 **Simple Slides** uses
-**markdown** to render slides
+[markdown](https://www.markdownguide.org/) to render slides
 
 So you can use things like:
 

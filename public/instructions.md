@@ -6,7 +6,7 @@ to continue
 **Simple Slides** is a <span style="color: #ff7b00">**responsive**</span> and
 <span style="color: #ff7b00">**text-first**</span> presentation tool
 
-that keeps your audience <span style="color: #0084ff;">**engaged**</span>.
+that keeps your audience <span style="color: #0084ff;">**engaged**</span>
 
 With **Simple Slides**, each slide will expand
 the content to its
@@ -16,23 +16,21 @@ Based on your browser window
 
 Resize your window and try it!
 
-See!
-
 This style means less content
 per slide
 
 And faster changing of slides
-
-Notice the bar on the bottom
-of the screen too
-
-It measures your progress
 
 You can refresh the page,
 and your current slide will stick. Try it!
 
 You can even share the URL,
 and it will load at the current slide
+
+Notice the bar on the bottom
+of the screen too
+
+It measures your progress
 
 **Simple Slides** uses
 [markdown](https://www.markdownguide.org/) to render slides
@@ -61,7 +59,7 @@ code++; // wat
 And whatever else
 markdown supports!
 
-Ready to create your first
+Ready to create *your* first
 **Simple Slides** presentation?
 
 It's easy and **free**
@@ -80,13 +78,12 @@ And **Simple Slides** will create a presentation for you!
 No account needed
 <span>&#127881;</span>
 
-That said, we ***do*** recommend creating an account.
+That said, we ***do*** recommend creating an account
 
 Signing up lets you:
 
-* Create and edit your presentations
-* Set the URL of your presentations
-* Upload images
+* Manage your presentations
+* Upload your own images
 * Add social media sharing tags
 
 [Here's an example](https://v2.simpleslides.dev/thecodeboss/why-give-talks)
@@ -109,7 +106,7 @@ $ = go to end
 ```
 
 That's it! Thanks for reading
-these instructions!
+these instructions
 
 You have a great
 day now, buh bye

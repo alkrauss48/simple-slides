@@ -60,6 +60,7 @@
 
 .typography pre code {
   background-color: transparent;
+  padding: 0;
 }
 
 .typography a {

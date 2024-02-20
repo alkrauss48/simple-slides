@@ -1,34 +1,10 @@
 services:
-    # TODO: Get nginx + php docker setup working for prod, instead of sail
-    #
-    # nginx:
-    #     build:
-    #         context: .
-    #         dockerfile: docker/php/Dockerfile
-    #         target: nginx-image
-    #     restart: unless-stopped
-    #     ports:
-    #         - 80:80
-    #     depends_on:
-    #         - laravel
-    #
-    # laravel:
-    #     build:
-    #         context: .
-    #         dockerfile: docker/php/Dockerfile
-    #         target: php-image
-    #     env_file:
-    #        - .env.prod
-    #     depends_on:
-    #         - pgsql
-    #         - redis
-
     laravel:
         build:
-          context: .
-          dockerfile: docker/sail-prod/Dockerfile
+            context: .
+            dockerfile: docker/app/Dockerfile
         env_file:
-            - .env.prod
+           - .env.prod
         ports:
             - 80:80
         depends_on:

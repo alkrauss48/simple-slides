@@ -1,0 +1,11 @@
+#!/bin/sh
+
+HEALTH_CHECK_IP="${1:-127.0.0.1}"
+
+REDIRECT_STATUS=true \
+    SCRIPT_NAME=/ping \
+    SCRIPT_FILENAME=/ping \
+    REQUEST_METHOD=GET \
+    cgi-fcgi -bind -connect "$HEALTH_CHECK_IP:9000" \
+        | grep pong
+exit $?

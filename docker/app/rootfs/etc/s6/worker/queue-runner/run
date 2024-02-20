@@ -1,0 +1,4 @@
+#!/bin/sh
+set -x
+
+exec s6-setuidgid "${PUID:-www-data}" php /app/artisan queue:work -n --delay=90 --tries=3

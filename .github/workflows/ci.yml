@@ -209,7 +209,7 @@ jobs:
         id: meta
         uses: docker/metadata-action@v4
         with:
-          images: alkrauss48/simple-slides-sail
+          images: alkrauss48/simple-slides-laravel
           tags: |
             type=ref,prefix=dev-,event=branch
             type=semver,pattern={{version}}
@@ -230,7 +230,7 @@ jobs:
         uses: docker/build-push-action@v4
         with:
           context: .
-          file: docker/sail-prod/Dockerfile
+          file: docker/app/Dockerfile
           push: true
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}

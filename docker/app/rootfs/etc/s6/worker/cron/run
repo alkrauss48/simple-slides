@@ -1,0 +1,4 @@
+#!/bin/sh
+set -x
+
+exec crond -f

@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, onMounted, onUnmounted } from 'vue'
+import { computed, onMounted, onUnmounted, ref } from 'vue'
 
 import ProgressBar from '@/Components/ProgressBar.vue';
 import ProgressLabel from '@/Components/ProgressLabel.vue';
@@ -14,6 +14,8 @@ import slideStore from '@/store/slideStore.ts'
 const content = computed(() => {
     return dataStore.data[slideStore.index];
 });
+
+const loadDelayDone = ref(false);
 
 const showProgressLabel = computed<boolean>(() => {
     return slideStore.progress === ProgressType.Label;
@@ -69,13 +71,19 @@ const bindKeyDown = (event: KeyboardEvent): void => {
     }
 };
 
-onMounted(() => window.addEventListener('keydown',  bindKeyDown));
+onMounted(() => {
+    window.addEventListener('keydown',  bindKeyDown)
+
+    // This delay is to allow the font to download prior to textFit beign run on the
+    // SlideContent component. Otherwise, the text won't be properly sized.
+    setTimeout(() => loadDelayDone.value = true, 200);
+});
 onUnmounted(() => window.removeEventListener('keydown',  bindKeyDown));
 </script>
 
 <template>
-    <div class="w-full h-[100dvh] flex justify-center items-center">
-        <SlideContent :key="content" :content="content" />
+    <div class="slide-view w-full h-[100dvh] flex justify-center items-center">
+        <SlideContent :key="content" v-if="loadDelayDone" :content="content" />
         <SlideArrows
             @next="incrementContent(1)"
             @previous="incrementContent(-1)"

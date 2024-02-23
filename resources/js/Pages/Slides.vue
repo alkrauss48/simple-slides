@@ -61,7 +61,7 @@ const onBeforeSettingsVisit = () => {
             href="/settings"
             :onBefore="onBeforeSettingsVisit"
             class="
-            fixed top-6 right-8
+            browsershot-hide fixed top-6 right-8
             text-5xl text-gray-300/50
             hover:text-gray-300 focus:text-gray-300
             "

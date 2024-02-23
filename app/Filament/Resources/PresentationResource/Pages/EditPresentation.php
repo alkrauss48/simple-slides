@@ -5,6 +5,7 @@ namespace App\Filament\Resources\PresentationResource\Pages;
 use App\Filament\Resources\PresentationResource;
 use App\Models\Presentation;
 use Filament\Actions;
+use Filament\Notifications\Notification;
 use Filament\Resources\Pages\EditRecord;
 use Spatie\Browsershot\Browsershot;
 
@@ -25,6 +26,8 @@ class EditPresentation extends EditRecord
             Actions\Action::make('Generate Thumbnail')
                 ->icon('heroicon-o-camera')
                 ->action(function (Presentation $record) {
+                    $tempPath = storage_path("temp/{$record->slug}-{$record->user->username}.jpg");
+
                     Browsershot::url(route('presentations.show', [
                         'user' => $record->user->username,
                         'slug' => $record->slug,
@@ -37,7 +40,15 @@ class EditPresentation extends EditRecord
                                 .'.browsershot-hide { display: none !important; }',
                         ]))->noSandbox()
                         ->setScreenshotType('jpeg', 90)
-                        ->save(storage_path("app/public/{$record->user->username}-{$record->slug}.jpg"));
+                        ->save($tempPath);
+
+                    $record->clearMediaCollection('thumbnail');
+                    $record->addMedia($tempPath)->toMediaCollection('thumbnail');
+
+                    Notification::make()
+                        ->title('Thumbnail successfully generated. Refresh your page to view the new thumbnail.')
+                        ->success()
+                        ->send();
                 }),
             Actions\DeleteAction::make(),
             Actions\ForceDeleteAction::make(),

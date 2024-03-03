@@ -41,6 +41,16 @@ sail npm run dev
 
 ```
 
+## To Generate Thumbnails for Presentations
+This uses puppeteer and Browsershot, which requires some extra config on top of
+Laravel Sail. To configure this, you need to attach to the container and run the
+`./docker/sail-extra.sh` command:
+
+```
+docker compose exec laravel.test sh
+> ./docker/sail-extra.sh
+```
+
 ## Autoformatting
 ```
 # Laravel

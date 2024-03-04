@@ -14,6 +14,10 @@ ARG INSTALL_SQLSRV=false
 ARG INSTALL_XDEBUG=false
 ARG INSTALL_ZIP=true
 ARG INSTALL_INTL=true
+ARG PHP_UPLOAD_MAX_FILESIZE 64m
+ARG PHP_POST_MAX_SIZE 64m
+ARG PHP_MEMORY_LIMIT 512m
+ARG DEPS='nodejs npm chromium'
 
 # Backend build
 FROM ghcr.io/clevyr/php:$PHP_VERSION-base as php-builder
@@ -37,10 +41,35 @@ RUN set -x \
 
 
 # Frontend build
-FROM node:18-alpine as node-builder
+FROM node:lts-alpine as node-builder
 WORKDIR /app
 
-COPY package.json package-lock.json ./
+RUN set -x \
+    && apk add --no-cache \
+        autoconf \
+        automake \
+        bash \
+        g++ \
+        libc6-compat \
+        libjpeg-turbo \
+        libjpeg-turbo-dev \
+        libpng \
+        libpng-dev \
+        libtool \
+        libwebp \
+        libwebp-dev \
+        make \
+        nasm \
+        python3 \
+        cairo-dev \
+        jpeg-dev \
+        pango-dev \
+        giflib-dev
+
+ENV PUPPETEER_SKIP_CHROMIUM_DOWNLOAD true
+ENV CHROMIUM_PATH /usr/bin/chromium-browser
+
+COPY artisan package.json package-lock.json ./
 RUN npm ci
 
 COPY --from=php-builder /app .
@@ -49,11 +78,10 @@ RUN npm run build
 
 
 # Local image
-FROM ghcr.io/clevyr/php:$PHP_VERSION-onbuild as local-image
+FROM ghcr.io/clevyr/php:$PHP_VERSION as local-image
 WORKDIR /app
 
-ENV PHP_UPLOAD_MAX_FILESIZE=64m
-ENV PHP_POST_MAX_SIZE=64m
+RUN npm --global install puppeteer@v21
 
 # Install libraries for laravel-medialibrary
 RUN set -x \
@@ -62,6 +90,7 @@ RUN set -x \
         jpegoptim
 
 COPY --chown=root docker/app/rootfs /
+
 RUN crontab /etc/cron.d/scheduler
 
 CMD ["s6-svscan", "/etc/s6/app"]

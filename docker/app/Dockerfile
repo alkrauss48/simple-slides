@@ -81,7 +81,7 @@ RUN npm run build
 FROM ghcr.io/clevyr/php:$PHP_VERSION as local-image
 WORKDIR /app
 
-RUN npm --global install puppeteer@v17
+RUN npm --global install puppeteer@v21
 
 # Install libraries for laravel-medialibrary
 RUN set -x \

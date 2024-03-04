@@ -32,9 +32,10 @@ class EditPresentation extends EditRecord
                         'user' => $record->user->username,
                         'slug' => $record->slug,
                     ]))
-
-                        ->setDelay(250)
+                        ->setChromePath('/usr/bin/chromium-browser')
+                        ->waitUntilNetworkIdle()
                         ->windowSize(1200, 630)
+                        ->setOption('args', ['--disable-web-security'])
                         ->setOption('addStyleTag', json_encode([
                             'content' => '.slide-view { height: 100vh !important; } '
                                 .'.browsershot-hide { display: none !important; }',

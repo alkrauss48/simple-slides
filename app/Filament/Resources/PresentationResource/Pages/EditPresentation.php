@@ -25,6 +25,12 @@ class EditPresentation extends EditRecord
                 ->openUrlInNewTab(),
             Actions\Action::make('Generate Thumbnail')
                 ->icon('heroicon-o-camera')
+                ->requiresConfirmation()
+                ->modalHeading('Generate thumbnail')
+                ->modalDescription(
+                    'This will overwrite any existing thumbnail that you have '
+                    .'set for this presentation. Do you wish to continue?'
+                )->modalSubmitActionLabel('Yes, generate it')
                 ->action(function (Presentation $record) {
                     $tempPath = storage_path("temp/{$record->slug}-{$record->user->username}.jpg");
 

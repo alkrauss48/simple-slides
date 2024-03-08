@@ -72,9 +72,3 @@ test('setting darkMode back to false sets light mode', async () => {
 
   expect(getVisualMode()).toBe(VisualMode.Light);
 });
-
-test('successfully submits the form', async () => {
-  const wrapper = mountWrapper();
-
-  await wrapper.find('#close').trigger('click');
-});

@@ -1,35 +1,35 @@
 # Simple Slides
 
-[Simple Slides](https://simpleslides.dev) is a web app built with:
+[Simple Slides](https://simpleslides.dev) is a response and text-first
+presentation tool that keeps your audience engaged, and is built with:
 
 * Laravel
 * Vue + TypeScript
 * PostgreSQL
 
-that allows for simple and content-friendly rendering of presentation
-slides via Markdown.
-
-Simple Slides follows the [Takahashi Method]() of presenting slides, which
-focuses on:
+Presentations built with Simple Slides typically focus on:
 
 * Prioritizing text-content
 * Low amount of content per slide
 * Many slides, and changing through slides quickly
 
 ## To Install
+```sh
+composer install
+```
+
 This project uses Laravel Sail, which is basically a built-in Docker wrapper for
 Laravel applications.
 [View their documentation](https://laravel.com/docs/10.x/sail#installation)
-for more details:
-```sh
-composer require laravel/sail --dev
-php artisan sail:install
-```
+for more details.
 
-Then, set an alias for the `sail` command, to make it much shorter to use:
+Ideally, you should set an alias for the `sail` command, to make it much shorter to use:
 ```sh
 alias sail='[ -f sail ] && sh sail || sh vendor/bin/sail'
 ```
+
+Note: If you have run a Laravel Sail project before, you may have already created this
+alias.
 
 ## To Run
 ```sh
@@ -41,17 +41,8 @@ sail npm run dev
 
 ```
 
-## To Generate Thumbnails for Presentations
-This uses puppeteer and Browsershot, which requires some extra config on top of
-Laravel Sail. To configure this, you need to attach to the container and run the
-`./docker/sail-extra.sh` command:
-
-```
-docker compose exec laravel.test sh
-> ./docker/sail-extra.sh
-```
-
 ## Autoformatting
+Via [Laravel pint](https://laravel.com/docs/10.x/pint)
 ```
 # Laravel
 
@@ -60,10 +51,10 @@ sail pint
 
 ## Linting
 ```
-# PHP
+# Back-end (Laravel)
 sail bin phpstan analyse
 
-# TS
+# Front-end (Vue)
 sail npx vue-tsc
 ```
 
@@ -74,6 +65,16 @@ sail artisan test
 
 # Front-end (Vue)
 sail npx vitest
+```
+
+## To Generate Thumbnails for Presentations
+This uses puppeteer and Browsershot, which requires some extra config on top of
+Laravel Sail. To configure this, you need to attach to the container and run the
+`./docker/sail-extra.sh` command:
+
+```
+docker compose exec laravel.test sh
+> ./docker/sail-extra.sh
 ```
 
 ## Recommended IDE Setup

@@ -7,6 +7,7 @@
     },
     "dependencies": {
         "dompurify": "^3.0.5",
+        "happy-dom": "^13.7.0",
         "marked": "^5.1.2",
         "vue-router": "^4.2.4"
     },
@@ -21,7 +22,6 @@
         "@vue/test-utils": "^2.4.1",
         "autoprefixer": "^10.4.14",
         "axios": "^1.1.2",
-        "jsdom": "^22.1.0",
         "laravel-vite-plugin": "^0.8.0",
         "msw": "^1.2.3",
         "postcss": "^8.4.18",

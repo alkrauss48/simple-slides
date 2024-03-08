@@ -13,7 +13,7 @@
         <meta property="og:description"
             content="{{ (isset($page['props']['meta']['description'])) ? $page['props']['meta']['description'] : config('meta.base_description') }}"/>
         <meta property="og:image"
-            content="{{ (isset($page['props']['meta']['imageUrl'])) ? $page['props']['meta']['imageUrl'] : config('meta.base_og_image') }}"/>
+            content="{{ (isset($page['props']['meta']['imageUrl'])) && !empty($page['props']['meta']['imageUrl']) ? $page['props']['meta']['imageUrl'] : config('meta.base_og_image') }}"/>
         <meta property="og:url" content="{{ config('app.url') }}">
         <meta property="og:type" content="website">
 

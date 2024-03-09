@@ -7,6 +7,7 @@ use App\Models\Presentation;
 use Filament\Actions;
 use Filament\Notifications\Notification;
 use Filament\Resources\Pages\EditRecord;
+use Illuminate\Support\HtmlString;
 use Spatie\Browsershot\Browsershot;
 
 class EditPresentation extends EditRecord
@@ -26,12 +27,24 @@ class EditPresentation extends EditRecord
             Actions\Action::make('Generate Thumbnail')
                 ->icon('heroicon-o-camera')
                 ->requiresConfirmation()
-                ->modalHeading('Generate thumbnail')
-                ->modalDescription(
+                ->modalHeading('Generate a thumbnail of your first slide')
+                ->modalIcon('heroicon-o-camera')
+                ->modalIconColor('info')
+                ->modalDescription(new HtmlString(
                     'This will overwrite any existing thumbnail that you have '
                     .'set for this presentation. Do you wish to continue?'
-                )->modalSubmitActionLabel('Yes, generate it')
+                    .'<br><br><strong>Note:</strong> Your presentation must first be published.'
+                ))->modalSubmitActionLabel('Generate it')
                 ->action(function (Presentation $record) {
+                    if (! $record->is_published) {
+                        Notification::make()
+                            ->title('You must publish your presentation to generate a thumbnail.')
+                            ->danger()
+                            ->send();
+
+                        return;
+                    }
+
                     $tempPath = storage_path("temp/{$record->slug}-{$record->user->username}.jpg");
 
                     Browsershot::url(route('presentations.show', [

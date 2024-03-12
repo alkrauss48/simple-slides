@@ -5,6 +5,8 @@ use App\Http\Controllers\PresentationController;
 use App\Http\Controllers\SettingsController;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
+use Inertia\Inertia;
+use Inertia\Response;
 
 /*
 |--------------------------------------------------------------------------
@@ -24,6 +26,10 @@ Route::redirect('/admin/login', '/login');
 
 Route::get('/', [AdhocSlidesController::class, 'index'])->name('home');
 Route::get('/settings', [SettingsController::class, 'index'])->name('settings');
+
+Route::get('/privacy', function (): Response {
+    return Inertia::render('Privacy');
+});
 
 Route::get('/{user:username}/{slug}', [PresentationController::class, 'show'])
     ->name('presentations.show');

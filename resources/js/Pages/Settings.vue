@@ -77,7 +77,7 @@ watch(darkMode, async (newValue: boolean) => {
       method="post"
     >
         <h2 class="w-[30rem] max-w-full mb-4 font-bold text-3xl text-center">Try out Simple Slides</h2>
-        <label for="slidesUrl" class="w-64 m-4">
+        <label for="slidesUrl" class="w-64 m-4 text-center">
             Enter the URL to your markdown file below.
         </label>
         <textarea
@@ -104,7 +104,7 @@ watch(darkMode, async (newValue: boolean) => {
     </form>
     <nav class="flex items-center fixed bottom-6 right-6">
         <a
-            href="https://github.com/alkrauss48/simple-slides"
+            href="/privacy"
             target="_blank"
             class="hover:underline focus:underline mr-8"
         >Privacy Policy</a>

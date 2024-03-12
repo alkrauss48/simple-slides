@@ -43,13 +43,7 @@ class PresentationController extends Controller
             return false;
         }
 
-        // If the authenticated user is the creator of the presentation, then
-        // they can see it.
-        if (auth()->id() === $presentation->user_id) {
-            return true;
-        }
-
-        // Otherwise, default to false.
-        return false;
+        // Default to the normal view policy function
+        return auth()->user()->can('view', $presentation);
     }
 }

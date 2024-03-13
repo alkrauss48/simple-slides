@@ -39,22 +39,10 @@ test('fails to submit the form if invalid', async () => {
   await wrapper.find('form').trigger('submit');
 });
 
-test('sets the darkMode value', async () => {
-  const wrapper = mountWrapper();
-
-  const checkbox = wrapper.find('#darkMode');
-
-  await checkbox.setChecked();
-
-  expect(checkbox.element.checked).toBeTruthy();
-});
-
 test('setting darkMode to true sets dark mode', async () => {
   const wrapper = mountWrapper();
 
-  const checkbox = wrapper.find('#darkMode');
-
-  await checkbox.setValue(true);
+  await wrapper.find('#darkMode').trigger('click')
 
   expect(getVisualMode()).toBe(VisualMode.Dark);
 });
@@ -62,13 +50,11 @@ test('setting darkMode to true sets dark mode', async () => {
 test('setting darkMode back to false sets light mode', async () => {
   const wrapper = mountWrapper();
 
-  const checkbox = wrapper.find('#darkMode');
-
-  await checkbox.setValue(true);
+  await wrapper.find('#darkMode').trigger('click')
 
   expect(getVisualMode()).toBe(VisualMode.Dark);
 
-  await checkbox.setValue(false);
+  await wrapper.find('#lightMode').trigger('click')
 
   expect(getVisualMode()).toBe(VisualMode.Light);
 });

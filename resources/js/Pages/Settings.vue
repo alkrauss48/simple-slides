@@ -4,6 +4,9 @@ import { Link, router } from '@inertiajs/vue3'
 
 import AppHead from '@/Components/AppHead.vue';
 import GithubIcon from '@/Components/icons/GithubIcon.vue';
+import MoonFillIcon from '@/Components/icons/MoonFillIcon.vue';
+import MoonStrokeIcon from '@/Components/icons/MoonStrokeIcon.vue';
+import YoutubeIcon from '@/Components/icons/YoutubeIcon.vue';
 import { VisualMode, isDarkMode } from '@/enums/visualMode.ts';
 import { getVisualMode, setVisualMode } from '@/utils/handleVisualMode.ts';
 
@@ -46,23 +49,20 @@ watch(darkMode, async (newValue: boolean) => {
               <Link
                   href="/"
                   class="w-10 h-10 text-4xl font-bold bg-white dark:bg-gray-900
-                  hover:bg-gray-100 dark:hover:bg-gray-800 text-center"
+                  hover:bg-gray-100 dark:hover:bg-gray-800 text-center
+                  focus:bg-gray-100 dark:focus:bg-gray-800"
                   >S</Link>
               <a
                   href="/admin"
-                  class="hover:underline ml-4 md:ml-8"
+                  class="hover:underline focus:underline ml-4 md:ml-8"
                   >{{ props.auth?.user ? 'Dashboard' : 'Login' }}</a>
               <Link
                   v-if="!props.auth?.user"
                   href="/register"
-                  class="hover:underline ml-8 hidden md:inline"
+                  class="hover:underline focus:underline ml-8"
                   >Sign Up</Link>
           </div>
           <div class="flex items-center">
-              <div class="mr-4 md:mr-8 flex items-center">
-                  <input type="checkbox" id="darkMode" v-model="darkMode">
-                  <label class="ml-4 font-bold" for="darkMode">Dark Mode?</label>
-              </div>
               <button
                   id="close"
                   @click="back()"
@@ -77,8 +77,8 @@ watch(darkMode, async (newValue: boolean) => {
       method="post"
     >
         <h2 class="w-[30rem] max-w-full mb-4 font-bold text-3xl text-center">Try out Simple Slides</h2>
-        <label for="slidesUrl" class="w-64 m-4">
-            Enter the URL to your markdown file below, and then click present.
+        <label for="slidesUrl" class="w-64 m-4 text-center">
+            Enter the URL to your markdown file below.
         </label>
         <textarea
           id="slidesUrl"
@@ -102,15 +102,50 @@ watch(darkMode, async (newValue: boolean) => {
                  lets you control the URL of your
                 presentation, so it'll look better when sharing.</small></p>
     </form>
-    <a
-      href="https://github.com/alkrauss48/simple-slides"
-      target="_blank"
-      title="Github repo"
-      class="
-        fixed bottom-6 right-6
-        text-5xl text-gray-300/50
-        hover:text-gray-300 focus:text-gray-300
-      "
-      ><GithubIcon /></a>
+    <nav class="flex items-center fixed bottom-6 right-6">
+        <a
+            href="/privacy"
+            target="_blank"
+            class="hover:underline focus:underline mr-8"
+        >Privacy Policy</a>
+        <a
+            href="https://www.youtube.com/playlist?list=PLWXp2X5PBDOkzYGV3xd0zviD6xR8OoiFR"
+            target="_blank"
+            title="Github repo"
+            class="
+            text-5xl mr-8
+            hover:text-gray-400 focus:text-gray-400
+            "
+        ><YoutubeIcon /></a>
+        <a
+            href="https://github.com/alkrauss48/simple-slides"
+            target="_blank"
+            title="Github repo"
+            class="
+            text-5xl mr-8
+            hover:text-gray-400 focus:text-gray-400
+            "
+        ><GithubIcon /></a>
+        <button
+            v-if="!darkMode"
+            id="darkMode"
+            title="Toggle Dark Mode"
+            @click="darkMode = true;"
+            class="
+            text-5xl
+            hover:text-gray-400 focus:text-gray-400
+            "
+        ><MoonStrokeIcon /></button>
+        <button
+            v-if="darkMode"
+            id="lightMode"
+            title="Toggle Dark Mode"
+            @click="darkMode = false;"
+            class="
+            text-5xl
+            hover:text-gray-400 focus:text-gray-400
+            "
+        ><MoonFillIcon /></button>
+    </nav>
   </main>
 </template>

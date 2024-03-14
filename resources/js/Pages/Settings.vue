@@ -54,12 +54,12 @@ watch(darkMode, async (newValue: boolean) => {
                   >S</Link>
               <a
                   href="/admin"
-                  class="hover:underline focus:underline ml-4 md:ml-8"
+                  class="hover:underline focus:underline ml-4 md:ml-8 font-bold"
                   >{{ props.auth?.user ? 'Dashboard' : 'Login' }}</a>
               <Link
                   v-if="!props.auth?.user"
                   href="/register"
-                  class="hover:underline focus:underline ml-8"
+                  class="hover:underline focus:underline ml-8 font-bold"
                   >Sign Up</Link>
           </div>
           <div class="flex items-center">
@@ -76,9 +76,13 @@ watch(darkMode, async (newValue: boolean) => {
       action=""
       method="post"
     >
-        <h2 class="w-[30rem] max-w-full mb-4 font-bold text-3xl text-center">Try out Simple Slides</h2>
+        <h2 class="w-[20rem] max-w-full mb-4 font-bold text-2xl
+            text-center">Already have your own markdown file?</h2>
+        <p for="slidesUrl" class="w-64 m-4 text-center">
+            You can use <strong>Simple Slides</strong> even without an account.
+        </p>
         <label for="slidesUrl" class="w-64 m-4 text-center">
-            Enter the URL to your markdown file below.
+            Just enter the URL to your markdown file below.
         </label>
         <textarea
           id="slidesUrl"
@@ -88,19 +92,21 @@ watch(darkMode, async (newValue: boolean) => {
           rows="4"
           required
           placeholder="https://example.com/your-presentation.md"
-          ></textarea>
-      <button
-        class="button"
-        type="submit"
-      >Present</button>
-        <p class="w-64 mt-8">
+        ></textarea>
+        <button
+            class="button"
+            type="submit"
+        >Present</button>
+        <p class="hidden md:block w-64 mt-8">
             <small>Psst:
               <Link
                   href="/register"
                   class="underline hover:no-underline"
                   >Creating a free account</Link>
                  lets you control the URL of your
-                presentation, so it'll look better when sharing.</small></p>
+                presentation, so it'll look better when sharing.
+            </small>
+        </p>
     </form>
     <nav class="flex items-center fixed bottom-6 right-6">
         <a

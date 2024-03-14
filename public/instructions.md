@@ -89,7 +89,7 @@ Signing up lets you:
 [Here's an example](https://v2.simpleslides.dev/thecodeboss/why-give-talks)
 of a real presentation
 
-And when creating your first presentation,
+And when creating *your* first presentation,
 
 You can use [these instructions](/instructions.md) themselves as an example!
 

@@ -26,6 +26,7 @@ class EditPresentation extends EditRecord
                     'slug' => $record->slug,
                 ])),
             Actions\Action::make('View')
+                ->color('gray')
                 ->url(fn (Presentation $record): string => route('presentations.show', [
                     'user' => $record->user->username,
                     'slug' => $record->slug,
@@ -34,6 +35,7 @@ class EditPresentation extends EditRecord
                 ->openUrlInNewTab(),
             Actions\Action::make('Generate Thumbnail')
                 ->icon('heroicon-o-camera')
+                ->color('info')
                 ->requiresConfirmation()
                 ->modalHeading('Generate a thumbnail of your first slide')
                 ->modalIcon('heroicon-o-camera')

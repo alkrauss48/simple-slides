@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "c4f8bfc356f403efb1f45c91c25fc501",
+    "content-hash": "7d897be7433af42a869bbe7949a98b0f",
     "packages": [
         {
             "name": "anourvalar/eloquent-serialize",
@@ -8915,6 +8915,60 @@
             "time": "2022-03-08T17:03:00+00:00"
         },
         {
+            "name": "webbingbrasil/filament-copyactions",
+            "version": "3.0.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/webbingbrasil/filament-copyactions.git",
+                "reference": "363215d222de4127d81ea295c8a2163cd5c5a3f8"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/webbingbrasil/filament-copyactions/zipball/363215d222de4127d81ea295c8a2163cd5c5a3f8",
+                "reference": "363215d222de4127d81ea295c8a2163cd5c5a3f8",
+                "shasum": ""
+            },
+            "require": {
+                "filament/filament": "^3.0",
+                "php": "^8.0"
+            },
+            "type": "library",
+            "extra": {
+                "laravel": {
+                    "providers": [
+                        "Webbingbrasil\\FilamentCopyActions\\FilamentCopyActionsProvider"
+                    ]
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Webbingbrasil\\FilamentCopyActions\\": "src"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Danilo Andrade",
+                    "email": "danilo@webbingbrasil.com.br",
+                    "role": "Developer"
+                }
+            ],
+            "description": "A easy-to-use copy actions for Filament Admin.",
+            "homepage": "https://github.com/webbingbrasil/filament-copyactions",
+            "keywords": [
+                "filament",
+                "laravel"
+            ],
+            "support": {
+                "issues": "https://github.com/webbingbrasil/filament-copyactions/issues",
+                "source": "https://github.com/webbingbrasil/filament-copyactions/tree/3.0.0"
+            },
+            "time": "2024-01-17T18:17:00+00:00"
+        },
+        {
             "name": "webmozart/assert",
             "version": "1.11.0",
             "source": {
@@ -12601,5 +12655,5 @@
         "php": "^8.1"
     },
     "platform-dev": [],
-    "plugin-api-version": "2.3.0"
+    "plugin-api-version": "2.6.0"
 }

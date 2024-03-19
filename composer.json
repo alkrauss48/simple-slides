@@ -11,7 +11,6 @@
         "php": "^8.1",
         "filament/filament": "^3.2",
         "filament/spatie-laravel-media-library-plugin": "^3.2",
-        "spatie/laravel-medialibrary": "^11.4",
         "guzzlehttp/guzzle": "^7.2",
         "inertiajs/inertia-laravel": "^0.6.8",
         "jeffgreco13/filament-breezy": "^2.2",
@@ -20,8 +19,10 @@
         "laravel/tinker": "^2.8",
         "league/flysystem-aws-s3-v3": "^3.0",
         "spatie/browsershot": "^4.0",
+        "spatie/laravel-medialibrary": "^11.4",
         "spatie/laravel-sluggable": "^3.5",
-        "tightenco/ziggy": "^1.0"
+        "tightenco/ziggy": "^1.0",
+        "webbingbrasil/filament-copyactions": "^3.0"
     },
     "require-dev": {
         "fakerphp/faker": "^1.9.1",

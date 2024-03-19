@@ -78,6 +78,9 @@ class EditPresentation extends EditRecord
                         ->success()
                         ->send();
                 }),
+            Actions\Action::make('save')
+                ->label('Save changes')
+                ->action('save'),
             Actions\DeleteAction::make(),
             Actions\ForceDeleteAction::make(),
             Actions\RestoreAction::make(),

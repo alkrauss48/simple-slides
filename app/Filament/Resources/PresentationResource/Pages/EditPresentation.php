@@ -9,6 +9,7 @@ use Filament\Notifications\Notification;
 use Filament\Resources\Pages\EditRecord;
 use Illuminate\Support\HtmlString;
 use Spatie\Browsershot\Browsershot;
+use Webbingbrasil\FilamentCopyActions\Pages\Actions\CopyAction;
 
 class EditPresentation extends EditRecord
 {
@@ -17,6 +18,13 @@ class EditPresentation extends EditRecord
     protected function getHeaderActions(): array
     {
         return [
+            CopyAction::make('Copy Share URL')
+                ->label('Copy Share URL')
+                ->color('gray')
+                ->copyable(fn (Presentation $record) => route('presentations.show', [
+                    'user' => $record->user->username,
+                    'slug' => $record->slug,
+                ])),
             Actions\Action::make('View')
                 ->url(fn (Presentation $record): string => route('presentations.show', [
                     'user' => $record->user->username,

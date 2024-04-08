@@ -5,10 +5,12 @@ use App\Filament\Resources\PresentationResource as Resource;
 use App\Filament\Resources\PresentationResource\Pages\CreatePresentation as CreateResource;
 use App\Filament\Resources\PresentationResource\Pages\EditPresentation as EditResource;
 use App\Filament\Resources\PresentationResource\Pages\ListPresentations as ListResource;
+use App\Jobs\GenerateThumbnail;
 use App\Models\Presentation as Model;
 // End
 use App\Models\User;
 use Illuminate\Http\UploadedFile;
+use Illuminate\Support\Facades\Queue;
 
 use function Pest\Livewire\livewire;
 
@@ -392,5 +394,37 @@ describe('non-admin users', function () {
 
         expect($record->refresh())
             ->deleted_at->toBe(null);
+    });
+
+    it('can dispatch a thumbnail generation job', function () {
+        Queue::fake();
+
+        $record = Model::factory()->create([
+            'user_id' => $this->nonAdmin->id,
+            'is_published' => true,
+        ]);
+
+        livewire(EditResource::class, [
+            'record' => $record->getRouteKey(),
+        ])
+            ->callAction('Generate Thumbnail');
+
+        Queue::assertPushed(GenerateThumbnail::class);
+    });
+
+    it('will not dispatch a thumbnail generation job for unpublished presentation', function () {
+        Queue::fake();
+
+        $record = Model::factory()->create([
+            'user_id' => $this->nonAdmin->id,
+            'is_published' => false,
+        ]);
+
+        livewire(EditResource::class, [
+            'record' => $record->getRouteKey(),
+        ])
+            ->callAction('Generate Thumbnail');
+
+        Queue::assertNotPushed(GenerateThumbnail::class);
     });
 });

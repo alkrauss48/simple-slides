@@ -1,6 +1,6 @@
 # Simple Slides
 
-[Simple Slides](https://simpleslides.dev) is a response and text-first
+[Simple Slides](https://simpleslides.dev) is a responsive and text-first
 presentation tool that keeps your audience engaged, and is built with:
 
 * Laravel
@@ -33,16 +33,28 @@ alias.
 
 ## To Run
 ```sh
-# In one terminal:
+# In one terminal, to run the app:
 sail up
 
-# Then, in another
+# Then, in another to run the migrations and seeders (this command will end)
+sail artisan migrate:fresh --seed
+
+# Then, build, watch, and hot reload for front-end changes
 sail npm run dev
 
 ```
 
+To log in, use any of the following credentials (found in
+database/Seeders/DatabaseSeeder.php):
+
+- Email: `admin@example.com` for an admin user, or `test@example.com` for a
+  non-admin user.
+- Password: Both accounts use `password`.
+
 ## Autoformatting
-Via [Laravel pint](https://laravel.com/docs/10.x/pint)
+Via [Laravel pint](https://laravel.com/docs/10.x/pint), which is a
+code-formatter following Laravel's best practices. **Note:** This is not a
+linter.
 ```
 # Laravel
 
@@ -50,6 +62,14 @@ sail pint
 ```
 
 ## Linting
+Linting on the back-end (e.g. Laravel) is done via
+[larastan](https://github.com/larastan/larastan), which is a
+[PHPStan](https://phpstan.org/) wrapper for Laravel.
+
+Linting on the front-end (e.g. Vue w/ Typescript) is done with `vue-tsc`, which
+is a first-party wrapper for Vue around `tsc`. See more here:
+https://vuejs.org/guide/typescript/overview
+
 ```
 # Back-end (Laravel)
 sail bin phpstan analyse
@@ -59,6 +79,16 @@ sail npx vue-tsc
 ```
 
 ## Running the Tests
+Tests on the back-end (e.g. Laravel) are written using
+[Pest](https://pestphp.com/), and are a
+mostly integration and end-to-end tests, with some unit tests sprinkled in.
+Currently there are no browser tests.
+
+Tests on the front-end (e.g. Vue w/ Typescript) are written using
+[vitest](https://vitest.dev/), along with some other test utilities like [Vue
+Test Utils](https://test-utils.vuejs.org/) and [Mock Service
+Worker](https://mswjs.io/).
+
 ```sh
 # Back-end (Laravel)
 sail artisan test
@@ -69,12 +99,11 @@ sail npx vitest
 
 ## To Generate Thumbnails for Presentations
 This uses puppeteer and Browsershot, which requires some extra config on top of
-Laravel Sail. To configure this, you need to attach to the container and run the
-`./docker/sail-extra.sh` command:
+Laravel Sail. To configure this, you need to run the following commands:
 
 ```
-docker compose exec laravel.test sh
-> ./docker/sail-extra.sh
+sail root-shell ./docker/sail-extra.sh
+sail npx puppeteer browsers install chrome
 ```
 
 ## Recommended IDE Setup

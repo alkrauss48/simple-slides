@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Spatie\MediaLibrary\HasMedia;
 use Spatie\MediaLibrary\InteractsWithMedia;
@@ -37,6 +38,24 @@ class Presentation extends Model implements HasMedia
             ->generateSlugsFrom('title')
             ->doNotGenerateSlugsOnUpdate()
             ->saveSlugsTo('slug');
+    }
+
+    /**
+     * Generate a daily view record for this presentation.
+     */
+    public function addDailyView(): DailyView
+    {
+        return $this->dailyViews()->create();
+    }
+
+    /**
+     * The daily views that this presentation has.
+     *
+     * @return HasMany<DailyView>
+     */
+    public function dailyViews(): HasMany
+    {
+        return $this->hasMany(DailyView::class);
     }
 
     /**

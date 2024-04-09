@@ -20,6 +20,10 @@ class PresentationController extends Controller
             abort(403);
         }
 
+        dispatch(function () use ($presentation) {
+            $presentation->addDailyView();
+        })->afterResponse();
+
         return Inertia::render('Slides', [
             'content' => $presentation->content,
             'meta' => [

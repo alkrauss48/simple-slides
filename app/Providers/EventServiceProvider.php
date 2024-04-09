@@ -28,6 +28,7 @@ class EventServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
+        Models\DailyView::observe(Observers\DailyViewObserver::class);
         Models\ImageUpload::observe(Observers\ImageUploadObserver::class);
         Models\Presentation::observe(Observers\PresentationObserver::class);
         Media::observe(Observers\MediaObserver::class);

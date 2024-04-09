@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -28,6 +29,22 @@ class Presentation extends Model implements HasMedia
         'id',
         'deleted_at',
     ];
+
+    /**
+     * Scope a query to only include presentations for the authenticated user.
+     *
+     * @param  Builder<Presentation>  $query
+     */
+    public function scopeForUser(Builder $query): void
+    {
+        if (auth()->user()->isAdministrator()) {
+            return;
+        }
+
+        $presentationIds = auth()->user()->presentations()->pluck('id');
+
+        $query->whereIn('id', $presentationIds);
+    }
 
     /**
      * Get the options for generating the slug.

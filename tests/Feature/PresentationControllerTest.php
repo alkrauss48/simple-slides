@@ -1,5 +1,6 @@
 <?php
 
+use App\Models\DailyView;
 use App\Models\Presentation;
 use App\Models\User;
 use Inertia\Testing\AssertableInertia as Assert;
@@ -28,6 +29,17 @@ test('published presentation show screen can be rendered for unauthenticated use
     $response->assertStatus(200);
 });
 
+test('published presentation show action generates daily view', function () {
+    $response = $this->get(route('presentations.show', [
+        'user' => $this->user->username,
+        'slug' => $this->publishedPresentation->slug,
+    ]));
+
+    $this->assertDatabaseHas(DailyView::class, [
+        'presentation_id' => $this->publishedPresentation->id,
+    ]);
+});
+
 test('published presentation show screen returns the right view and data', function () {
     $response = $this->get(route('presentations.show', [
         'user' => $this->user->username,
@@ -52,6 +64,17 @@ test('draft presentation show screen is not rendered for unauthenticated user', 
     ]));
 
     $response->assertStatus(403);
+});
+
+test('draft presentation show action does not generate daily view', function () {
+    $response = $this->get(route('presentations.show', [
+        'user' => $this->user->username,
+        'slug' => $this->draftPresentation->slug,
+    ]));
+
+    $this->assertDatabaseMissing(DailyView::class, [
+        'presentation_id' => $this->draftPresentation->id,
+    ]);
 });
 
 test('draft presentation show screen can be rendered for author', function () {

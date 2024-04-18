@@ -50,6 +50,10 @@ describe('admin users', function () {
     it('can create a record', function () {
         $newData = Model::factory()->make();
 
+        // The factory generates a random historical created_at, but we don't
+        // want that when creating a test record in Filament.
+        unset($newData['created_at']);
+
         livewire(CreateResource::class)
             ->fillForm([
                 ...$newData->toArray(),
@@ -230,6 +234,10 @@ describe('non-admin users', function () {
 
     it('can create a record', function () {
         $newData = Model::factory()->make();
+
+        // The factory generates a random historical created_at, but we don't
+        // want that when creating a test record in Filament.
+        unset($newData['created_at']);
 
         livewire(CreateResource::class)
             ->fillForm([

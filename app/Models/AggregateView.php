@@ -6,7 +6,6 @@ use App\Enums\PresentationFilter;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Support\Collection;
 
 class AggregateView extends Model
 {
@@ -15,17 +14,16 @@ class AggregateView extends Model
     const UPDATED_AT = null;
 
     /**
-     * Get the aggregate views based on the presentation filter, and the user's role.
+     * Scope a query to return stats for the dashboard
      *
-     * @return Collection<int, self>
+     * @param  Builder<AggregateView>  $query
      */
-    public static function getForStat(
+    public function scopeStats(
+        Builder $query,
         ?string $presentationId,
         ?string $startDate,
         ?string $endDate,
-    ): Collection {
-        $query = self::forUser();
-
+    ): void {
         if ($startDate) {
             $query->whereDate('created_at', '>=', $startDate);
         }
@@ -36,25 +34,28 @@ class AggregateView extends Model
 
         if (auth()->user()->isAdministrator()) {
             if ($presentationId === PresentationFilter::INSTRUCTIONS->value) {
-                return $query
+                $query
                     ->whereNull('presentation_id')
-                    ->whereNull('adhoc_slug')
-                    ->get();
+                    ->whereNull('adhoc_slug');
+
+                return;
             }
 
             if ($presentationId === PresentationFilter::ADHOC->value) {
-                return $query
+                $query
                     ->whereNull('presentation_id')
                     ->whereNotNull('adhoc_slug')
                     ->get();
+
+                return;
             }
         }
 
-        return is_null($presentationId)
-            ? $query->get()
-            : $query
-                ->where('presentation_id', intval($presentationId))
-                ->get();
+        if (is_null($presentationId)) {
+            return;
+        }
+
+        $query->where('presentation_id', intval($presentationId));
     }
 
     /**

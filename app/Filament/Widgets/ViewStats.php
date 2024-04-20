@@ -25,9 +25,9 @@ class ViewStats extends BaseWidget
 
     private function dailyViews(): Stat
     {
-        $views = DailyView::getForStat(
-            presentationId: $this->filters['presentation_id']
-        );
+        $views = DailyView::forUser()
+            ->stats(presentationId: $this->filters['presentation_id'])
+            ->get();
 
         $totalviews = $views->count();
         $uniqueviews = $views->unique(function (DailyView $item) {
@@ -44,11 +44,12 @@ class ViewStats extends BaseWidget
 
     private function aggregateViews(bool $withinRange = false): Stat
     {
-        $views = AggregateView::getForStat(
-            presentationId: $this->filters['presentation_id'],
-            startDate: $withinRange ? $this->filters['start_date'] : null,
-            endDate: $withinRange ? $this->filters['end_date'] : null,
-        );
+        $views = AggregateView::forUser()
+            ->stats(
+                presentationId: $this->filters['presentation_id'],
+                startDate: $withinRange ? $this->filters['start_date'] : null,
+                endDate: $withinRange ? $this->filters['end_date'] : null,
+            )->get();
 
         $totalviews = $views->sum('total_count');
         $uniqueviews = $views->sum('unique_count');

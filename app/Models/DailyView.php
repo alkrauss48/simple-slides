@@ -7,7 +7,6 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Illuminate\Support\Collection;
 
 class DailyView extends Model
 {
@@ -36,33 +35,36 @@ class DailyView extends Model
     }
 
     /**
-     * Get the daily views based on the presentation filter, and the user's role.
+     * Scope a query to return stats for the dashboard
      *
-     * @return Collection<int, self>
+     * @param  Builder<DailyView>  $query
      */
-    public static function getForStat(?string $presentationId): Collection
+    public function scopeStats(Builder $query, ?string $presentationId): void
     {
         if (auth()->user()->isAdministrator()) {
             if ($presentationId === PresentationFilter::INSTRUCTIONS->value) {
-                return self::forUser()
+                $query
                     ->whereNull('presentation_id')
-                    ->whereNull('adhoc_slug')
-                    ->get();
+                    ->whereNull('adhoc_slug');
+
+                return;
             }
 
             if ($presentationId === PresentationFilter::ADHOC->value) {
-                return self::forUser()
+                $query
                     ->whereNull('presentation_id')
                     ->whereNotNull('adhoc_slug')
                     ->get();
+
+                return;
             }
         }
 
-        return is_null($presentationId)
-            ? self::forUser()->get()
-            : self::forUser()
-                ->where('presentation_id', intval($presentationId))
-                ->get();
+        if (is_null($presentationId)) {
+            return;
+        }
+
+        $query->where('presentation_id', intval($presentationId));
     }
 
     /**

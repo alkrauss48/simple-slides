@@ -6,6 +6,7 @@ use App\Enums\PresentationFilter;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class AggregateView extends Model
 {
@@ -72,5 +73,15 @@ class AggregateView extends Model
         $presentationIds = auth()->user()->presentations()->pluck('id');
 
         $query->whereIn('presentation_id', $presentationIds);
+    }
+
+    /**
+     * The Presentation that this record belongs to
+     *
+     * @return BelongsTo<Presentation, AggregateView>
+     */
+    public function presentation(): BelongsTo
+    {
+        return $this->belongsTo(Presentation::class);
     }
 }

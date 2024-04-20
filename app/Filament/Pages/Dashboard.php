@@ -4,6 +4,7 @@ namespace App\Filament\Pages;
 
 use App\Enums\PresentationFilter;
 use App\Models\Presentation;
+use Filament\Actions;
 use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Components\Section;
 use Filament\Forms\Components\Select;
@@ -19,6 +20,21 @@ class Dashboard extends BaseDashboard
     public function getColumns(): int|string|array
     {
         return 2;
+    }
+
+    protected function getHeaderActions(): array
+    {
+        return [
+            Actions\Action::make('Reset Filters')
+                ->color('gray')
+                ->action(function () {
+                    $this->filters = [
+                        'presentation_id' => null,
+                        'start_date' => now()->subDays(8)->toDateString(),
+                        'end_date' => now()->subDay()->toDateString(),
+                    ];
+                }),
+        ];
     }
 
     public function filtersForm(Form $form): Form

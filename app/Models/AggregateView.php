@@ -20,9 +20,9 @@ class AggregateView extends Model
      */
     public function scopeStats(
         Builder $query,
-        ?string $presentationId,
-        ?string $startDate,
-        ?string $endDate,
+        ?string $presentationId = null,
+        ?string $startDate = null,
+        ?string $endDate = null,
     ): void {
         if ($startDate) {
             $query->whereDate('created_at', '>=', $startDate);

@@ -15,10 +15,7 @@ use Illuminate\Support\Facades\Queue;
 use function Pest\Livewire\livewire;
 
 beforeEach(function () {
-    $this->user = User::factory()->create([
-        'is_admin' => true,
-    ]);
-
+    $this->user = User::factory()->admin()->create();
 });
 
 describe('admin users', function () {

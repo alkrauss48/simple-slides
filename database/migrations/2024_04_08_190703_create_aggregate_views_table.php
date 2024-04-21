@@ -17,7 +17,11 @@ return new class extends Migration
             $table->string('adhoc_slug')->nullable()->index();
             $table->integer('total_count')->index()->default(0);
             $table->integer('unique_count')->index()->default(0);
-            $table->timestamp('created_at')->useCurrent();
+            $table->timestamp('created_at')->index()->useCurrent();
+
+            $table->index(['presentation_id', 'adhoc_slug']);
+            $table->index(['presentation_id', 'created_at']);
+            $table->index(['presentation_id', 'adhoc_slug', 'created_at']);
         });
     }
 

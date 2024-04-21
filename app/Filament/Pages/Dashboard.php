@@ -45,21 +45,35 @@ class Dashboard extends BaseDashboard
                     ->schema([
                         Select::make('presentation_id')
                             ->label('Presentation')
-                            ->searchable()
+                            // TODO: Don't preload all simple slides;
+                            // figure out if there is a filament bug that is throwing
+                            // errors with searchable when there is a table
+                            // widget, or if there is something in this code
+                            // that needs fixed
+                            //
+                            // ->searchable()
+                            // ->options(
+                            //     auth()->user()->isAdministrator()
+                            //         ? PresentationFilter::array()
+                            //         : []
+                            // )
+                            // ->getSearchResultsUsing(function (string $search) {
+                            //     return Presentation::forUser()
+                            //         ->where('title', 'ilike', "%{$search}%")
+                            //         ->limit(20)
+                            //         ->pluck('title', 'id')
+                            //         ->toArray();
+                            // })->getOptionLabelUsing(function ($value): ?string {
+                            //     return Presentation::forUser()
+                            //         ->find(intval($value))?->title;
+                            // }),
                             ->options(
                                 auth()->user()->isAdministrator()
                                     ? PresentationFilter::array()
-                                    : []
-                            )->getSearchResultsUsing(function (string $search) {
-                                return Presentation::forUser()
-                                    ->where('title', 'ilike', "%{$search}%")
-                                    ->limit(20)
-                                    ->pluck('title', 'id')
-                                    ->toArray();
-                            })->getOptionLabelUsing(function ($value): ?string {
-                                return Presentation::forUser()
-                                    ->find(intval($value))?->title;
-                            }),
+                                    : Presentation::forUser()
+                                        ->pluck('title', 'id')
+                                        ->toArray()
+                            ),
                         DatePicker::make('start_date')
                             ->label('Start Date')
                             ->native(false)

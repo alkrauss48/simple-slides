@@ -2,7 +2,9 @@
 
 namespace App\Filament\Widgets;
 
+use App\Enums\PresentationFilter;
 use App\Models\AggregateView;
+use Filament\Tables;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 use Filament\Widgets\Concerns\InteractsWithPageFilters;
@@ -12,7 +14,7 @@ class TopViews extends BaseWidget
 {
     use InteractsWithPageFilters;
 
-    protected static ?string $heading = 'Top Views in Date Range';
+    protected static ?string $heading = 'Detailed Views in Date Range';
 
     protected int|string|array $columnSpan = 'full';
 
@@ -44,12 +46,58 @@ class TopViews extends BaseWidget
             ->defaultSort('total_count', 'desc')
             ->columns([
                 TextColumn::make('presentation.title')
-                    ->searchable(),
-                TextColumn::make('adhoc_slug'),
+                    ->badge(fn (AggregateView $record): bool => $record->isInstructions || $record->isAdhoc
+                    )->color(function (AggregateView $record): ?string {
+                        if ($record->isInstructions) {
+                            return 'info';
+                        }
+
+                        if ($record->isAdhoc) {
+                            return 'success';
+                        }
+
+                        return null;
+                    })->getStateUsing(function (AggregateView $record): string {
+                        if ($record->isInstructions) {
+                            return PresentationFilter::INSTRUCTIONS->label();
+                        }
+
+                        if ($record->isAdhoc) {
+                            return PresentationFilter::ADHOC->label();
+                        }
+
+                        return $record->presentation->title;
+                    })->searchable(),
                 TextColumn::make('total_count')
                     ->sortable(),
                 TextColumn::make('unique_count')
                     ->sortable(),
+            ])->recordUrl(fn (AggregateView $record): ?string => is_null($record->presentation_id)
+                    ? null
+                    : route('filament.admin.resources.presentations.edit', [
+                        'record' => $record->presentation,
+                    ])
+            )
+            ->actions([
+                Tables\Actions\Action::make('View')
+                    ->url(function (AggregateView $record): string {
+                        if ($record->isInstructions) {
+                            return route('home');
+                        }
+
+                        if ($record->isAdhoc) {
+                            return route('adhoc-slides.show', [
+                                'slides' => $record->adhoc_slug,
+                            ]);
+                        }
+
+                        return route('presentations.show', [
+                            'user' => $record->presentation->user->username,
+                            'slug' => $record->presentation->slug,
+                        ]);
+                    })
+                    ->icon('heroicon-o-arrow-top-right-on-square')
+                    ->openUrlInNewTab(),
             ]);
     }
 }

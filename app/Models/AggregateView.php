@@ -4,6 +4,7 @@ namespace App\Models;
 
 use App\Enums\PresentationFilter;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -13,6 +14,30 @@ class AggregateView extends Model
     use HasFactory;
 
     const UPDATED_AT = null;
+
+    /**
+     * Determine whether this record is for the Instructions presentation
+     *
+     * @return Attribute<bool, string>
+     */
+    protected function isInstructions(): Attribute
+    {
+        return Attribute::make(
+            get: fn (mixed $value, array $attributes) => is_null($this->presentation_id) && is_null($this->adhoc_slug),
+        );
+    }
+
+    /**
+     * Determine whether this record is for an Adhoc presentation
+     *
+     * @return Attribute<bool, string>
+     */
+    protected function isAdhoc(): Attribute
+    {
+        return Attribute::make(
+            get: fn (mixed $value, array $attributes) => is_null($this->presentation_id) && ! is_null($this->adhoc_slug),
+        );
+    }
 
     /**
      * Scope a query to return stats for the dashboard

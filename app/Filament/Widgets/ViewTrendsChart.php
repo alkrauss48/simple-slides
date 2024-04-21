@@ -13,7 +13,7 @@ class ViewTrendsChart extends ChartWidget
 {
     use InteractsWithPageFilters;
 
-    protected static ?string $heading = 'Views in Date Range';
+    protected static ?string $heading = 'View Trends in Date Range';
 
     protected int|string|array $columnSpan = 'full';
 

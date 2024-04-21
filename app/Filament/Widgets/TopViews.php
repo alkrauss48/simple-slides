@@ -4,7 +4,7 @@ namespace App\Filament\Widgets;
 
 use App\Enums\PresentationFilter;
 use App\Models\AggregateView;
-use Filament\Tables;
+use Filament\Tables\Actions\Action;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 use Filament\Widgets\Concerns\InteractsWithPageFilters;
@@ -78,8 +78,16 @@ class TopViews extends BaseWidget
                         'record' => $record->presentation,
                     ])
             )
-            ->actions([
-                Tables\Actions\Action::make('View')
+            ->emptyStateHeading('No presentations found')
+            ->emptyStateDescription(null)
+            ->emptyStateActions([
+                Action::make('create')
+                    ->label('Create Presentation')
+                    ->url(route('filament.admin.resources.presentations.create'))
+                    ->icon('heroicon-m-plus')
+                    ->button(),
+            ])->actions([
+                Action::make('View')
                     ->url(function (AggregateView $record): string {
                         if ($record->isInstructions) {
                             return route('home');

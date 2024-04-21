@@ -25,6 +25,11 @@ class Dashboard extends BaseDashboard
     protected function getHeaderActions(): array
     {
         return [
+            Actions\Action::make('create')
+                ->label('New Presentation')
+                ->url(route('filament.admin.resources.presentations.create'))
+                ->icon('heroicon-m-plus')
+                ->button(),
             Actions\Action::make('Reset Filters')
                 ->color('gray')
                 ->action(function () {

@@ -14,7 +14,7 @@ class TopViews extends BaseWidget
 {
     use InteractsWithPageFilters;
 
-    protected static ?string $heading = 'Detailed Views in Date Range';
+    protected static ?string $heading = 'Detailed Views';
 
     protected int|string|array $columnSpan = 'full';
 

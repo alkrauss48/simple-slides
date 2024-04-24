@@ -6,6 +6,7 @@ use App\Enums\PresentationFilter;
 use App\Models\Presentation;
 use Filament\Actions;
 use Filament\Forms\Components\DatePicker;
+use Filament\Forms\Components\Hidden;
 use Filament\Forms\Components\Section;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Form;
@@ -37,6 +38,7 @@ class Dashboard extends BaseDashboard
                         'presentation_id' => null,
                         'start_date' => now()->subDays(8)->toDateString(),
                         'end_date' => now()->subDay()->toDateString(),
+                        'active_stat' => 'range',
                     ];
                 }),
         ];
@@ -92,6 +94,8 @@ class Dashboard extends BaseDashboard
                             ->default(now()->subDay())
                             ->hintIcon('heroicon-o-information-circle', tooltip: 'Only affects "Date Range" stats')
                             ->maxDate(now()->subDay()),
+                        Hidden::make('active_stat')
+                            ->default('range'),
                     ])
                     ->columns(3),
             ]);

@@ -1,5 +1,6 @@
 <?php
 
+use App\Enums\PresentationFilter;
 use App\Models\AggregateView;
 use App\Models\Presentation;
 use App\Models\User;
@@ -81,5 +82,86 @@ describe('forUser', function () {
         $this->actingAs($this->user);
 
         expect(AggregateView::forUser()->count())->toBe(2);
+    });
+});
+
+describe('stats', function () {
+    beforeEach(function () {
+        $this->presentation = Presentation::factory()->create();
+
+        // Total of 12 AggregateView records
+
+        AggregateView::factory()->count(5)->presentation()->create([
+            'created_at' => now()->subDays(6),
+        ]);
+
+        AggregateView::factory()->count(3)->instructions()->create([
+            'created_at' => now()->subDays(4),
+        ]);
+
+        AggregateView::factory()->adhoc()->create([
+            'created_at' => now()->subDays(2),
+        ]);
+
+        AggregateView::factory()->create([
+            'presentation_id' => $this->presentation,
+            'created_at' => now()->subDays(4),
+        ]);
+
+        AggregateView::factory()->create([
+            'presentation_id' => $this->presentation,
+            'created_at' => now()->subDays(2),
+        ]);
+
+        // Created now
+        AggregateView::factory()->create([
+            'presentation_id' => $this->presentation,
+        ]);
+    });
+
+    test('will show all records with no filters set', function () {
+        expect(AggregateView::stats()->count())->toBe(12);
+    });
+
+    test('will show all records from start date', function () {
+        expect(AggregateView::stats(startDate: now()->subDays(5)->toDateString())
+            ->count())->toBe(7);
+    });
+
+    test('will show all records until end date', function () {
+        expect(AggregateView::stats(endDate: now()->subDays(3)->toDateString())
+            ->count())->toBe(9);
+    });
+
+    test('will show all records between start and end date', function () {
+        expect(AggregateView::stats(
+            startDate: now()->subDays(5)->toDateString(),
+            endDate: now()->subDays(3)->toDateString(),
+        )
+            ->count())->toBe(4);
+    });
+
+    test('will show all records between start and end date for a presentation', function () {
+        expect(AggregateView::stats(
+            startDate: now()->subDays(5)->toDateString(),
+            endDate: now()->subDays(3)->toDateString(),
+            presentationId: $this->presentation->id,
+        )
+            ->count())->toBe(1);
+    });
+
+    test('will show instructions records', function () {
+        expect(AggregateView::stats(presentationId: PresentationFilter::INSTRUCTIONS->value)
+            ->count())->toBe(3);
+    });
+
+    test('will show adhoc records', function () {
+        expect(AggregateView::stats(presentationId: PresentationFilter::ADHOC->value)
+            ->count())->toBe(1);
+    });
+
+    test('will show specific presentation records', function () {
+        expect(AggregateView::stats(presentationId: $this->presentation->id)
+            ->count())->toBe(3);
     });
 });

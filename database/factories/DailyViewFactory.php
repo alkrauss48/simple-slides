@@ -23,4 +23,36 @@ class DailyViewFactory extends Factory
             'presentation_id' => fake()->boolean() ? Presentation::factory() : null,
         ];
     }
+
+    /**
+     * Set data for an instructions record
+     */
+    public function instructions(): static
+    {
+        return $this->state(fn (array $attributes) => [
+            'presentation_id' => null,
+            'adhoc_slug' => null,
+        ]);
+    }
+
+    /**
+     * Set data for an adhoc record
+     */
+    public function adhoc(): static
+    {
+        return $this->state(fn (array $attributes) => [
+            'presentation_id' => null,
+            'adhoc_slug' => fake()->slug(),
+        ]);
+    }
+
+    /**
+     * Set data for a presentation record
+     */
+    public function presentation(): static
+    {
+        return $this->state(fn (array $attributes) => [
+            'presentation_id' => Presentation::factory(),
+        ]);
+    }
 }

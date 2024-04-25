@@ -2,9 +2,11 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Spatie\MediaLibrary\HasMedia;
 use Spatie\MediaLibrary\InteractsWithMedia;
@@ -29,6 +31,22 @@ class Presentation extends Model implements HasMedia
     ];
 
     /**
+     * Scope a query to only include presentations for the authenticated user.
+     *
+     * @param  Builder<Presentation>  $query
+     */
+    public function scopeForUser(Builder $query): void
+    {
+        if (auth()->user()->isAdministrator()) {
+            return;
+        }
+
+        $presentationIds = auth()->user()->presentations()->pluck('id');
+
+        $query->whereIn('id', $presentationIds);
+    }
+
+    /**
      * Get the options for generating the slug.
      */
     public function getSlugOptions(): SlugOptions
@@ -37,6 +55,24 @@ class Presentation extends Model implements HasMedia
             ->generateSlugsFrom('title')
             ->doNotGenerateSlugsOnUpdate()
             ->saveSlugsTo('slug');
+    }
+
+    /**
+     * Generate a daily view record for this presentation.
+     */
+    public function addDailyView(): DailyView
+    {
+        return $this->dailyViews()->create();
+    }
+
+    /**
+     * The daily views that this presentation has.
+     *
+     * @return HasMany<DailyView>
+     */
+    public function dailyViews(): HasMany
+    {
+        return $this->hasMany(DailyView::class);
     }
 
     /**

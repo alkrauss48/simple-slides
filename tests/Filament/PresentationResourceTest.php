@@ -15,10 +15,7 @@ use Illuminate\Support\Facades\Queue;
 use function Pest\Livewire\livewire;
 
 beforeEach(function () {
-    $this->user = User::factory()->create([
-        'is_admin' => true,
-    ]);
-
+    $this->user = User::factory()->admin()->create();
 });
 
 describe('admin users', function () {
@@ -49,6 +46,10 @@ describe('admin users', function () {
 
     it('can create a record', function () {
         $newData = Model::factory()->make();
+
+        // The factory generates a random historical created_at, but we don't
+        // want that when creating a test record in Filament.
+        unset($newData['created_at']);
 
         livewire(CreateResource::class)
             ->fillForm([
@@ -230,6 +231,10 @@ describe('non-admin users', function () {
 
     it('can create a record', function () {
         $newData = Model::factory()->make();
+
+        // The factory generates a random historical created_at, but we don't
+        // want that when creating a test record in Filament.
+        unset($newData['created_at']);
 
         livewire(CreateResource::class)
             ->fillForm([

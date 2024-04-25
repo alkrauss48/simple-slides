@@ -39,25 +39,23 @@ class DailyView extends Model
      *
      * @param  Builder<DailyView>  $query
      */
-    public function scopeStats(Builder $query, ?string $presentationId): void
+    public function scopeStats(Builder $query, ?string $presentationId = null): void
     {
-        if (auth()->user()->isAdministrator()) {
-            if ($presentationId === PresentationFilter::INSTRUCTIONS->value) {
-                $query
-                    ->whereNull('presentation_id')
-                    ->whereNull('adhoc_slug');
+        if ($presentationId === PresentationFilter::INSTRUCTIONS->value) {
+            $query
+                ->whereNull('presentation_id')
+                ->whereNull('adhoc_slug');
 
-                return;
-            }
+            return;
+        }
 
-            if ($presentationId === PresentationFilter::ADHOC->value) {
-                $query
-                    ->whereNull('presentation_id')
-                    ->whereNotNull('adhoc_slug')
-                    ->get();
+        if ($presentationId === PresentationFilter::ADHOC->value) {
+            $query
+                ->whereNull('presentation_id')
+                ->whereNotNull('adhoc_slug')
+                ->get();
 
-                return;
-            }
+            return;
         }
 
         if (is_null($presentationId)) {

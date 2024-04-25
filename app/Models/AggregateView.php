@@ -58,23 +58,21 @@ class AggregateView extends Model
             $query->whereDate('created_at', '<=', $endDate);
         }
 
-        if (auth()->user()->isAdministrator()) {
-            if ($presentationId === PresentationFilter::INSTRUCTIONS->value) {
-                $query
-                    ->whereNull('presentation_id')
-                    ->whereNull('adhoc_slug');
+        if ($presentationId === PresentationFilter::INSTRUCTIONS->value) {
+            $query
+                ->whereNull('presentation_id')
+                ->whereNull('adhoc_slug');
 
-                return;
-            }
+            return;
+        }
 
-            if ($presentationId === PresentationFilter::ADHOC->value) {
-                $query
-                    ->whereNull('presentation_id')
-                    ->whereNotNull('adhoc_slug')
-                    ->get();
+        if ($presentationId === PresentationFilter::ADHOC->value) {
+            $query
+                ->whereNull('presentation_id')
+                ->whereNotNull('adhoc_slug')
+                ->get();
 
-                return;
-            }
+            return;
         }
 
         if (is_null($presentationId)) {

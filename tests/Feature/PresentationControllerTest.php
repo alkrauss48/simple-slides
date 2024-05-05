@@ -7,12 +7,6 @@ use Inertia\Testing\AssertableInertia as Assert;
 
 beforeEach(function () {
     $this->user = User::factory()->create();
-    $this->guest = User::factory()->create();
-
-    $this->draftPresentation = Presentation::factory()->create([
-        'is_published' => false,
-        'user_id' => $this->user->id,
-    ]);
 });
 
 describe('published presentation', function () {
@@ -32,11 +26,52 @@ describe('published presentation', function () {
         $response->assertStatus(200);
     });
 
-    test('show action generates daily view', function () {
+    test('show action generates daily view for unauthenticated user', function () {
         $response = $this->get(route('presentations.show', [
             'user' => $this->user->username,
             'slug' => $this->publishedPresentation->slug,
         ]));
+
+        $this->assertDatabaseHas(DailyView::class, [
+            'presentation_id' => $this->publishedPresentation->id,
+        ]);
+    });
+
+    test('show action does not generate daily view for admin user', function () {
+        $adminUser = User::factory()->create(['is_admin' => true]);
+
+        $response = $this
+            ->actingAs($adminUser)
+            ->get(route('presentations.show', [
+                'user' => $this->user->username,
+                'slug' => $this->publishedPresentation->slug,
+            ]));
+
+        $this->assertDatabaseMissing(DailyView::class, [
+            'presentation_id' => $this->publishedPresentation->id,
+        ]);
+    });
+
+    test('show action does not generate daily view for creating user', function () {
+        $response = $this
+            ->actingAs($this->user)
+            ->get(route('presentations.show', [
+                'user' => $this->user->username,
+                'slug' => $this->publishedPresentation->slug,
+            ]));
+
+        $this->assertDatabaseMissing(DailyView::class, [
+            'presentation_id' => $this->publishedPresentation->id,
+        ]);
+    });
+
+    test('show action does generate daily view for non-creating user', function () {
+        $response = $this
+            ->actingAs(User::factory()->create())
+            ->get(route('presentations.show', [
+                'user' => $this->user->username,
+                'slug' => $this->publishedPresentation->slug,
+            ]));
 
         $this->assertDatabaseHas(DailyView::class, [
             'presentation_id' => $this->publishedPresentation->id,
@@ -71,6 +106,13 @@ describe('published presentation', function () {
 });
 
 describe('draft presentation', function () {
+    beforeEach(function () {
+        $this->draftPresentation = Presentation::factory()->create([
+            'is_published' => false,
+            'user_id' => $this->user->id,
+        ]);
+    });
+
     test('show screen is not rendered for unauthenticated user', function () {
         $response = $this->get(route('presentations.show', [
             'user' => $this->user->username,
@@ -104,7 +146,7 @@ describe('draft presentation', function () {
 
     test('show screen is not rendered for non-author', function () {
         $response = $this
-            ->actingAs($this->guest)
+            ->actingAs(User::factory()->create())
             ->get(route('presentations.show', [
                 'user' => $this->user->username,
                 'slug' => $this->draftPresentation->slug,

@@ -82,7 +82,7 @@ class TopViews extends BaseWidget
             ->emptyStateDescription(null)
             ->emptyStateActions([
                 Action::make('create')
-                    ->label('Create Presentation')
+                    ->label('New Presentation')
                     ->url(route('filament.admin.resources.presentations.create'))
                     ->icon('heroicon-m-plus')
                     ->button(),

@@ -12,6 +12,7 @@ use Filament\Forms\Form;
 use Filament\Forms\Get;
 use Filament\Pages\Dashboard as BaseDashboard;
 use Filament\Pages\Dashboard\Concerns\HasFiltersForm;
+use Illuminate\Contracts\View\View;
 
 class Dashboard extends BaseDashboard
 {
@@ -20,6 +21,11 @@ class Dashboard extends BaseDashboard
     public function getColumns(): int|string|array
     {
         return 2;
+    }
+
+    public function getFooter(): ?View
+    {
+        return view('filament.dashboard.footer');
     }
 
     protected function getHeaderActions(): array

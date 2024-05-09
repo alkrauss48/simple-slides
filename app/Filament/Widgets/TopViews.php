@@ -78,8 +78,8 @@ class TopViews extends BaseWidget
                         'record' => $record->presentation,
                     ])
             )
-            ->emptyStateHeading('No presentations found')
-            ->emptyStateDescription(null)
+            ->emptyStateHeading('None of your presentations were viewed during this time.')
+            ->emptyStateDescription('Stay Positive. Maybe that means it\'s time to create your next one!')
             ->emptyStateActions([
                 Action::make('create')
                     ->label('New Presentation')

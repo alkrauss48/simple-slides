@@ -57,10 +57,9 @@ class AggregateDailyViews implements ShouldQueue
             })->values()
             ->toArray();
 
-        AggregateView::insert([
-            ...$presentationData,
-            ...$adhocData,
-        ]);
+        // Note: Inserting these separately, since the columns are different.
+        AggregateView::insert($presentationData);
+        AggregateView::insert($adhocData);
 
         DailyView::truncate();
     }

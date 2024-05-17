@@ -42,7 +42,7 @@ class Dashboard extends BaseDashboard
                     $this->filters = [
                         'presentation_id' => null,
                         'start_date' => now()->subDays(8)->toDateString(),
-                        'end_date' => now()->subDay()->toDateString(),
+                        'end_date' => now()->toDateString(),
                     ];
                 }),
         ];
@@ -88,16 +88,16 @@ class Dashboard extends BaseDashboard
                         DatePicker::make('start_date')
                             ->label('Start Date')
                             ->native(false)
-                            ->maxDate(fn (Get $get): ?string => $get('end_date') ?? now()->subDay())
+                            ->maxDate(fn (Get $get): ?string => $get('end_date') ?? now())
                             ->hintIcon('heroicon-o-information-circle', tooltip: 'Only affects "Date Range" stats')
                             ->default(now()->subDays(8)),
                         DatePicker::make('end_date')
                             ->label('End Date')
                             ->native(false)
                             ->minDate(fn (Get $get): ?string => $get('start_date'))
-                            ->default(now()->subDay())
+                            ->default(now())
                             ->hintIcon('heroicon-o-information-circle', tooltip: 'Only affects "Date Range" stats')
-                            ->maxDate(now()->subDay()),
+                            ->maxDate(now()),
                     ])
                     ->columns(3),
             ]);

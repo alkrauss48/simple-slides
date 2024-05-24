@@ -12,6 +12,7 @@ import slideStore from '@/store/slideStore.ts'
 
 const props = defineProps<{
     index?: number,
+    loop?: number,
     progress?: ProgressType,
     slides?: string
     content?: string
@@ -19,6 +20,7 @@ const props = defineProps<{
 
 const processQueryParams = (): void =>  {
     slideStore.index = props.index ?? 0;
+    slideStore.loop = props.loop ?? 0;
     slideStore.progress = props.progress ?? ProgressType.Bar;
 };
 

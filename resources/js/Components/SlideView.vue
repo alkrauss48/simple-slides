@@ -11,13 +11,14 @@ import Keys from '@/constants/keys.ts';
 import dataStore from '@/store/dataStore.ts'
 import slideStore from '@/store/slideStore.ts'
 
-const content = computed(() => {
-    return dataStore.data[slideStore.index];
-});
-
+let loopInterval: null | ReturnType<typeof setInterval> = null;
 let fontLoadInterval: null | ReturnType<typeof setInterval> = null;
 const fontLoaded = ref(false);
 const FONT = '16px Montserrat';
+
+const content = computed(() => {
+    return dataStore.data[slideStore.index];
+});
 
 const showProgressLabel = computed<boolean>(() => {
     return slideStore.progress === ProgressType.Label;
@@ -33,6 +34,14 @@ const buildQueryParams = () : QueryParams => {
     }
 
     return query;
+};
+
+const checkAndClearLoopInterval = () : void => {
+    if (!loopInterval) {
+        return;
+    }
+
+    clearInterval(Number(loopInterval));
 };
 
 const incrementContent = (count: number) : void => {
@@ -56,6 +65,10 @@ const bindKeyDown = (event: KeyboardEvent): void => {
         if (document.activeElement === next || document.activeElement === previous) {
             return;
         }
+    }
+
+    if (Keys.ALL_APP_KEYS.includes(key)) {
+        checkAndClearLoopInterval();
     }
 
     if (Keys.INCREMENTORS.includes(key)) {
@@ -86,8 +99,25 @@ onMounted(() => {
         fontLoaded.value = true;
         clearInterval(Number(fontLoadInterval));
     }, 50);
+
+    if (!slideStore.canLoop()) {
+        return;
+    }
+
+    loopInterval = setInterval(() => {
+        if (slideStore.isEnd()) {
+            incrementContent(-1 * dataStore.data.length);
+            return;
+        }
+
+        incrementContent(1)
+    }, slideStore.loop * 1000);
 });
-onUnmounted(() => window.removeEventListener('keydown',  bindKeyDown));
+
+onUnmounted(() => {
+    window.removeEventListener('keydown',  bindKeyDown);
+    checkAndClearLoopInterval();
+});
 </script>
 
 <template>

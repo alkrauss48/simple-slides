@@ -5,6 +5,7 @@ import dataStore from './dataStore.ts'
 
 const slideStore = reactive({
   index: 0,
+  loop: 0,
   progress: ProgressType.Bar,
 
   getNewIndex(count: number) : number {
@@ -27,6 +28,18 @@ const slideStore = reactive({
     }
 
     slideStore.index = newIndex;
+  },
+
+  isEnd() : boolean {
+      return this.index === dataStore.data.length - 1;
+  },
+
+  canLoop() : boolean {
+      if (this.loop < 2) {
+          return false;
+      }
+
+      return true;
   },
 
   reset() {

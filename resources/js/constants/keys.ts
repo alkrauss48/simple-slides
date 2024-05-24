@@ -34,6 +34,15 @@ export const LARGE_DECREMENTORS = [
   'B',
 ];
 
+export const ALL_APP_KEYS = [
+    ...INCREMENTORS,
+    ...DECREMENTORS,
+    ...LARGE_INCREMENTORS,
+    ...LARGE_DECREMENTORS,
+    DOLLAR_SIGN,
+    ZERO,
+];
+
 export default {
   ENTER,
   SPACE,
@@ -43,4 +52,5 @@ export default {
   DECREMENTORS,
   LARGE_INCREMENTORS,
   LARGE_DECREMENTORS,
+  ALL_APP_KEYS
 };

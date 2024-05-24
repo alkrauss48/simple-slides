@@ -32,11 +32,13 @@ class HandleInertiaRequests extends Middleware
     {
         $index = intval(request()->input('index'));
         $progress = request()->input('progress');
+        $loop = intval(request()->input('loop'));
 
         return [
             ...parent::share($request),
             'index' => $index,
             'progress' => $progress,
+            'loop' => $loop,
             'auth' => [
                 'user' => $request->user(),
             ],

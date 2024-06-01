@@ -51,3 +51,17 @@ test('loopInterval is not cleared on invalid key press', async () => {
 
     expect(spy).toHaveBeenCalledTimes(0);
 });
+
+test('slide increments with loop timer', async () => {
+    vi.useFakeTimers();
+
+    const wrapper = mountWrapper();
+
+    expect(slideStore.index).toBe(1);
+
+    vi
+        .advanceTimersToNextTimer() // Font load interval
+        .advanceTimersToNextTimer();
+
+    expect(slideStore.index).toBe(2);
+});

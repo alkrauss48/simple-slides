@@ -10,9 +10,7 @@ class AdhocSlidesController extends Controller
 {
     public function index(): Response
     {
-        dispatch(function () {
-            DailyView::createForAdhocPresentation();
-        })->afterResponse();
+        $this->dispatchDailyView();
 
         return Inertia::render('Slides');
     }
@@ -23,9 +21,7 @@ class AdhocSlidesController extends Controller
             abort(404);
         }
 
-        dispatch(function () use ($slides) {
-            DailyView::createForAdhocPresentation(slug: $slides);
-        })->afterResponse();
+        $this->dispatchDailyView(slug: $slides);
 
         return Inertia::render('Slides', [
             'slides' => $slides,
@@ -44,5 +40,16 @@ class AdhocSlidesController extends Controller
         }
 
         return false;
+    }
+
+    private function dispatchDailyView(?string $slug = null): void
+    {
+        if (auth()->user()?->isAdministrator() ?? false) {
+            return;
+        }
+
+        dispatch(
+            fn () => DailyView::createForAdhocPresentation(slug: $slug)
+        )->afterResponse();
     }
 }

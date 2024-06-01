@@ -57,10 +57,13 @@ class GenerateThumbnail implements ShouldQueue
         $this->presentation->clearMediaCollection('thumbnail');
         $this->presentation->addMedia($tempPath)->toMediaCollection('thumbnail');
 
-        Notification::make()
-            ->title('Thumbnail successfully generated. Refresh your page to view the new thumbnail.')
-            ->broadcast($this->user)
-            ->success()
-            ->send();
+        // Note: If in the future we implement a websocket server,
+        // then we can implement a completed notification like this.
+        //
+        // Notification::make()
+        //     ->title('Thumbnail successfully generated. Refresh your page to view the new thumbnail.')
+        //     ->broadcast($this->user)
+        //     ->success()
+        //     ->send();
     }
 }

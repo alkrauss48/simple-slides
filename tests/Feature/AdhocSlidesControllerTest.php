@@ -1,6 +1,7 @@
 <?php
 
 use App\Models\DailyView;
+use App\Models\User;
 
 describe('Index', function () {
     test('adhoc slides index screen can be rendered', function () {
@@ -10,9 +11,21 @@ describe('Index', function () {
     });
 
     test('adhoc slides index screen generate daily view', function () {
-        $response = $this->get(route('home'));
+        $this->get(route('home'));
 
         $this->assertDatabaseHas(DailyView::class, [
+            'adhoc_slug' => null,
+        ]);
+    });
+
+    test('adhoc slides index screen does not generate daily view for admin user', function () {
+        $admin = User::factory()->admin()->create();
+
+        $this
+            ->actingAs($admin)
+            ->get(route('home'));
+
+        $this->assertDatabaseMissing(DailyView::class, [
             'adhoc_slug' => null,
         ]);
     });
@@ -36,7 +49,7 @@ describe('Show', function () {
     });
 
     test('adhoc slides show screen generate daily view', function () {
-        $response = $this->get(route('adhoc-slides.show', [
+        $this->get(route('adhoc-slides.show', [
             'slides' => base64_encode('foo'),
         ]));
 
@@ -46,12 +59,26 @@ describe('Show', function () {
     });
 
     test('adhoc slides show screen will not generate daily view with invalid slug', function () {
-        $response = $this->get(route('adhoc-slides.show', [
+        $this->get(route('adhoc-slides.show', [
             'slides' => 'foo', // Not base64 encoded
         ]));
 
         $this->assertDatabaseMissing(DailyView::class, [
             'adhoc_slug' => 'foo',
+        ]);
+    });
+
+    test('adhoc slides show screen does not generate daily view for admin user', function () {
+        $admin = User::factory()->admin()->create();
+
+        $this
+            ->actingAs($admin)
+            ->get(route('adhoc-slides.show', [
+                'slides' => base64_encode('foo'),
+            ]));
+
+        $this->assertDatabaseMissing(DailyView::class, [
+            'adhoc_slug' => base64_encode('foo'),
         ]);
     });
 });

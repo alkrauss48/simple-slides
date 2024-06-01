@@ -55,13 +55,13 @@ class EditPresentation extends EditRecord
                         return;
                     }
 
-                    // Note: If in the future we implement a websocket server,
-                    // then we can implement an initial notification like this.
-                    //
-                    // Notification::make()
-                    //     ->title('Hang tight for just a sec, your thumbnail is being generated.')
-                    //     ->info()
-                    //     ->send();
+                    Notification::make()
+                        ->title(
+                            'Hang tight, your thumbnail is being generated in '
+                            .'the background. Please refresh your browser in 5-10 '
+                            .'seconds.'
+                        )->info()
+                        ->send();
 
                     GenerateThumbnail::dispatch(
                         presentation: $record,

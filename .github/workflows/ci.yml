@@ -3,7 +3,7 @@ name: ci
 on: push
 
 env:
-  php_version: "8.2"
+  php_version: "8.3"
   node_version: "20.x"
 
 jobs:

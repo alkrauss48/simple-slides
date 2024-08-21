@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Enums\PresentationFilter;
+use Database\Factories\AggregateViewFactory;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -11,6 +12,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class AggregateView extends Model
 {
+    /** @use HasFactory<AggregateViewFactory> */
     use HasFactory;
 
     const UPDATED_AT = null;

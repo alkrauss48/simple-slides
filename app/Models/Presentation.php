@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Database\Factories\PresentationFactory;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -16,7 +17,9 @@ use Spatie\Sluggable\SlugOptions;
 
 class Presentation extends Model implements HasMedia
 {
+    /** @use HasFactory<PresentationFactory> */
     use HasFactory;
+
     use HasSlug;
     use InteractsWithMedia;
     use SoftDeletes;

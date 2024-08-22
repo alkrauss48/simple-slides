@@ -23,6 +23,7 @@ class User extends Authenticatable implements FilamentUser, VerifyEmailContract
 
     /** @use HasFactory<UserFactory> */
     use HasFactory;
+
     use MustVerifyEmail;
     use Notifiable;
     use SoftDeletes;

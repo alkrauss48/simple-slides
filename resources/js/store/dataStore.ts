@@ -19,10 +19,7 @@ const dataStore = reactive({
             .flat()
             .filter((content) => content.trim().length > 0)
             .map((content) => {
-                const parsed = marked.parse(content, {
-                    headerIds: false,
-                    mangle: false,
-                });
+                const parsed = marked.parse(content, { async: false });
 
                 return DOMPurify.sanitize(parsed);
             }).map((content) => content.replace(/\n$/, ''));

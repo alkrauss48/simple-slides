@@ -23,8 +23,7 @@ class GenerateThumbnail implements ShouldQueue
     public function __construct(
         public Presentation $presentation,
         public User $user,
-    ) {
-    }
+    ) {}
 
     /**
      * Execute the job.

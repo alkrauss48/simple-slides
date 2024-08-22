@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Database\Factories\ImageUploadFactory;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -11,7 +12,9 @@ use Spatie\MediaLibrary\InteractsWithMedia;
 
 class ImageUpload extends Model implements HasMedia
 {
+    /** @use HasFactory<ImageUploadFactory> */
     use HasFactory;
+
     use InteractsWithMedia;
 
     /**

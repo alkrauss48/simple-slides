@@ -34,13 +34,13 @@ trait EnumToArray
     /**
      * The array of values for the enum.
      *
-     * @return array<mixed, string>
+     * @return array<int|string, string>
      */
     public static function array(): array
     {
         return collect(self::cases())
-            ->reduce(function ($carry, $row) {
-                $carry[$row->value] = $row->label();
+            ->reduce(function ($carry, $row): array {
+                $carry[$row->value] = strval($row->label());
 
                 return $carry;
             }, []);

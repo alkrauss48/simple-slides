@@ -432,4 +432,42 @@ describe('non-admin users', function () {
 
         Queue::assertNotPushed(GenerateThumbnail::class);
     });
+
+    it('can view the presentation', function () {
+        $record = Model::factory()->create([
+            'user_id' => $this->nonAdmin->id,
+        ]);
+
+        livewire(EditResource::class, [
+            'record' => $record->getRouteKey(),
+        ])
+            ->assertActionHasUrl('view', route('presentations.show', [
+                'user' => $record->user->username,
+                'slug' => $record->slug,
+            ]))
+            ->assertActionShouldOpenUrlInNewTab('view');
+    });
+
+    it('can copy the share url of a published presentation', function () {
+        $record = Model::factory()->create([
+            'user_id' => $this->nonAdmin->id,
+        ]);
+
+        livewire(EditResource::class, [
+            'record' => $record->getRouteKey(),
+        ])
+            ->assertActionEnabled('copyShareUrl');
+    });
+
+    it('can not copy the share url of a draft presentation', function () {
+        $record = Model::factory()->create([
+            'user_id' => $this->nonAdmin->id,
+            'is_published' => false,
+        ]);
+
+        livewire(EditResource::class, [
+            'record' => $record->getRouteKey(),
+        ])
+            ->assertActionDisabled('copyShareUrl');
+    });
 });

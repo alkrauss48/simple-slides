@@ -22,7 +22,8 @@ class EditPresentation extends EditRecord
                 ->label('Save changes')
                 ->action('save'),
             Actions\ActionGroup::make([
-                Actions\Action::make('View')
+                Actions\Action::make('view')
+                    ->label('View')
                     ->color('gray')
                     ->url(fn (Presentation $record): string => route('presentations.show', [
                         'user' => $record->user->username,
@@ -30,7 +31,7 @@ class EditPresentation extends EditRecord
                     ]))
                     ->icon('heroicon-o-arrow-top-right-on-square')
                     ->openUrlInNewTab(),
-                CopyAction::make('Copy Share URL')
+                CopyAction::make('copyShareUrl')
                     ->label('Copy Share URL')
                     ->disabled(fn (Presentation $record) => ! $record->is_published)
                     ->color('gray')

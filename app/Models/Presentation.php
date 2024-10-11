@@ -108,13 +108,9 @@ class Presentation extends Model implements HasMedia
      */
     public function scopeForUser(Builder $query): void
     {
-        if (auth()->user()->isAdministrator()) {
-            return;
-        }
-
-        $presentationIds = auth()->user()->presentations()->pluck('id');
-
-        $query->whereIn('id', $presentationIds);
+        $query->when(!auth()->user()->isAdministrator(), function($qr){
+            $qr->where('user_id',auth()->id());
+        });
     }
 
     /**

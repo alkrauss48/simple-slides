@@ -39,6 +39,7 @@ class PresentationResource extends Resource
                     ->schema([
                         Forms\Components\MarkdownEditor::make('content')
                             ->required()
+                            ->default(Presentation::DEFAULT_MARKDOWN)
                             ->hint(new HtmlString(
                                 '<strong>Tip:</strong> '
                                 .'Slides are separated by 2 newlines.'

@@ -24,6 +24,18 @@ class Presentation extends Model implements HasMedia
     use InteractsWithMedia;
     use SoftDeletes;
 
+    public const DEFAULT_MARKDOWN = <<<'MARKDOWN'
+        # My Presentation
+
+        A Cool Subtitle
+
+        ## Topic 1
+
+        - Point 1
+        - Point 2
+        - [Point 3](https://example.com)
+        MARKDOWN;
+
     /**
      * The attributes that are not mass assignable.
      *
@@ -108,8 +120,8 @@ class Presentation extends Model implements HasMedia
      */
     public function scopeForUser(Builder $query): void
     {
-        $query->when(!auth()->user()->isAdministrator(), function($qr){
-            $qr->where('user_id',auth()->id());
+        $query->when(! auth()->user()->isAdministrator(), function ($qr) {
+            $qr->where('user_id', auth()->id());
         });
     }
 

@@ -74,9 +74,9 @@ class DailyView extends Model
      */
     public function scopeForUser(Builder $query): void
     {
-        $query->when(!auth()->user()->isAdministrator(), function($qr){
-            $qr->whereHas('presentation', function($qrPresn){
-                $qrPresn->where('user_id',auth()->id());
+        $query->when(! auth()->user()->isAdministrator(), function ($qr) {
+            $qr->whereHas('presentation', function ($qrPresn) {
+                $qrPresn->where('user_id', auth()->id());
             });
         });
     }

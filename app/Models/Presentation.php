@@ -24,7 +24,7 @@ class Presentation extends Model implements HasMedia
     use InteractsWithMedia;
     use SoftDeletes;
 
-    public const DEFAULT_MARKDOWN = <<<'MARKDOWN'
+    public const DEFAULT_MARKDOWN = <<<MARKDOWN
         # My Presentation
 
         A Cool Subtitle

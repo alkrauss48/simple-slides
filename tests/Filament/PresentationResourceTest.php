@@ -451,6 +451,7 @@ describe('non-admin users', function () {
     it('can copy the share url of a published presentation', function () {
         $record = Model::factory()->create([
             'user_id' => $this->nonAdmin->id,
+            'is_published' => true,
         ]);
 
         livewire(EditResource::class, [

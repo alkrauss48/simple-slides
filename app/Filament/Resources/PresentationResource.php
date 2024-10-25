@@ -155,14 +155,23 @@ class PresentationResource extends Resource
                 Tables\Filters\TrashedFilter::make(),
             ])
             ->actions([
-                Tables\Actions\Action::make('View')
-                    ->url(fn (Presentation $record): string => route('presentations.show', [
-                        'user' => $record->user->username,
-                        'slug' => $record->slug,
-                    ]))
-                    ->icon('heroicon-o-arrow-top-right-on-square')
-                    ->openUrlInNewTab(),
-                Tables\Actions\EditAction::make(),
+                Tables\Actions\ActionGroup::make([
+                    Tables\Actions\Action::make('View')
+                        ->url(fn (Presentation $record): string => route('presentations.show', [
+                            'user' => $record->user->username,
+                            'slug' => $record->slug,
+                        ]))
+                        ->icon('heroicon-o-arrow-top-right-on-square')
+                        ->openUrlInNewTab(),
+                    Tables\Actions\EditAction::make(),
+                    Tables\Actions\ReplicateAction::make()
+                        ->beforeReplicaSaved(function (Presentation $replica, Presentation $record): void {
+                            $replica->title = 'Copy of '.$record->title;
+                            $replica->slug = 'copy-of-'.$record->slug;
+                            $replica->is_published = false;
+                        })
+                        ->successNotificationTitle('Presentation replicated'),
+                ]),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([

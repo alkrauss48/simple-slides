@@ -471,4 +471,19 @@ describe('non-admin users', function () {
         ])
             ->assertActionDisabled('copyShareUrl');
     });
+
+    // Replicate Records
+
+    it('can replicate a record', function () {
+        $record = Model::factory()
+            ->for($this->nonAdmin)
+            ->create();
+
+        expect(Model::count())->toBe(1);
+
+        livewire(ListResource::class)
+            ->callTableAction(\Filament\Actions\ReplicateAction::class, $record);
+
+        expect(Model::count())->toBe(2);
+    });
 });

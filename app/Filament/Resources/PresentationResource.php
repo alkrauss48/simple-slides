@@ -124,6 +124,7 @@ class PresentationResource extends Resource
     public static function table(Table $table): Table
     {
         return $table
+            ->defaultSort('updated_at', 'desc')
             ->columns([
                 SpatieMediaLibraryImageColumn::make('thumbnail')->collection('thumbnail'),
                 Tables\Columns\TextColumn::make('title')
@@ -131,6 +132,7 @@ class PresentationResource extends Resource
                     ->searchable(),
                 Tables\Columns\TextColumn::make('slug')
                     ->sortable()
+                    ->toggleable()
                     ->searchable(),
                 Tables\Columns\ToggleColumn::make('is_published')
                     ->label('Published')
@@ -139,15 +141,15 @@ class PresentationResource extends Resource
                     ->hidden(fn () => ! auth()->user()->isAdministrator())
                     ->sortable(),
                 Tables\Columns\TextColumn::make('created_at')
-                    ->dateTime()
+                    ->date()
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
                 Tables\Columns\TextColumn::make('updated_at')
-                    ->dateTime()
+                    ->date()
                     ->sortable()
-                    ->toggleable(isToggledHiddenByDefault: true),
+                    ->toggleable(),
                 Tables\Columns\TextColumn::make('deleted_at')
-                    ->dateTime()
+                    ->date()
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
             ])

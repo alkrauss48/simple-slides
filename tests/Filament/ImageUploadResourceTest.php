@@ -315,4 +315,46 @@ describe('non-admin users', function () {
 
         $this->assertModelMissing($record);
     });
+
+    // Actions
+
+    it('has copyImageUrl action on list page', function () {
+        $record = Model::factory()
+            ->for($this->nonAdmin)
+            ->create();
+
+        livewire(ListResource::class)
+            ->assertTableActionVisible('copyImageUrl');
+    });
+
+    it('has copyImageUrl action on edit page', function () {
+        $record = Model::factory()
+            ->for($this->nonAdmin)
+            ->create();
+
+        livewire(EditResource::class, [
+            'record' => $record->getRouteKey(),
+        ])
+            ->assertActionExists('copyImageUrl');
+    });
+
+    it('has copyMarkdownUrl action on list page', function () {
+        $record = Model::factory()
+            ->for($this->nonAdmin)
+            ->create();
+
+        livewire(ListResource::class)
+            ->assertTableActionVisible('copyMarkdownUrl');
+    });
+
+    it('has copyMarkdownUrl action on edit page', function () {
+        $record = Model::factory()
+            ->for($this->nonAdmin)
+            ->create();
+
+        livewire(EditResource::class, [
+            'record' => $record->getRouteKey(),
+        ])
+            ->assertActionExists('copyMarkdownUrl');
+    });
 });

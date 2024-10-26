@@ -16,6 +16,7 @@ use Filament\Tables;
 use Filament\Tables\Columns\SpatieMediaLibraryImageColumn;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
+use Webbingbrasil\FilamentCopyActions\Tables\Actions\CopyAction;
 
 class ImageUploadResource extends Resource
 {
@@ -80,36 +81,40 @@ class ImageUploadResource extends Resource
     public static function table(Table $table): Table
     {
         return $table
+            ->defaultSort('updated_at', 'desc')
             ->columns([
                 Tables\Columns\TextColumn::make('title')
                     ->searchable(),
-                SpatieMediaLibraryImageColumn::make('image')->collection('image'),
-                Tables\Columns\TextColumn::make('foo')
-                    ->label('Markdown URL')
-                    ->badge()
-                    ->getStateUsing(function (ImageUpload $record) {
-                        return 'Copy Markdown URL';
-                    })
-                    ->copyable()
-                    ->copyableState(fn (ImageUpload $record): string => $record->markdownUrl),
+                SpatieMediaLibraryImageColumn::make('image')
+                    ->collection('image'),
                 Tables\Columns\TextColumn::make('user.name')
                     ->numeric()
                     ->hidden(fn () => ! auth()->user()->isAdministrator())
                     ->sortable(),
                 Tables\Columns\TextColumn::make('created_at')
-                    ->dateTime()
+                    ->label('Created At')
+                    ->date()
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
                 Tables\Columns\TextColumn::make('updated_at')
-                    ->dateTime()
+                    ->label('Updated At')
+                    ->date()
                     ->sortable()
-                    ->toggleable(isToggledHiddenByDefault: true),
+                    ->toggleable(),
             ])
             ->filters([
                 //
             ])
             ->actions([
-                Tables\Actions\EditAction::make(),
+                Tables\Actions\ActionGroup::make([
+                    Tables\Actions\EditAction::make(),
+                    CopyAction::make('copyImageUrl')
+                        ->label('Copy Image URL')
+                        ->copyable(fn (ImageUpload $record): string => $record->getFirstMediaUrl('image')),
+                    CopyAction::make('copyMarkdownUrl')
+                        ->label('Copy Markdown URL')
+                        ->copyable(fn (ImageUpload $record): string => $record->markdownUrl),
+                ]),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([

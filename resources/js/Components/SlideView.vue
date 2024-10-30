@@ -126,6 +126,8 @@ onUnmounted(() => {
         <SlideArrows
             @next="incrementContent(1)"
             @previous="incrementContent(-1)"
+            :is-first-slide="slideStore.isStart()"
+            :is-last-slide="slideStore.isEnd()"
             />
         <ProgressLabel v-if="showProgressLabel" />
         <ProgressBar v-else />

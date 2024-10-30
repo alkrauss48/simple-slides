@@ -47,6 +47,20 @@ test('returns false for isEnd if slide index is not at the end', async () => {
   expect(slideStore.isEnd()).toBe(false);
 });
 
+test('returns true for isStart if slide index is at the start', async () => {
+  dataStore.data = ['a', 'b', 'c'];
+  slideStore.index = 0;
+
+  expect(slideStore.isStart()).toBe(true);
+});
+
+test('returns false for isStart if slide index is not at the start', async () => {
+  dataStore.data = ['a', 'b', 'c'];
+  slideStore.index = 1;
+
+  expect(slideStore.isStart()).toBe(false);
+});
+
 test('returns true for canLoop if loop value is valid', async () => {
   slideStore.loop = 5;
 

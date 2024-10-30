@@ -30,6 +30,10 @@ const slideStore = reactive({
     slideStore.index = newIndex;
   },
 
+  isStart() : boolean {
+      return this.index === 0;
+  },
+
   isEnd() : boolean {
       return this.index === dataStore.data.length - 1;
   },

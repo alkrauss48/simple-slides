@@ -1,9 +1,18 @@
-import { shallowMount } from '@vue/test-utils'
+import { shallowMount, VueWrapper } from '@vue/test-utils'
 
 import SlideArrows from '@/Components/SlideArrows.vue'
 
+const mountWrapper = () : VueWrapper<any> => {
+  return shallowMount(SlideArrows, {
+    props: {
+      isFirstSlide: false,
+      isLastSlide: false,
+    }
+  });
+};
+
 test('emits "next" event', async () => {
-  const wrapper = shallowMount(SlideArrows);
+  const wrapper = mountWrapper();
 
   wrapper.vm.$emit('next');
 
@@ -18,7 +27,7 @@ test('emits "next" event', async () => {
 });
 
 test('emits "previous" event', async () => {
-  const wrapper = shallowMount(SlideArrows);
+  const wrapper = mountWrapper();
 
   wrapper.vm.$emit('previous');
 
@@ -33,19 +42,63 @@ test('emits "previous" event', async () => {
 });
 
 test('emits next when next button is clicked', () => {
-  const wrapper = shallowMount(SlideArrows);
+  const wrapper = mountWrapper();
 
   wrapper.find('#next').trigger('click')
 
   expect(wrapper.emitted()).toHaveProperty('next')
   expect(wrapper.emitted()).not.toHaveProperty('previous')
-})
+});
 
 test('emits previous when previous button is clicked', () => {
-  const wrapper = shallowMount(SlideArrows);
+  const wrapper = mountWrapper();
 
   wrapper.find('#previous').trigger('click')
 
   expect(wrapper.emitted()).toHaveProperty('previous')
   expect(wrapper.emitted()).not.toHaveProperty('next')
-})
+});
+
+test('previous button is not visible if isFirstSlide prop is true', () => {
+  const wrapper = shallowMount(SlideArrows, {
+    props: {
+      isFirstSlide: true,
+      isLastSlide: false,
+    }
+  });
+
+  expect(wrapper.find('#previous').exists()).toBe(false)
+});
+
+test('previous button is visible if isFirstSlide prop is false', () => {
+  const wrapper = shallowMount(SlideArrows, {
+    props: {
+      isFirstSlide: false,
+      isLastSlide: false,
+    }
+  });
+
+  expect(wrapper.find('#previous').exists()).toBe(true)
+});
+
+test('next button is not visible if isLastSlide prop is true', () => {
+  const wrapper = shallowMount(SlideArrows, {
+    props: {
+      isFirstSlide: false,
+      isLastSlide: true,
+    }
+  });
+
+  expect(wrapper.find('#next').exists()).toBe(false)
+});
+
+test('next button is visible if isLastSlide prop is false', () => {
+  const wrapper = shallowMount(SlideArrows, {
+    props: {
+      isFirstSlide: false,
+      isLastSlide: false,
+    }
+  });
+
+  expect(wrapper.find('#next').exists()).toBe(true)
+});

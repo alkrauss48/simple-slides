@@ -1,5 +1,10 @@
 <script setup lang="ts">
 
+defineProps<{
+  isFirstSlide: boolean,
+  isLastSlide: boolean,
+}>();
+
 const emit = defineEmits<{
   (e: 'next'): void
   (e: 'previous'): void
@@ -10,6 +15,7 @@ const emit = defineEmits<{
 <template>
   <section>
     <button
+      v-if="!isFirstSlide"
       id="previous"
       type="button"
       @click="emit('previous')"
@@ -19,6 +25,7 @@ const emit = defineEmits<{
         border-r-[30px] border-r-gray-300/50 hover:border-r-gray-300"
     ></button>
     <button
+      v-if="!isLastSlide"
       id="next"
       type="button"
       @click="emit('next')"

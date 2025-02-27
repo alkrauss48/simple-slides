@@ -25,9 +25,11 @@ const showProgressLabel = computed<boolean>(() => {
 });
 
 const buildQueryParams = () : QueryParams => {
-    const query: QueryParams = {
-        index: slideStore.index,
-    };
+    const query: QueryParams = { };
+
+    if (slideStore.index > 0) {
+        query.index = slideStore.index;
+    }
 
     if (showProgressLabel.value) {
         query.progress = ProgressType.Label;
@@ -51,7 +53,13 @@ const incrementContent = (count: number) : void => {
     // const query = buildQueryParams();
 
     const url = new URL(location.toString());
-    url.searchParams.set("index", slideStore.index.toString());
+
+    if (slideStore.index > 0) {
+        url.searchParams.set('index', slideStore.index.toString());
+    } else {
+        url.searchParams.delete('index');
+    }
+
     history.replaceState({}, "", url);
 };
 

@@ -14,8 +14,9 @@ const props = defineProps<{
     index?: number,
     loop?: number,
     progress?: ProgressType,
-    slides?: string
-    content?: string
+    slides?: string,
+    content?: string,
+    delimiter?: string,
 }>();
 
 const processQueryParams = (): void =>  {
@@ -37,11 +38,11 @@ const getSlidesUrl = (): string => {
     return url;
 };
 
-onMounted(async () => {
+onMounted(() => {
     processQueryParams();
 
     if (props.content) {
-        dataStore.processData(props.content);
+        dataStore.processData(props.content, props.delimiter);
         return;
     }
 

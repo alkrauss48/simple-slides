@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources;
 
+use App\Enums\SlideDelimiter;
 use App\Filament\Resources\PresentationResource\Pages;
 use App\Models\Presentation;
 use App\Models\User;
@@ -40,9 +41,10 @@ class PresentationResource extends Resource
                         Forms\Components\MarkdownEditor::make('content')
                             ->required()
                             ->default(Presentation::DEFAULT_MARKDOWN)
-                            ->hint(new HtmlString(
+                            ->hint(fn (Get $get) => new HtmlString(
                                 '<strong>Tip:</strong> '
-                                .'Slides are separated by 2 newlines.'
+                                .'Slides are separated by '
+                                .SlideDelimiter::tryFrom($get('slide_delimiter'))?->helperText()
                             ))->helperText(new HtmlString(
                                 'Want an example? See the site\'s '
                                 .'<u><a target="_blank" href="/instructions.md">instructions</a></u>.'
@@ -91,6 +93,17 @@ class PresentationResource extends Resource
                                         .'Limit is 160 characters.'
                                     )->placeholder('i.e. In this talk by Abraham Lincoln, we explore yada yada...')
                                     ->maxLength(160),
+
+                                Forms\Components\Select::make('slide_delimiter')
+                                    ->label('Slide Delimiter')
+                                    ->required()
+                                    ->live()
+                                    ->hintIcon('heroicon-o-information-circle',
+                                        tooltip: SlideDelimiter::TOOLTIP
+                                    )
+                                    ->selectablePlaceholder(false)
+                                    ->default(SlideDelimiter::DOUBLE_NEW_LINE->value)
+                                    ->options(SlideDelimiter::array()),
                                 SpatieMediaLibraryFileUpload::make('thumbnail')
                                     ->collection('thumbnail')
                                     ->image()

@@ -87,6 +87,7 @@ describe('published presentation', function () {
         $response->assertInertia(fn (Assert $page) => $page
             ->component('Slides')
             ->where('content', $this->publishedPresentation->content)
+            ->where('delimiter', $this->publishedPresentation->slide_delimiter)
             ->has('meta', fn (Assert $page) => $page
                 ->where('title', $this->publishedPresentation->title)
                 ->where('description', $this->publishedPresentation->description)

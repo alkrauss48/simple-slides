@@ -2,6 +2,7 @@
 
 namespace Database\Factories;
 
+use App\Enums\SlideDelimiter;
 use App\Models\AggregateView;
 use App\Models\DailyView;
 use App\Models\Presentation;
@@ -77,6 +78,7 @@ class PresentationFactory extends Factory
             'is_published' => fake()->boolean(),
             'content' => "# My Presentation\n\n**Slide 1**\n\n*Slide 2*\n\nSlide 3",
             'user_id' => User::factory(),
+            'slide_delimiter' => SlideDelimiter::DOUBLE_NEW_LINE->value,
             'created_at' => now()->subDays(rand(0, 21)), // Sometime over the last 3 weeks
         ];
     }

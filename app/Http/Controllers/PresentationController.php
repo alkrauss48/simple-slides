@@ -27,6 +27,7 @@ class PresentationController extends Controller
 
         return Inertia::render('Slides', [
             'content' => $presentation->content,
+            'delimiter' => $presentation->slide_delimiter,
             'meta' => [
                 'title' => $presentation->title,
                 'description' => $presentation->description,

@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Enums\SlideDelimiter;
 use Database\Factories\PresentationFactory;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Casts\Attribute;
@@ -45,6 +46,18 @@ class Presentation extends Model implements HasMedia
         'id',
         'deleted_at',
     ];
+
+    /**
+     * Get the attributes that should be cast.
+     *
+     * @return array<string, string>
+     */
+    protected function casts(): array
+    {
+        return [
+            'slide_delimiter' => SlideDelimiter::class,
+        ];
+    }
 
     /**
      * Determine if this presentation be viewed, based on published status and

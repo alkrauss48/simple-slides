@@ -1,7 +1,7 @@
 import ProgressType from '../enums/progressType.ts';
 
 type QueryParams = {
-  index: number,
+  index?: number,
   progress?: ProgressType,
 }
 

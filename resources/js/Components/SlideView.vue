@@ -94,19 +94,22 @@ const bindKeyDown = (event: KeyboardEvent): void => {
     }
 };
 
+async function loadAllFonts() {
+    const fontFaces = [...document.fonts];
+
+    await Promise.all(fontFaces.map(font =>
+        document.fonts.load(`${font.style} 1em ${font.family}`)
+    ));
+}
+
 onMounted(() => {
     window.addEventListener('keydown',  bindKeyDown)
 
-    // This delay is to allow the font to download prior to textFit being run on the
-    // SlideContent component. Otherwise, the text won't be properly sized.
-    fontLoadInterval = setInterval(() => {
-        if (document.fonts && !document.fonts.check(FONT)) {
-            return;
-        }
-
+    // Load all the fonts before the content appears. Otherwise, the text might
+    // not be properly sized when changing slides.
+    loadAllFonts().then(() => {
         fontLoaded.value = true;
-        clearInterval(Number(fontLoadInterval));
-    }, 50);
+    });
 
     if (!slideStore.canLoop()) {
         return;

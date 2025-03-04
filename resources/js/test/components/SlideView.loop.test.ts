@@ -59,9 +59,7 @@ test('slide increments with loop timer', async () => {
 
     expect(slideStore.index).toBe(1);
 
-    vi
-        .advanceTimersToNextTimer() // Font load interval
-        .advanceTimersToNextTimer();
+    vi.advanceTimersToNextTimer();
 
     expect(slideStore.index).toBe(2);
 });

@@ -8,6 +8,7 @@ import dataStore from '@/store/dataStore.ts'
     aria-hidden="true"
     inert
   >
+    <span>&#8599;&#65039;</span>
     <div
       v-for="(slide, index) in dataStore.data"
       :key="index"

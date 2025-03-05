@@ -2,6 +2,7 @@
 import { onMounted } from 'vue'
 
 import SlideView from '@/Components/SlideView.vue';
+import { INSTRUCTIONS_URL } from '@/constants/general.ts';
 import SlideLayout from '@/Layouts/SlideLayout.vue';
 import QueryParams from '@/interfaces/queryParams.ts';
 import dataStore from '@/store/dataStore.ts'
@@ -17,7 +18,7 @@ const getSlidesUrl = (): string => {
     if (!props.encodedSlides) {
         localStorage.setItem('slidesUrl', '');
 
-        return '/instructions.md';
+        return INSTRUCTIONS_URL;
     }
 
     const url = atob(props.encodedSlides as string);

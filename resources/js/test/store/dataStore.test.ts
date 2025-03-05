@@ -1,6 +1,6 @@
-import dataStore from '@/store/dataStore.ts';
-import { MOCK_INSTRUCTIONS_URL, MOCK_WINDOWS_INSTRUCTIONS_URL } from '@/mocks/handlers.ts';
 import { server } from '@/mocks/browser.ts';
+import { MOCK_ADHOC_URL, MOCK_WINDOWS_ADHOC_URL } from '@/mocks/handlers.ts';
+import dataStore from '@/store/dataStore.ts';
 
 beforeEach(() => {
     dataStore.reset()
@@ -57,7 +57,7 @@ describe('fetching data', () => {
     test('gets the instructions', async () => {
         expect(dataStore.data).toStrictEqual([]);
 
-        await dataStore.fetchAndProcessData(MOCK_INSTRUCTIONS_URL);
+        await dataStore.fetchAndProcessData(MOCK_ADHOC_URL);
 
         expect(dataStore.data.length).toBe(3);
         expect(dataStore.data[0]).toBe('<p>Welcome to</p>');
@@ -68,7 +68,7 @@ describe('fetching data', () => {
     test('gets the instructions with \r\n data', async () => {
         expect(dataStore.data).toStrictEqual([]);
 
-        await dataStore.fetchAndProcessData(MOCK_WINDOWS_INSTRUCTIONS_URL);
+        await dataStore.fetchAndProcessData(MOCK_WINDOWS_ADHOC_URL);
 
         expect(dataStore.data.length).toBe(3);
         expect(dataStore.data[0]).toBe('<p>Welcome to</p>');

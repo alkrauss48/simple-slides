@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Resources\PresentationResource;
 use App\Models\User;
 use Inertia\Inertia;
 use Inertia\Response;
@@ -25,9 +26,8 @@ class PresentationController extends Controller
             })->afterResponse();
         }
 
-        return Inertia::render('Slides', [
-            'content' => $presentation->content,
-            'delimiter' => $presentation->slide_delimiter,
+        return Inertia::render('Presentation', [
+            'presentation' => new PresentationResource($presentation),
             'meta' => [
                 'title' => $presentation->title,
                 'description' => $presentation->description,

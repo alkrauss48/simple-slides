@@ -1,8 +1,9 @@
 import ProgressType from '../enums/progressType.ts';
 
-type QueryParams = {
-  index?: number,
-  progress?: ProgressType,
+interface QueryParams {
+    index?: number,
+    loop?: number,
+    progress?: ProgressType,
 }
 
 export default QueryParams;

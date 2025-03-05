@@ -4,6 +4,7 @@ namespace App\Providers;
 
 use Filament\Facades\Filament;
 use Filament\Navigation\UserMenuItem;
+use Illuminate\Http\Resources\Json\JsonResource;
 use Illuminate\Support\ServiceProvider;
 
 class AppServiceProvider extends ServiceProvider
@@ -21,6 +22,9 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
+        // Prevent wrapping of resources in `data` key.
+        JsonResource::withoutWrapping();
+
         Filament::serving(function () {
             Filament::registerUserMenuItems([
                 UserMenuItem::make()

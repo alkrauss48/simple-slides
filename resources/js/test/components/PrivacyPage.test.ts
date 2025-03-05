@@ -9,5 +9,5 @@ const mountWrapper = () : VueWrapper<any> => {
 test('loads the privacy policy page', async () => {
     const wrapper = mountWrapper();
 
-    expect(wrapper.find('h1').text()).toBe('Privacy Policy')
+    expect(wrapper.find('h1').text()).toBe('Privacy Policy');
 });

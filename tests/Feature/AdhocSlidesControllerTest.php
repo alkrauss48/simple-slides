@@ -2,12 +2,21 @@
 
 use App\Models\DailyView;
 use App\Models\User;
+use Inertia\Testing\AssertableInertia as Assert;
 
 describe('Index', function () {
     test('adhoc slides index screen can be rendered', function () {
         $response = $this->get(route('home'));
 
         $response->assertStatus(200);
+    });
+
+    test('adhoc slides index screen returns the right view and data', function () {
+        $response = $this->get(route('home'));
+
+        $response->assertInertia(fn (Assert $page) => $page
+            ->component('AdhocSlides')
+        );
     });
 
     test('adhoc slides index screen generate daily view', function () {
@@ -38,6 +47,22 @@ describe('Show', function () {
         ]));
 
         $response->assertStatus(200);
+    });
+
+    test('adhoc slides show screen returns the right view and data', function () {
+        $encodedSlides = base64_encode('foo');
+
+        $response = $this->get(route('adhoc-slides.show', [
+            'slides' => $encodedSlides,
+        ]));
+
+        $response->assertInertia(fn (Assert $page) => $page
+            ->component('AdhocSlides')
+            ->where('encodedSlides', $encodedSlides)
+            ->has('meta', fn (Assert $page) => $page
+                ->where('title', 'My Presentation')
+            )
+        );
     });
 
     test('adhoc slides show screen will 404 with invalid slug', function () {

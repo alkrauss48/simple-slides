@@ -1,5 +1,6 @@
 import { shallowMount, VueWrapper } from '@vue/test-utils'
 
+import DraftBanner from '@/Components/DraftBanner.vue'
 import ProgressType from '@/enums/progressType.ts';
 import Presentation from '@/interfaces/presentation.ts';
 import QueryParams from '@/interfaces/queryParams.ts';
@@ -11,7 +12,7 @@ afterEach(() => {
     slideStore.reset();
 });
 
-const mountWrapper = () : VueWrapper<any> => {
+const mountWrapper = (isPublished: boolean = true) : VueWrapper<any> => {
     const params: QueryParams = {
         index: 5,
         loop: 10,
@@ -22,7 +23,7 @@ const mountWrapper = () : VueWrapper<any> => {
         id: '1',
         content: '1\n\n2\n\n3',
         slide_delimiter: '(\n\n|\r\n)',
-        is_published: true,
+        is_published: isPublished,
     };
 
     return shallowMount(PresentationPage, {
@@ -49,4 +50,16 @@ test('parses the presentation content in the data store', async () => {
         '<p>2</p>',
         '<p>3</p>',
     ]);
+});
+
+test('does not show the draft banner for published presentations', async () => {
+    const wrapper = mountWrapper();
+
+    expect(wrapper.vm.isDraft).toBeFalsy();
+});
+
+test('shows the draft banner for draft presentations', async () => {
+    const wrapper = mountWrapper(false);
+
+    expect(wrapper.vm.isDraft).toBeTruthy();
 });

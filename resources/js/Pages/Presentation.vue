@@ -1,6 +1,7 @@
 <script setup lang="ts">
-import { onMounted } from 'vue'
+import { computed, onMounted } from 'vue'
 
+import DraftBanner from '@/Components/DraftBanner.vue';
 import SlideView from '@/Components/SlideView.vue';
 import SlideLayout from '@/Layouts/SlideLayout.vue';
 import Presentation from '@/interfaces/presentation.ts';
@@ -14,6 +15,8 @@ const props = defineProps<
     }
 >();
 
+const isDraft = computed(() => !props.presentation.is_published);
+
 onMounted(() => {
     processQueryParams(props);
 
@@ -25,6 +28,7 @@ onMounted(() => {
 
 <template>
     <SlideLayout>
+        <DraftBanner v-if="isDraft" />
         <SlideView />
     </SlideLayout>
 </template>

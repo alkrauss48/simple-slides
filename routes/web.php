@@ -19,11 +19,6 @@ use Inertia\Response;
 |
 */
 
-require __DIR__.'/auth.php';
-
-Route::redirect('/dashboard', '/admin');
-Route::redirect('/admin/login', '/login');
-
 Route::get('/', [AdhocSlidesController::class, 'index'])->name('home');
 Route::get('/settings', [SettingsController::class, 'index'])->name('settings');
 

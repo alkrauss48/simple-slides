@@ -1,7 +1,9 @@
 import { http, HttpResponse } from 'msw'
 
-export const MOCK_INSTRUCTIONS_URL = 'https://fake.dev/instructions';
-export const MOCK_WINDOWS_INSTRUCTIONS_URL = 'https://fake.dev/instructions-windows';
+import { INSTRUCTIONS_URL } from '@/constants/general.ts';
+
+export const MOCK_ADHOC_URL = 'https://fake.dev/presentation';
+export const MOCK_WINDOWS_ADHOC_URL = 'https://fake.dev/presentation-windows';
 
 const data: String[] = [
   'Welcome to',
@@ -10,10 +12,13 @@ const data: String[] = [
 ];
 
 export default [
-  http.get(MOCK_INSTRUCTIONS_URL, (info) => {
+  http.get(INSTRUCTIONS_URL, (info) => {
     return new HttpResponse(data.join("\n\n"));
   }),
-  http.get(MOCK_WINDOWS_INSTRUCTIONS_URL, (info) => {
+  http.get(MOCK_ADHOC_URL, (info) => {
+    return new HttpResponse(data.join("\n\n"));
+  }),
+  http.get(MOCK_WINDOWS_ADHOC_URL, (info) => {
     return new HttpResponse(data.join("\r\n"));
   }),
 ];

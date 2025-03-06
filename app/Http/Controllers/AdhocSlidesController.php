@@ -12,7 +12,7 @@ class AdhocSlidesController extends Controller
     {
         $this->dispatchDailyView();
 
-        return Inertia::render('Slides');
+        return Inertia::render('AdhocSlides');
     }
 
     public function show(string $slides): Response
@@ -23,8 +23,8 @@ class AdhocSlidesController extends Controller
 
         $this->dispatchDailyView(slug: $slides);
 
-        return Inertia::render('Slides', [
-            'slides' => $slides,
+        return Inertia::render('AdhocSlides', [
+            'encodedSlides' => $slides,
             'meta' => [
                 'title' => 'My Presentation',
             ],

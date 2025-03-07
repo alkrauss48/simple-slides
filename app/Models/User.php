@@ -65,7 +65,7 @@ class User extends Authenticatable implements FilamentUser, VerifyEmailContract
 
     public function isAdministrator(): bool
     {
-        return $this->is_admin;
+        return $this->is_admin ?? false;
     }
 
     /**

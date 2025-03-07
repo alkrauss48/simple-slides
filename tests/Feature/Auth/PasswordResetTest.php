@@ -1,57 +1,70 @@
 <?php
 
 use App\Models\User;
-use Illuminate\Auth\Notifications\ResetPassword;
+use Filament\Notifications\Auth\ResetPassword as ResetPasswordNotification;
+use Filament\Pages\Auth\PasswordReset\RequestPasswordReset;
+use Filament\Pages\Auth\PasswordReset\ResetPassword;
 use Illuminate\Support\Facades\Notification;
+use Livewire\Livewire;
 
-test('reset password link screen can be rendered', function () {
-    $response = $this->get('/forgot-password');
+use function Pest\Livewire\livewire;
 
-    $response->assertStatus(200);
+test('reset password request page loads correctly', function () {
+    $response = $this->get(route('filament.admin.auth.password-reset.request'));
+
+    $response->assertSuccessful();
 });
 
-test('reset password link can be requested', function () {
+test('password reset request can be initiated', function () {
     Notification::fake();
 
     $user = User::factory()->create();
 
-    $this->post('/forgot-password', ['email' => $user->email]);
+    livewire(RequestPasswordReset::class)
+        ->set('data.email', $user->email)
+        ->call('request');
 
-    Notification::assertSentTo($user, ResetPassword::class);
+    Notification::assertSentTo($user, ResetPasswordNotification::class);
 });
 
-test('reset password screen can be rendered', function () {
+test('reset password form displays with valid token', function () {
     Notification::fake();
 
     $user = User::factory()->create();
 
-    $this->post('/forgot-password', ['email' => $user->email]);
+    livewire(RequestPasswordReset::class)
+        ->set('data.email', $user->email)
+        ->call('request');
 
-    Notification::assertSentTo($user, ResetPassword::class, function ($notification) {
-        $response = $this->get('/reset-password/'.$notification->token);
+    Notification::assertSentTo($user, ResetPasswordNotification::class, function ($notification) {
+        $response = $this->get($notification->url);
 
-        $response->assertStatus(200);
+        $response->assertSuccessful();
 
         return true;
     });
 });
 
-test('password can be reset with valid token', function () {
+test('password can be reset through filament form', function () {
     Notification::fake();
 
     $user = User::factory()->create();
+    $newPassword = 'new-password';
 
-    $this->post('/forgot-password', ['email' => $user->email]);
+    livewire(RequestPasswordReset::class)
+        ->set('data.email', $user->email)
+        ->call('request');
 
-    Notification::assertSentTo($user, ResetPassword::class, function ($notification) use ($user) {
-        $response = $this->post('/reset-password', [
-            'token' => $notification->token,
-            'email' => $user->email,
-            'password' => 'password',
-            'password_confirmation' => 'password',
-        ]);
-
-        $response->assertSessionHasNoErrors();
+    Notification::assertSentTo($user, ResetPasswordNotification::class, function ($notification) use ($newPassword) {
+        Livewire::withQueryParams([
+            'token' => str($notification->url)->explode('token=')[1],
+        ])
+            ->test(ResetPassword::class)
+            ->set([
+                'password' => $newPassword,
+                'passwordConfirmation' => $newPassword,
+            ])
+            ->call('resetPassword');
 
         return true;
     });

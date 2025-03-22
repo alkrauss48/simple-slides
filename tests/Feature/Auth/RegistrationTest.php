@@ -1,6 +1,10 @@
 <?php
 
+use App\Filament\Pages\Auth\Register;
+use App\Models\User;
 use App\Providers\RouteServiceProvider;
+
+use function Pest\Livewire\livewire;
 
 test('registration screen can be rendered', function () {
     $response = $this->get('/register');
@@ -9,26 +13,29 @@ test('registration screen can be rendered', function () {
 });
 
 test('new users can register', function () {
-    $response = $this->post('/register', [
-        'name' => 'Test User',
-        'email' => 'test@example.com',
-        'username' => 'test-user',
-        'password' => 'password',
-        'password_confirmation' => 'password',
-    ]);
+    livewire(Register::class)
+        ->set('data.name', 'New User')
+        ->set('data.email', 'newuser@example.com')
+        ->set('data.username', 'new-user')
+        ->set('data.password', 'password123')
+        ->set('data.passwordConfirmation', 'password123')
+        ->call('register')
+        ->assertHasNoErrors()
+        ->assertRedirect(RouteServiceProvider::HOME);
+
+    expect(User::where('email', 'newuser@example.com')->exists())->toBeTrue();
 
     $this->assertAuthenticated();
-    $response->assertRedirect(RouteServiceProvider::HOME);
 });
 
 test('users must register with a username', function () {
-    $response = $this->post('/register', [
-        'name' => 'Test User',
-        'email' => 'test@example.com',
-        'password' => 'password',
-        'password_confirmation' => 'password',
-    ]);
+    livewire(Register::class)
+        ->set('data.name', 'New User')
+        ->set('data.email', 'newuser@example.com')
+        ->set('data.password', 'password123')
+        ->set('data.passwordConfirmation', 'password123')
+        ->call('register')
+        ->assertHasErrors(['data.username']);
 
     $this->assertGuest();
-    $response->assertSessionHasErrors(['username']);
 });

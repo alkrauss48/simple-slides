@@ -56,11 +56,11 @@ watch(darkMode, async (newValue: boolean) => {
                   href="/admin"
                   class="hover:underline focus:underline ml-4 md:ml-8 font-bold"
                   >{{ props.auth?.user ? 'Dashboard' : 'Login' }}</a>
-              <Link
+              <a
                   v-if="!props.auth?.user"
-                  href="/register"
+                  href="/admin/register"
                   class="hover:underline focus:underline ml-8 font-bold"
-                  >Sign Up</Link>
+                  >Sign Up</a>
           </div>
           <div class="flex items-center">
               <button

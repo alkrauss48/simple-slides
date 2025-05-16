@@ -43,6 +43,27 @@ test('pressing L increments the slide', async () => {
   expect(slideStore.index).toBe(2);
 });
 
+test('pressing PageDown increments the slide', async () => {
+  const wrapper = mountWrapper();
+  wrapper.vm.bindKeyDown({ key: 'PageDown' });
+
+  expect(slideStore.index).toBe(2);
+});
+
+test('pressing n increments the slide', async () => {
+  const wrapper = mountWrapper();
+  wrapper.vm.bindKeyDown({ key: 'n' });
+
+  expect(slideStore.index).toBe(2);
+});
+
+test('pressing N increments the slide', async () => {
+  const wrapper = mountWrapper();
+  wrapper.vm.bindKeyDown({ key: 'N' });
+
+  expect(slideStore.index).toBe(2);
+});
+
 test('pressing ArrowDown increments the slide', async () => {
   const wrapper = mountWrapper();
   wrapper.vm.bindKeyDown({ key: 'ArrowDown' });
@@ -73,49 +94,70 @@ test('pressing Enter increments the slide', async () => {
 
 // Decrementors
 
-test('pressing k increments the slide', async () => {
+test('pressing k decrements the slide', async () => {
   const wrapper = mountWrapper();
   wrapper.vm.bindKeyDown({ key: 'k' });
 
   expect(slideStore.index).toBe(0);
 });
 
-test('pressing K increments the slide', async () => {
+test('pressing K decrements the slide', async () => {
   const wrapper = mountWrapper();
   wrapper.vm.bindKeyDown({ key: 'K' });
 
   expect(slideStore.index).toBe(0);
 });
 
-test('pressing h increments the slide', async () => {
+test('pressing h decrements the slide', async () => {
   const wrapper = mountWrapper();
   wrapper.vm.bindKeyDown({ key: 'h' });
 
   expect(slideStore.index).toBe(0);
 });
 
-test('pressing H increments the slide', async () => {
+test('pressing H decrements the slide', async () => {
   const wrapper = mountWrapper();
   wrapper.vm.bindKeyDown({ key: 'H' });
 
   expect(slideStore.index).toBe(0);
 });
 
-test('pressing Backspace increments the slide', async () => {
+test('pressing PageUp decrements the slide', async () => {
+  const wrapper = mountWrapper();
+  wrapper.vm.bindKeyDown({ key: 'PageUp' });
+
+  expect(slideStore.index).toBe(0);
+});
+
+test('pressing p decrements the slide', async () => {
+  const wrapper = mountWrapper();
+  wrapper.vm.bindKeyDown({ key: 'p' });
+
+  expect(slideStore.index).toBe(0);
+});
+
+test('pressing P decrements the slide', async () => {
+  const wrapper = mountWrapper();
+  wrapper.vm.bindKeyDown({ key: 'P' });
+
+  expect(slideStore.index).toBe(0);
+});
+
+test('pressing Backspace decrements the slide', async () => {
   const wrapper = mountWrapper();
   wrapper.vm.bindKeyDown({ key: 'Backspace' });
 
   expect(slideStore.index).toBe(0);
 });
 
-test('pressing ArrowUp increments the slide', async () => {
+test('pressing ArrowUp decrements the slide', async () => {
   const wrapper = mountWrapper();
   wrapper.vm.bindKeyDown({ key: 'ArrowUp' });
 
   expect(slideStore.index).toBe(0);
 });
 
-test('pressing ArrowLeft increments the slide', async () => {
+test('pressing ArrowLeft decrements the slide', async () => {
   const wrapper = mountWrapper();
   wrapper.vm.bindKeyDown({ key: 'ArrowLeft' });
 

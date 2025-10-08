@@ -9,6 +9,7 @@ use Illuminate\Auth\MustVerifyEmail;
 use Illuminate\Contracts\Auth\MustVerifyEmail as VerifyEmailContract;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Foundation\Auth\User as Authenticatable;
@@ -124,5 +125,18 @@ class User extends Authenticatable implements FilamentUser, VerifyEmailContract
     public function presentations(): HasMany
     {
         return $this->hasMany(Presentation::class);
+    }
+
+    /**
+     * The presentations that this user has.
+     *
+     * @return BelongsToMany<Presentation>
+     */
+    public function sharedPresentations(): BelongsToMany
+    {
+        return $this->belongsToMany(Presentation::class)
+            ->using(PresentationUser::class)
+            ->withPivot('invite_status', 'invited_at', 'accepted_at')
+            ->withTimestamps();
     }
 }

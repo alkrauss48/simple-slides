@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Enums\InviteStatus;
 use App\Enums\SlideDelimiter;
 use Database\Factories\PresentationFactory;
 use Illuminate\Database\Eloquent\Builder;
@@ -129,13 +130,22 @@ class Presentation extends Model implements HasMedia
 
     /**
      * Scope a query to only include presentations for the authenticated user.
+     * This includes presentations owned by the user and presentations shared with the user.
      *
      * @param  Builder<Presentation>  $query
      */
     public function scopeForUser(Builder $query): void
     {
         $query->when(! auth()->user()->isAdministrator(), function ($qr) {
-            $qr->where('user_id', auth()->id());
+            $qr->where(function ($q) {
+                // Include presentations owned by the user
+                $q->where('user_id', auth()->id())
+                    // Include presentations shared with the user (with accepted invitations)
+                    ->orWhereHas('presentationUsers', function ($query) {
+                        $query->where('user_id', auth()->id())
+                            ->where('invite_status', InviteStatus::ACCEPTED);
+                    });
+            });
         });
     }
 
@@ -187,7 +197,27 @@ class Presentation extends Model implements HasMedia
     {
         return $this->belongsToMany(User::class)
             ->using(PresentationUser::class)
-            ->withPivot('invite_status', 'invited_at', 'accepted_at')
+            ->withPivot('invite_status', 'invited_at', 'accepted_at', 'email', 'invite_token')
             ->withTimestamps();
+    }
+
+    /**
+     * The presentation user invitations.
+     *
+     * @return HasMany<PresentationUser>
+     */
+    public function presentationUsers(): HasMany
+    {
+        return $this->hasMany(PresentationUser::class);
+    }
+
+    /**
+     * Get pending invitations for this presentation.
+     *
+     * @return HasMany<PresentationUser>
+     */
+    public function pendingInvitations(): HasMany
+    {
+        return $this->presentationUsers()->where('invite_status', InviteStatus::PENDING);
     }
 }

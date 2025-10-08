@@ -2,6 +2,7 @@
 
 namespace App\Policies;
 
+use App\Enums\InviteStatus;
 use App\Models\Presentation;
 use App\Models\User;
 
@@ -32,7 +33,7 @@ class PresentationPolicy
      */
     public function view(User $user, Presentation $presentation): bool
     {
-        return $presentation->user_id === $user->id;
+        return $this->isOwnerOrSharedUser($user, $presentation);
     }
 
     /**
@@ -48,7 +49,7 @@ class PresentationPolicy
      */
     public function update(User $user, Presentation $presentation): bool
     {
-        return $presentation->user_id === $user->id;
+        return $this->isOwnerOrSharedUser($user, $presentation);
     }
 
     /**
@@ -56,6 +57,7 @@ class PresentationPolicy
      */
     public function delete(User $user, Presentation $presentation): bool
     {
+        // Only the owner can delete the presentation
         return $presentation->user_id === $user->id;
     }
 
@@ -64,6 +66,7 @@ class PresentationPolicy
      */
     public function restore(User $user, Presentation $presentation): bool
     {
+        // Only the owner can restore the presentation
         return $presentation->user_id === $user->id;
     }
 
@@ -72,6 +75,24 @@ class PresentationPolicy
      */
     public function forceDelete(User $user, Presentation $presentation): bool
     {
+        // Only the owner can permanently delete the presentation
         return $presentation->user_id === $user->id;
+    }
+
+    /**
+     * Check if the user is the owner or a shared user with accepted invitation.
+     */
+    private function isOwnerOrSharedUser(User $user, Presentation $presentation): bool
+    {
+        // Check if the user is the owner
+        if ($presentation->user_id === $user->id) {
+            return true;
+        }
+
+        // Check if the user is a shared user with an accepted invitation
+        return $presentation->presentationUsers()
+            ->where('user_id', $user->id)
+            ->where('invite_status', InviteStatus::ACCEPTED)
+            ->exists();
     }
 }

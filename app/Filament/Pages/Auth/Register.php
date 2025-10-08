@@ -8,6 +8,17 @@ use Filament\Pages\Auth\Register as BaseRegister;
 
 class Register extends BaseRegister
 {
+    public function mount(): void
+    {
+        parent::mount();
+
+        // Pre-fill email if provided in query parameters
+        $request = request();
+        if ($request->has('email')) {
+            $this->form->fill(['email' => $request->get('email')]);
+        }
+    }
+
     public function form(Form $form): Form
     {
         return $form
@@ -22,5 +33,17 @@ class Register extends BaseRegister
                 $this->getPasswordFormComponent(),
                 $this->getPasswordConfirmationFormComponent(),
             ]);
+    }
+
+    protected function getRedirectUrl(): string
+    {
+        $request = request();
+
+        // If returnTo parameter is provided, redirect there after successful registration
+        if ($request->has('returnTo')) {
+            return $request->get('returnTo');
+        }
+
+        return parent::getRedirectUrl();
     }
 }

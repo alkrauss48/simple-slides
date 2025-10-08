@@ -136,7 +136,28 @@ class User extends Authenticatable implements FilamentUser, VerifyEmailContract
     {
         return $this->belongsToMany(Presentation::class)
             ->using(PresentationUser::class)
-            ->withPivot('invite_status', 'invited_at', 'accepted_at')
+            ->withPivot('invite_status', 'invited_at', 'accepted_at', 'email', 'invite_token')
             ->withTimestamps();
+    }
+
+    /**
+     * The presentation user invitations for this user.
+     *
+     * @return HasMany<PresentationUser>
+     */
+    public function presentationInvitations(): HasMany
+    {
+        return $this->hasMany(PresentationUser::class);
+    }
+
+    /**
+     * Get pending invitations for this user.
+     *
+     * @return HasMany<PresentationUser>
+     */
+    public function pendingInvitations(): HasMany
+    {
+        return $this->presentationInvitations()
+            ->where('invite_status', \App\Enums\InviteStatus::PENDING);
     }
 }

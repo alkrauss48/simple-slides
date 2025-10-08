@@ -221,15 +221,11 @@ class PresentationResource extends Resource
      */
     public static function getEloquentQuery(): Builder
     {
-        $query = parent::getEloquentQuery()
+        // @phpstan-ignore-next-line
+        return parent::getEloquentQuery()
             ->withoutGlobalScopes([
                 SoftDeletingScope::class,
-            ]);
-
-        if (! auth()->user()->isAdministrator()) {
-            $query->where('user_id', auth()->id());
-        }
-
-        return $query;
+            ])
+            ->forUser();
     }
 }

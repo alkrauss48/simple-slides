@@ -14,11 +14,16 @@ return new class extends Migration
         Schema::create('presentation_user', function (Blueprint $table) {
             $table->id();
             $table->foreignId('presentation_id')->constrained();
-            $table->foreignId('user_id')->constrained();
+            $table->foreignId('user_id')->nullable()->constrained();
+            $table->string('email')->nullable();
+            $table->string('invite_token')->unique()->nullable();
             $table->string('invite_status')->default('pending');
             $table->datetime('invited_at')->useCurrent();
             $table->datetime('accepted_at')->nullable();
             $table->timestamps();
+
+            // Ensure either user_id or email is provided
+            // $table->check('user_id IS NOT NULL OR email IS NOT NULL');
         });
     }
 

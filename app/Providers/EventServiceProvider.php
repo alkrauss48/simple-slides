@@ -31,6 +31,7 @@ class EventServiceProvider extends ServiceProvider
         Models\DailyView::observe(Observers\DailyViewObserver::class);
         Models\ImageUpload::observe(Observers\ImageUploadObserver::class);
         Models\Presentation::observe(Observers\PresentationObserver::class);
+        Models\PresentationUser::observe(Observers\PresentationUserObserver::class);
         Media::observe(Observers\MediaObserver::class);
     }
 

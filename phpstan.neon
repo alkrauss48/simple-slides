@@ -19,3 +19,7 @@ parameters:
             message: '#^Access to an undefined property#'
             path: ./tests/*
             reportUnmatched: false
+        -
+            message: '#^Call to an undefined static method Filament\\Pages\\Auth\\(Login|Register)::getRedirectUrl\(\)\.$#'
+            path: ./app/Filament/Pages/Auth/*
+            reportUnmatched: false

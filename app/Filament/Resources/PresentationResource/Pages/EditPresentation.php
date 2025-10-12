@@ -15,6 +15,11 @@ class EditPresentation extends EditRecord
 {
     protected static string $resource = PresentationResource::class;
 
+    public function hasCombinedRelationManagerTabsWithContent(): bool
+    {
+        return true;
+    }
+
     protected function getHeaderActions(): array
     {
         return [

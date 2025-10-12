@@ -4,6 +4,7 @@ namespace App\Filament\Resources;
 
 use App\Enums\SlideDelimiter;
 use App\Filament\Resources\PresentationResource\Pages;
+use App\Filament\Resources\PresentationResource\RelationManagers\SharedUsersRelationManager;
 use App\Models\Presentation;
 use App\Models\User;
 use Closure;
@@ -200,7 +201,7 @@ class PresentationResource extends Resource
     public static function getRelations(): array
     {
         return [
-            //
+            SharedUsersRelationManager::class,
         ];
     }
 
@@ -220,15 +221,11 @@ class PresentationResource extends Resource
      */
     public static function getEloquentQuery(): Builder
     {
-        $query = parent::getEloquentQuery()
+        // @phpstan-ignore-next-line
+        return parent::getEloquentQuery()
             ->withoutGlobalScopes([
                 SoftDeletingScope::class,
-            ]);
-
-        if (! auth()->user()->isAdministrator()) {
-            $query->where('user_id', auth()->id());
-        }
-
-        return $query;
+            ])
+            ->forUser();
     }
 }

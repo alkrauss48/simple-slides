@@ -95,9 +95,18 @@ class AggregateView extends Model
             return;
         }
 
-        $presentationIds = auth()->user()->presentations()->pluck('id');
+        // Get IDs of presentations owned by the user
+        $ownedPresentationIds = auth()->user()->presentations()->pluck('id');
 
-        $query->whereIn('presentation_id', $presentationIds);
+        // Get IDs of presentations shared with the user (with accepted invitations)
+        $sharedPresentationIds = \App\Models\PresentationUser::where('user_id', auth()->id())
+            ->where('invite_status', \App\Enums\InviteStatus::ACCEPTED)
+            ->pluck('presentation_id');
+
+        // Combine both collections
+        $allPresentationIds = $ownedPresentationIds->merge($sharedPresentationIds);
+
+        $query->whereIn('presentation_id', $allPresentationIds);
     }
 
     /**

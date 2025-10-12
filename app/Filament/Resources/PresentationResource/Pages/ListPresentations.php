@@ -16,4 +16,11 @@ class ListPresentations extends ListRecords
             Actions\CreateAction::make(),
         ];
     }
+
+    protected function getHeaderWidgets(): array
+    {
+        return [
+            \App\Filament\Widgets\PendingInvitationsWidget::class,
+        ];
+    }
 }

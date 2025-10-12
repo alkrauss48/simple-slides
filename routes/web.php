@@ -26,6 +26,12 @@ Route::get('/privacy', function (): Response {
     return Inertia::render('Privacy');
 });
 
+// Invitation routes (must be before catch-all routes)
+Route::get('/invitations/{token}', [App\Http\Controllers\InvitationController::class, 'show'])
+    ->name('invitations.show');
+Route::get('/invitations/{token}/accept', [App\Http\Controllers\InvitationController::class, 'accept'])
+    ->name('invitations.accept');
+
 Route::get('/{user:username}/{slug}', [PresentationController::class, 'show'])
     ->name('presentations.show');
 

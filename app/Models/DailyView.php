@@ -76,7 +76,13 @@ class DailyView extends Model
     {
         $query->when(! auth()->user()->isAdministrator(), function ($qr) {
             $qr->whereHas('presentation', function ($qrPresn) {
-                $qrPresn->where('user_id', auth()->id());
+                // Include views for presentations owned by the user
+                $qrPresn->where('user_id', auth()->id())
+                    // Include views for presentations shared with the user (with accepted invitations)
+                    ->orWhereHas('presentationUsers', function ($query) {
+                        $query->where('user_id', auth()->id())
+                            ->where('invite_status', \App\Enums\InviteStatus::ACCEPTED);
+                    });
             });
         });
     }

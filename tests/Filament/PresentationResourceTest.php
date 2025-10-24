@@ -412,7 +412,7 @@ describe('non-admin users', function () {
         livewire(EditResource::class, [
             'record' => $record->getRouteKey(),
         ])
-            ->callAction('Generate Thumbnail');
+            ->callFormComponentAction('thumbnail', 'Generate Thumbnail');
 
         Queue::assertPushed(GenerateThumbnail::class);
     });
@@ -428,7 +428,7 @@ describe('non-admin users', function () {
         livewire(EditResource::class, [
             'record' => $record->getRouteKey(),
         ])
-            ->callAction('Generate Thumbnail');
+            ->callFormComponentAction('thumbnail', 'Generate Thumbnail');
 
         Queue::assertNotPushed(GenerateThumbnail::class);
     });

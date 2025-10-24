@@ -3,12 +3,9 @@
 namespace App\Filament\Resources\PresentationResource\Pages;
 
 use App\Filament\Resources\PresentationResource;
-use App\Jobs\GenerateThumbnail;
 use App\Models\Presentation;
 use Filament\Actions;
-use Filament\Notifications\Notification;
 use Filament\Resources\Pages\EditRecord;
-use Illuminate\Support\HtmlString;
 use Webbingbrasil\FilamentCopyActions\Pages\Actions\CopyAction;
 
 class EditPresentation extends EditRecord
@@ -44,40 +41,6 @@ class EditPresentation extends EditRecord
                         'user' => $record->user->username,
                         'slug' => $record->slug,
                     ])),
-                Actions\Action::make('Generate Thumbnail')
-                    ->icon('heroicon-o-camera')
-                    ->requiresConfirmation()
-                    ->modalHeading('Generate a thumbnail of your first slide')
-                    ->modalIcon('heroicon-o-camera')
-                    ->modalIconColor('info')
-                    ->modalDescription(new HtmlString(
-                        'This will overwrite any existing thumbnail that you have '
-                        .'set for this presentation. Do you wish to continue?'
-                        .'<br><br><strong>Note:</strong> Your presentation must first be published.'
-                    ))->modalSubmitActionLabel('Generate it')
-                    ->action(function (Presentation $record) {
-                        if (! $record->is_published) {
-                            Notification::make()
-                                ->title('You must publish your presentation to generate a thumbnail.')
-                                ->danger()
-                                ->send();
-
-                            return;
-                        }
-
-                        Notification::make()
-                            ->title(
-                                'Hang tight, your thumbnail is being generated in '
-                                .'the background. Please refresh your browser in 5-10 '
-                                .'seconds.'
-                            )->info()
-                            ->send();
-
-                        GenerateThumbnail::dispatch(
-                            presentation: $record,
-                            user: auth()->user(),
-                        );
-                    }),
                 Actions\DeleteAction::make(),
                 Actions\ForceDeleteAction::make(),
                 Actions\RestoreAction::make(),

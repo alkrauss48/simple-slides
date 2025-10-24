@@ -5,6 +5,7 @@ namespace App\Filament\Resources;
 use App\Enums\SlideDelimiter;
 use App\Filament\Resources\PresentationResource\Pages;
 use App\Filament\Resources\PresentationResource\RelationManagers\SharedUsersRelationManager;
+use App\Jobs\GenerateThumbnail;
 use App\Models\Presentation;
 use App\Models\User;
 use Closure;
@@ -14,6 +15,7 @@ use Filament\Forms\Components\Section;
 use Filament\Forms\Components\SpatieMediaLibraryFileUpload;
 use Filament\Forms\Form;
 use Filament\Forms\Get;
+use Filament\Notifications\Notification;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Columns\SpatieMediaLibraryImageColumn;
@@ -124,6 +126,45 @@ class PresentationResource extends Resource
                                             };
                                         },
                                     ])
+                                    ->hintAction(
+                                        Forms\Components\Actions\Action::make('Generate Thumbnail')
+                                            ->label('Auto-Generate')
+                                            ->disabled(fn (?Presentation $record) => ! $record?->id)
+                                            ->requiresConfirmation()
+                                            ->size('sm')
+                                            ->color('info')
+                                            ->modalHeading('Generate a thumbnail of your first slide')
+                                            ->modalIcon('heroicon-o-camera')
+                                            ->modalIconColor('info')
+                                            ->modalDescription(new HtmlString(
+                                                'This will overwrite any existing thumbnail that you have '
+                                                    .'set for this presentation. Do you wish to continue?'
+                                                    .'<br><br><strong>Note:</strong> Your presentation must first be published.'
+                                            ))->modalSubmitActionLabel('Generate it')
+                                            ->action(function (Presentation $record) {
+                                                if (! $record->is_published) {
+                                                    Notification::make()
+                                                        ->title('You must publish your presentation to generate a thumbnail.')
+                                                        ->danger()
+                                                        ->send();
+
+                                                    return;
+                                                }
+
+                                                Notification::make()
+                                                    ->title(
+                                                        'Hang tight, your thumbnail is being generated in '
+                                                            .'the background. Please refresh your browser in 5-10 '
+                                                            .'seconds.'
+                                                    )->info()
+                                                    ->send();
+
+                                                GenerateThumbnail::dispatch(
+                                                    presentation: $record,
+                                                    user: auth()->user(),
+                                                );
+                                            }),
+                                    )
                                     ->helperText(new HtmlString(
                                         'Image Size: 1200 x 630. This will be only be seen when sharing via social media. '
                                         .'If omitted, the '

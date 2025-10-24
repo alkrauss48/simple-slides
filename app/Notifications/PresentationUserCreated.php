@@ -5,10 +5,11 @@ namespace App\Notifications;
 use App\Http\Controllers\InvitationController;
 use App\Models\PresentationUser;
 use Illuminate\Bus\Queueable;
+use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
 
-class PresentationUserCreated extends Notification
+class PresentationUserCreated extends Notification implements ShouldQueue
 {
     use Queueable;
 

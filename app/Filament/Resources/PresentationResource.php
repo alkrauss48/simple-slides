@@ -92,7 +92,7 @@ class PresentationResource extends Resource
                                         'A short summary of your presentation. '
                                         .'This will be only be seen when sharing via social media. '
                                         .'Limit is 160 characters.'
-                                    )->placeholder('i.e. In this talk by Abraham Lincoln, we explore yada yada...')
+                                    )->placeholder('In this talk, we explore...')
                                     ->maxLength(160),
 
                                 Forms\Components\Select::make('slide_delimiter')

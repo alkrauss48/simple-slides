@@ -13,6 +13,7 @@ use Filament\Resources\RelationManagers\RelationManager;
 use Filament\Tables;
 use Filament\Tables\Table;
 use Illuminate\Support\Facades\Notification as LaravelNotification;
+use Illuminate\Support\Facades\RateLimiter;
 
 class SharedUsersRelationManager extends RelationManager
 {
@@ -105,6 +106,24 @@ class SharedUsersRelationManager extends RelationManager
                     ->color('gray')
                     ->visible(fn (PresentationUser $record): bool => $record->isPending)
                     ->action(function (PresentationUser $record): void {
+                        $key = 'resend-invitation:'.$record->id;
+
+                        // Check if rate limit has been exceeded
+                        if (RateLimiter::tooManyAttempts($key, 1)) {
+                            $seconds = RateLimiter::availableIn($key);
+
+                            Notification::make()
+                                ->title('Please wait before resending')
+                                ->body("You can resend this invitation again in {$seconds} seconds.")
+                                ->warning()
+                                ->send();
+
+                            return;
+                        }
+
+                        // Hit the rate limiter (1 attempt per 60 seconds)
+                        RateLimiter::hit($key, 60);
+
                         if ($record->user_id) {
                             $record->user->notify(new \App\Notifications\PresentationUserCreated($record));
                         } else {

@@ -38,6 +38,8 @@ class SharedUsersRelationManager extends RelationManager
     {
         return $table
             ->recordTitleAttribute('email')
+            ->emptyStateHeading(fn () => 'No users have been invited yet.')
+            ->emptyStateDescription(fn () => 'Inviting users will allow them to edit this presentation.')
             ->columns([
                 Tables\Columns\TextColumn::make('user.name')
                     ->label('Name')

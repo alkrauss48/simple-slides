@@ -26,21 +26,23 @@ test('loopInterval is not null with valid loop set', async () => {
 test('loopInterval is cleared with valid loop set', async () => {
     const wrapper = mountWrapper();
     const spy = vi.spyOn(global, 'clearInterval');
+    const intervalId = wrapper.vm.loopInterval;
 
     wrapper.vm.checkAndClearLoopInterval();
 
     expect(spy).toHaveBeenCalledTimes(1);
-    expect(spy.mock.lastCall?.[0]).toBe(Number(wrapper.vm.loopInterval));
+    expect(spy.mock.lastCall?.[0]).toBe(Number(intervalId));
 });
 
 test('loopInterval is cleared on valid key press', async () => {
     const wrapper = mountWrapper();
     const spy = vi.spyOn(global, 'clearInterval');
+    const intervalId = wrapper.vm.loopInterval;
 
     wrapper.vm.bindKeyDown({ key: Keys.ENTER });
 
     expect(spy).toHaveBeenCalledTimes(1);
-    expect(spy.mock.lastCall?.[0]).toBe(Number(wrapper.vm.loopInterval));
+    expect(spy.mock.lastCall?.[0]).toBe(Number(intervalId));
 });
 
 test('loopInterval is not cleared on invalid key press', async () => {

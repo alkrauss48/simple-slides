@@ -12,6 +12,7 @@ import { processQueryParams } from '@/utils/handleQueryParams.ts'
 const props = defineProps<
     QueryParams & {
         presentation: Presentation,
+        auth?: any,
     }
 >();
 
@@ -27,7 +28,7 @@ onMounted(() => {
 </script>
 
 <template>
-    <SlideLayout>
+    <SlideLayout :auth="props.auth">
         <DraftBanner v-if="isDraft" />
         <SlideView />
     </SlideLayout>

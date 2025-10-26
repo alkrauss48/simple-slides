@@ -9,3 +9,16 @@ Object.defineProperty(document, 'fonts', {
     },
     writable: true,
 });
+
+// Mock Canvas API for emoji preloading
+HTMLCanvasElement.prototype.getContext = vi.fn(() => {
+    return {
+        fillText: vi.fn(),
+        getImageData: vi.fn(() => ({
+            data: new Uint8ClampedArray(4),
+            width: 1,
+            height: 1,
+        })),
+        font: '',
+    };
+}) as any;

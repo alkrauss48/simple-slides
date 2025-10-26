@@ -11,6 +11,7 @@ import { processQueryParams } from '@/utils/handleQueryParams.ts'
 const props = defineProps<
     QueryParams & {
         encodedSlides?: string,
+        auth?: any,
     }
 >();
 
@@ -36,7 +37,7 @@ onMounted(() => {
 </script>
 
 <template>
-    <SlideLayout>
+    <SlideLayout :auth="props.auth">
         <SlideView />
     </SlideLayout>
 </template>

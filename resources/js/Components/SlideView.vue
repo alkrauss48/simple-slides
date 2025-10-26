@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, onMounted, onUnmounted, ref } from 'vue'
+import { computed, onMounted, onUnmounted, ref, watch } from 'vue'
 
 import ProgressBar from '@/Components/ProgressBar.vue';
 import ProgressLabel from '@/Components/ProgressLabel.vue';
@@ -11,7 +11,7 @@ import Keys from '@/constants/keys.ts';
 import dataStore from '@/store/dataStore.ts'
 import slideStore from '@/store/slideStore.ts'
 
-let loopInterval: null | ReturnType<typeof setInterval> = null;
+const loopInterval = ref<null | ReturnType<typeof setInterval>>(null);
 let fontLoadInterval: null | ReturnType<typeof setInterval> = null;
 const fontLoaded = ref(false);
 const FONT = '16px Montserrat';
@@ -39,11 +39,30 @@ const buildQueryParams = () : QueryParams => {
 };
 
 const checkAndClearLoopInterval = () : void => {
-    if (!loopInterval) {
+    if (!loopInterval.value) {
         return;
     }
 
-    clearInterval(Number(loopInterval));
+    clearInterval(Number(loopInterval.value));
+    loopInterval.value = null;
+};
+
+const startLoopInterval = () : void => {
+    // Clear any existing interval first
+    checkAndClearLoopInterval();
+
+    if (!slideStore.canLoop()) {
+        return;
+    }
+
+    loopInterval.value = setInterval(() => {
+        if (slideStore.isEnd()) {
+            incrementContent(-1 * dataStore.data.length);
+            return;
+        }
+
+        incrementContent(1)
+    }, slideStore.loop * 1000);
 };
 
 const incrementContent = (count: number) : void => {
@@ -65,6 +84,18 @@ const incrementContent = (count: number) : void => {
 
 const bindKeyDown = (event: KeyboardEvent): void => {
     const { key } = event;
+
+    // Ignore keyboard shortcuts if user is typing in an input field
+    const activeElement = document.activeElement;
+    const isInputFocused = activeElement && (
+        activeElement.tagName === 'INPUT' ||
+        activeElement.tagName === 'TEXTAREA' ||
+        activeElement.tagName === 'SELECT'
+    );
+
+    if (isInputFocused) {
+        return;
+    }
 
     if (key == Keys.ENTER || key == Keys.SPACE) {
         var next = document.getElementById('next');
@@ -111,23 +142,25 @@ onMounted(() => {
         fontLoaded.value = true;
     });
 
-    if (!slideStore.canLoop()) {
-        return;
-    }
-
-    loopInterval = setInterval(() => {
-        if (slideStore.isEnd()) {
-            incrementContent(-1 * dataStore.data.length);
-            return;
-        }
-
-        incrementContent(1)
-    }, slideStore.loop * 1000);
+    // Start loop interval if configured
+    startLoopInterval();
 });
 
 onUnmounted(() => {
     window.removeEventListener('keydown',  bindKeyDown);
     checkAndClearLoopInterval();
+});
+
+// Watch for changes to loop interval and restart the timer
+watch(() => slideStore.loop, () => {
+    startLoopInterval();
+});
+
+// Expose for testing
+defineExpose({
+    loopInterval,
+    checkAndClearLoopInterval,
+    bindKeyDown,
 });
 </script>
 

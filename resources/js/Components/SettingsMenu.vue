@@ -5,12 +5,14 @@ import { Link, router } from '@inertiajs/vue3'
 import CogIcon from '@/Components/icons/CogIcon.vue';
 import MoonFillIcon from '@/Components/icons/MoonFillIcon.vue';
 import MoonStrokeIcon from '@/Components/icons/MoonStrokeIcon.vue';
+import Presentation from '@/interfaces/presentation.ts';
 import { VisualMode, isDarkMode } from '@/enums/visualMode.ts';
 import { getVisualMode, setVisualMode } from '@/utils/handleVisualMode.ts';
 import slideStore from '@/store/slideStore.ts'
 
 const props = defineProps<{
     auth?: any,
+    presentation?: Presentation,
 }>();
 
 const isOpen = ref(false);
@@ -19,6 +21,12 @@ const darkMode = ref<boolean>(isDarkMode(visualMode));
 const loopInterval = ref<number>(slideStore.loop);
 
 const isAuthenticated = computed(() => !!props.auth?.user);
+const presenterLink = computed(() => {
+    if (props.presentation?.user?.username) {
+        return `/${props.presentation.user.username}`;
+    }
+    return null;
+});
 
 // Sync loopInterval with slideStore.loop when it changes externally (e.g., from query params)
 watch(() => slideStore.loop, (newValue) => {
@@ -122,6 +130,24 @@ watch(isOpen, (newValue) => {
                 "
             >
                 <div class="p-6 space-y-4">
+                    <!-- Presenter Link -->
+                    <div v-if="presenterLink" class="space-y-2">
+                        <Link
+                            :href="presenterLink"
+                            @click="closeMenu"
+                            class="
+                                block px-4 py-2 rounded
+                                text-gray-900 dark:text-gray-100
+                                hover:bg-gray-100 dark:hover:bg-gray-700
+                                focus:bg-gray-100 dark:focus:bg-gray-700
+                                font-medium transition-colors
+                            "
+                        >
+                            View {{ presentation?.user?.name }}'s Profile
+                        </Link>
+                        <hr class="border-gray-200 dark:border-gray-700" />
+                    </div>
+
                     <!-- Navigation Links -->
                     <div class="space-y-2">
                         <Link

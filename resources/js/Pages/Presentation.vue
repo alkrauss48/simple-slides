@@ -28,7 +28,7 @@ onMounted(() => {
 </script>
 
 <template>
-    <SlideLayout :auth="props.auth">
+    <SlideLayout :auth="props.auth" :presentation="props.presentation">
         <DraftBanner v-if="isDraft" />
         <SlideView />
     </SlideLayout>

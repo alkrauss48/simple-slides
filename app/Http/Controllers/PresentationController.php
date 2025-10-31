@@ -13,6 +13,7 @@ class PresentationController extends Controller
     {
         $presentation = $user
             ->presentations()
+            ->with('user')
             ->where('slug', $slug)
             ->firstOrFail();
 

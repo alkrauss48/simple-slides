@@ -91,6 +91,10 @@ describe('published presentation', function () {
                 ->where('content', $this->publishedPresentation->content)
                 ->where('slide_delimiter', $this->publishedPresentation->slide_delimiter)
                 ->where('is_published', $this->publishedPresentation->is_published)
+                ->has('user', fn (Assert $page) => $page
+                    ->where('username', $this->user->username)
+                    ->where('name', $this->user->name)
+                )
             )
             ->has('meta', fn (Assert $page) => $page
                 ->where('title', $this->publishedPresentation->title)

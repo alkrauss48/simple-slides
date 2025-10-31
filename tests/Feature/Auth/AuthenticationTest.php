@@ -1,8 +1,8 @@
 <?php
 
+use App\Filament\Pages\Auth\Login;
 use App\Models\User;
 use App\Providers\RouteServiceProvider;
-use Filament\Pages\Auth\Login;
 
 use function Pest\Livewire\livewire;
 

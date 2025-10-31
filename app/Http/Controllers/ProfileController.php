@@ -44,6 +44,10 @@ class ProfileController extends Controller
             ],
             'presentations' => $presentations,
             'search' => $search,
+            'meta' => [
+                'title' => $user->name.'\'s Presentations',
+                'description' => 'View '.$user->name.'\'s presentations on Simple Slides',
+            ],
         ]);
     }
 }

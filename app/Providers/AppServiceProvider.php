@@ -5,6 +5,7 @@ namespace App\Providers;
 use Filament\Facades\Filament;
 use Filament\Navigation\UserMenuItem;
 use Illuminate\Http\Resources\Json\JsonResource;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\ServiceProvider;
 
 class AppServiceProvider extends ServiceProvider
@@ -26,20 +27,25 @@ class AppServiceProvider extends ServiceProvider
         JsonResource::withoutWrapping();
 
         Filament::serving(function () {
-            Filament::registerUserMenuItems([
-                UserMenuItem::make()
+            $menuItems = [];
+
+            if (Auth::check() && Auth::user()?->username) {
+                $menuItems[] = UserMenuItem::make()
                     ->label('Public Profile')
                     ->url(
-                        route('profile.show', ['user' => auth()->user()?->username]),
+                        route('profile.show', ['user' => Auth::user()->username]),
                         shouldOpenInNewTab: true
-                    )->icon('heroicon-s-user'),
-                UserMenuItem::make()
-                    ->label('Helpful Videos')
-                    ->url(
-                        'https://www.youtube.com/playlist?list=PLWXp2X5PBDOkzYGV3xd0zviD6xR8OoiFR',
-                        shouldOpenInNewTab: true
-                    )->icon('heroicon-s-play-circle'),
-            ]);
+                    )->icon('heroicon-s-user');
+            }
+
+            $menuItems[] = UserMenuItem::make()
+                ->label('Helpful Videos')
+                ->url(
+                    'https://www.youtube.com/playlist?list=PLWXp2X5PBDOkzYGV3xd0zviD6xR8OoiFR',
+                    shouldOpenInNewTab: true
+                )->icon('heroicon-s-play-circle');
+
+            Filament::registerUserMenuItems($menuItems);
         });
     }
 }

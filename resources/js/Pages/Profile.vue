@@ -1,8 +1,8 @@
 <script setup lang="ts">
 import { ref, watch } from 'vue'
-import { Head, Link, router } from '@inertiajs/vue3'
+import { Link, router } from '@inertiajs/vue3'
 import type { PublicUser, PresentationListItem, PaginatedData } from '@/types'
-import AppHead from '@/Components/AppHead.vue'
+import PageLayout from '@/Layouts/PageLayout.vue'
 
 interface Props {
     user: PublicUser
@@ -44,42 +44,16 @@ const goToPresentation = (presentation: PresentationListItem) => {
 </script>
 
 <template>
-    <main class="min-h-screen bg-gray-50 dark:bg-gray-900">
-        <Head :title="`${user.name}'s Presentations`" />
-        <AppHead />
+    <PageLayout :auth="auth" :title="`${user.name}'s Presentations`">
+        <template #header>
+            <h1 class="text-3xl font-bold text-gray-900 dark:text-white">
+                {{ user.name }}'s Presentations
+            </h1>
+            <p class="mt-1 text-sm text-gray-600 dark:text-gray-400">
+                @{{ user.username }}
+            </p>
+        </template>
 
-        <!-- Header -->
-        <div class="bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700">
-            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
-                <div class="flex justify-between items-center">
-                    <div>
-                        <h1 class="text-3xl font-bold text-gray-900 dark:text-white">
-                            {{ user.name }}'s Presentations
-                        </h1>
-                        <p class="mt-1 text-sm text-gray-600 dark:text-gray-400">
-                            @{{ user.username }}
-                        </p>
-                    </div>
-                    <div class="flex items-center space-x-4">
-                        <Link
-                            href="/"
-                            class="px-4 py-2 text-sm font-medium text-gray-700 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white"
-                        >
-                            Home
-                        </Link>
-                        <a
-                            href="/admin"
-                            class="px-4 py-2 text-sm font-medium text-gray-700 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white"
-                        >
-                            {{ auth?.user ? 'Dashboard' : 'Login' }}
-                        </a>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- Content -->
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
             <!-- Search Bar -->
             <div class="mb-8">
                 <label for="search" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
@@ -166,8 +140,7 @@ const goToPresentation = (presentation: PresentationListItem) => {
                     {{ search ? 'Try adjusting your search terms.' : 'This user hasn\'t published any presentations yet.' }}
                 </p>
             </div>
-        </div>
-    </main>
+    </PageLayout>
 </template>
 
 <style scoped>

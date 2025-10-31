@@ -28,6 +28,12 @@ class AppServiceProvider extends ServiceProvider
         Filament::serving(function () {
             Filament::registerUserMenuItems([
                 UserMenuItem::make()
+                    ->label('Public Profile')
+                    ->url(
+                        route('profile.show', ['user' => auth()->user()?->username]),
+                        shouldOpenInNewTab: true
+                    )->icon('heroicon-s-user'),
+                UserMenuItem::make()
                     ->label('Helpful Videos')
                     ->url(
                         'https://www.youtube.com/playlist?list=PLWXp2X5PBDOkzYGV3xd0zviD6xR8OoiFR',

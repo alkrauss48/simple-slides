@@ -13,7 +13,15 @@ class ListPresentations extends ListRecords
     protected function getHeaderActions(): array
     {
         return [
-            Actions\CreateAction::make(),
+            Actions\Action::make('View Public Profile')
+                ->label('View Public Profile')
+                ->url(fn (): string => route('profile.show', ['user' => auth()->user()?->username]))
+                ->color('gray')
+                ->icon('heroicon-o-eye')
+                ->openUrlInNewTab(),
+            Actions\CreateAction::make()
+                ->icon('heroicon-m-plus')
+                ->label('New Presentation'),
         ];
     }
 

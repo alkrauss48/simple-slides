@@ -108,7 +108,7 @@ const goToPresentation = (presentation: PresentationListItem) => {
                         </h2>
                         <p
                             v-if="presentation.description"
-                            class="text-gray-600 dark:text-gray-400 text-sm mb-4 line-clamp-3 flex-grow"
+                            class="text-gray-600 dark:text-gray-400 text-sm mb-4 flex-grow"
                         >
                             {{ presentation.description }}
                         </p>

@@ -8,7 +8,7 @@
     ],
     "license": "MIT",
     "require": {
-        "php": "^8.2",
+        "php": "^8.4",
         "filament/filament": "^3.0",
         "filament/spatie-laravel-media-library-plugin": "^3.0",
         "flowframe/laravel-trend": "^0",
@@ -17,7 +17,7 @@
         "jeffgreco13/filament-breezy": "^2.0",
         "laravel/framework": "^11.0",
         "laravel/sanctum": "^4.0",
-        "laravel/tinker": "^2.9",
+        "laravel/tinker": "^2.0",
         "league/flysystem-aws-s3-v3": "^3.0",
         "spatie/browsershot": "^4.0",
         "spatie/laravel-medialibrary": "^11.0",

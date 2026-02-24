@@ -1,0 +1,8 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(./vendor/bin/phpstan analyze:*)",
+      "Bash(git stash:*)"
+    ]
+  }
+}

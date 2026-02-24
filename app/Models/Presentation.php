@@ -171,7 +171,7 @@ class Presentation extends Model implements HasMedia
     /**
      * The daily views that this presentation has.
      *
-     * @return HasMany<DailyView>
+     * @return HasMany<DailyView, $this>
      */
     public function dailyViews(): HasMany
     {
@@ -181,7 +181,7 @@ class Presentation extends Model implements HasMedia
     /**
      * The User that this record belongs to
      *
-     * @return BelongsTo<User, Presentation>
+     * @return BelongsTo<User, $this>
      */
     public function user(): BelongsTo
     {
@@ -191,7 +191,7 @@ class Presentation extends Model implements HasMedia
     /**
      * The users that this presentation has.
      *
-     * @return BelongsToMany<User>
+     * @return BelongsToMany<User, $this>
      */
     public function sharedUsers(): BelongsToMany
     {
@@ -204,7 +204,7 @@ class Presentation extends Model implements HasMedia
     /**
      * The presentation user invitations.
      *
-     * @return HasMany<PresentationUser>
+     * @return HasMany<PresentationUser, $this>
      */
     public function presentationUsers(): HasMany
     {
@@ -214,7 +214,7 @@ class Presentation extends Model implements HasMedia
     /**
      * Get pending invitations for this presentation.
      *
-     * @return HasMany<PresentationUser>
+     * @return HasMany<PresentationUser, $this>
      */
     public function pendingInvitations(): HasMany
     {

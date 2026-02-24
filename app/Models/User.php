@@ -110,7 +110,7 @@ class User extends Authenticatable implements FilamentUser, VerifyEmailContract
     /**
      * The image uploads that this user has.
      *
-     * @return HasMany<ImageUpload>
+     * @return HasMany<ImageUpload, $this>
      */
     public function imageUploads(): HasMany
     {
@@ -120,7 +120,7 @@ class User extends Authenticatable implements FilamentUser, VerifyEmailContract
     /**
      * The presentations that this user has.
      *
-     * @return HasMany<Presentation>
+     * @return HasMany<Presentation, $this>
      */
     public function presentations(): HasMany
     {
@@ -130,7 +130,7 @@ class User extends Authenticatable implements FilamentUser, VerifyEmailContract
     /**
      * The presentations that this user has.
      *
-     * @return BelongsToMany<Presentation>
+     * @return BelongsToMany<Presentation, $this>
      */
     public function sharedPresentations(): BelongsToMany
     {
@@ -143,7 +143,7 @@ class User extends Authenticatable implements FilamentUser, VerifyEmailContract
     /**
      * The presentation user invitations for this user.
      *
-     * @return HasMany<PresentationUser>
+     * @return HasMany<PresentationUser, $this>
      */
     public function presentationInvitations(): HasMany
     {
@@ -153,7 +153,7 @@ class User extends Authenticatable implements FilamentUser, VerifyEmailContract
     /**
      * Get pending invitations for this user.
      *
-     * @return HasMany<PresentationUser>
+     * @return HasMany<PresentationUser, $this>
      */
     public function pendingInvitations(): HasMany
     {

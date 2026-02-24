@@ -90,7 +90,7 @@ class DailyView extends Model
     /**
      * The Presentation that this record belongs to
      *
-     * @return BelongsTo<Presentation, DailyView>
+     * @return BelongsTo<Presentation, $this>
      */
     public function presentation(): BelongsTo
     {

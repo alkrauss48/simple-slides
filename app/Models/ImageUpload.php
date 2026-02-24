@@ -41,7 +41,7 @@ class ImageUpload extends Model implements HasMedia
     /**
      * The User that this record belongs to
      *
-     * @return BelongsTo<User, ImageUpload>
+     * @return BelongsTo<User, $this>
      */
     public function user(): BelongsTo
     {

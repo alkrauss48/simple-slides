@@ -75,9 +75,9 @@ class PresentationUser extends Pivot
     /**
      * Get the user that owns the invitation.
      *
-     * @return BelongsTo<User, self>
+     * @return BelongsTo<User, $this>
      */
-    public function user()
+    public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);
     }
@@ -85,7 +85,7 @@ class PresentationUser extends Pivot
     /**
      * Get the presentation that this invitation is for.
      *
-     * @return BelongsTo<Presentation, self>
+     * @return BelongsTo<Presentation, $this>
      */
     public function presentation(): BelongsTo
     {

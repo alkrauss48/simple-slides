@@ -21,7 +21,7 @@
         "league/flysystem-aws-s3-v3": "^3.0",
         "spatie/browsershot": "^5.0",
         "spatie/laravel-medialibrary": "^11.0",
-        "spatie/laravel-sluggable": "^3.0",
+        "spatie/laravel-sluggable": "^4.0",
         "tightenco/ziggy": "^2.0",
         "webbingbrasil/filament-copyactions": "^3.0"
     },

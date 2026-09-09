@@ -51,7 +51,12 @@ describe('fetching data', () => {
     test('sets data in the data store for adhoc slides', async () => {
         const wrapper = mountWrapper(btoa(MOCK_ADHOC_URL));
 
-        expect(dataStore.data.length).toBe(3);
+        // The component fetches on mount, so poll until the store is populated
+        // rather than depending on the fetch resolving within one microtask.
+        await vi.waitFor(() => {
+            expect(dataStore.data.length).toBe(3);
+        });
+
         expect(dataStore.data[0]).toBe('<p>Welcome to</p>');
         expect(dataStore.data[1]).toBe('<h1>Simple Slides</h1>');
         expect(dataStore.data[2]).toBe('<p><a href="https://example.com">https://example.com</a></p>');
@@ -60,7 +65,12 @@ describe('fetching data', () => {
     test('sets data in the data store for instructions', async () => {
         const wrapper = mountWrapper(undefined);
 
-        expect(dataStore.data.length).toBe(3);
+        // The component fetches on mount, so poll until the store is populated
+        // rather than depending on the fetch resolving within one microtask.
+        await vi.waitFor(() => {
+            expect(dataStore.data.length).toBe(3);
+        });
+
         expect(dataStore.data[0]).toBe('<p>Welcome to</p>');
         expect(dataStore.data[1]).toBe('<h1>Simple Slides</h1>');
         expect(dataStore.data[2]).toBe('<p><a href="https://example.com">https://example.com</a></p>');

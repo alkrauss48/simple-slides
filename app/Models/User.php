@@ -25,12 +25,12 @@ use Spatie\MediaLibrary\MediaCollections\Models\Media;
 class User extends Authenticatable implements FilamentUser, HasAppAuthentication, HasAppAuthenticationRecovery, VerifyEmailContract
 {
     use HasApiTokens;
+
     /** @use HasFactory<UserFactory> */
     use HasFactory;
+
     use InteractsWithAppAuthentication;
-
     use InteractsWithAppAuthenticationRecovery;
-
     use MustVerifyEmail;
     use Notifiable;
     use SoftDeletes;

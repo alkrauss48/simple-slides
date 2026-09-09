@@ -52,7 +52,7 @@ const mockRoute = vi.fn((name: string, params?: Record<string, any>) => {
     return `/${name}`
 })
 
-global.route = mockRoute
+;(globalThis as any).route = mockRoute
 
 // Mock AppHead component
 vi.mock('@/Components/AppHead.vue', () => ({

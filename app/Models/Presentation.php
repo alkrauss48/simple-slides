@@ -27,6 +27,15 @@ class Presentation extends Model implements HasMedia
     use InteractsWithMedia;
     use SoftDeletes;
 
+    /**
+     * The canonical og:image dimensions for a presentation thumbnail. The
+     * upload field derives its crop aspect ratio from these, and the
+     * browsershot job renders at the same size.
+     */
+    public const THUMBNAIL_WIDTH = 1200;
+
+    public const THUMBNAIL_HEIGHT = 630;
+
     public const DEFAULT_MARKDOWN = <<<'MARKDOWN'
         # My Presentation
 

@@ -48,16 +48,6 @@ use Illuminate\Validation\Rules\Unique;
  */
 class PresentationResource extends Resource
 {
-    /**
-     * The canonical og:image size. Filament 4 validates uploads against the
-     * declared crop aspect ratio server-side, so the ratio is derived from
-     * these rather than written out separately — 1200x630 is ~1.9048:1, not
-     * the 1.91:1 it is usually called, and the mismatch rejected every upload.
-     */
-    private const THUMBNAIL_WIDTH = 1200;
-
-    private const THUMBNAIL_HEIGHT = 630;
-
     protected static ?string $model = Presentation::class;
 
     protected static string|\BackedEnum|null $navigationIcon = 'heroicon-o-presentation-chart-bar';
@@ -156,12 +146,13 @@ class PresentationResource extends Resource
                                     ->imageEditor()
                                     ->imageResizeMode('cover')
                                     ->imageCropAspectRatio(
-                                        // Laravel parses the ratio as `%f/%d`,
+                                        // Filament validates uploads against this
+                                        // ratio, and Laravel parses it as `%f/%d`,
                                         // so it must be a decimal against 1.
-                                        round(self::THUMBNAIL_WIDTH / self::THUMBNAIL_HEIGHT, 4).':1'
+                                        round(Presentation::THUMBNAIL_WIDTH / Presentation::THUMBNAIL_HEIGHT, 4).':1'
                                     )
-                                    ->imageResizeTargetWidth((string) self::THUMBNAIL_WIDTH)
-                                    ->imageResizeTargetHeight((string) self::THUMBNAIL_HEIGHT)
+                                    ->imageResizeTargetWidth((string) Presentation::THUMBNAIL_WIDTH)
+                                    ->imageResizeTargetHeight((string) Presentation::THUMBNAIL_HEIGHT)
                                     ->rules([
                                         function () {
                                             return function (string $attribute, $value, Closure $fail) {

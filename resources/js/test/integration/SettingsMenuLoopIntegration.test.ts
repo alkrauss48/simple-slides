@@ -75,7 +75,7 @@ describe('SettingsMenu Loop Integration with SlideView', () => {
     });
 
     test('changing loop interval clears old interval before starting new one', async () => {
-        const clearIntervalSpy = vi.spyOn(global, 'clearInterval');
+        const clearIntervalSpy = vi.spyOn(globalThis, 'clearInterval');
 
         // Start with loop of 5 seconds
         const wrapper = mountSlideView(5);

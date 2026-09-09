@@ -13,7 +13,7 @@
         "filament/spatie-laravel-media-library-plugin": "^5.0",
         "flowframe/laravel-trend": "^0",
         "guzzlehttp/guzzle": "^8.0",
-        "inertiajs/inertia-laravel": "^2.0",
+        "inertiajs/inertia-laravel": "^3.0",
         "laravel/framework": "^13.0",
         "laravel/sanctum": "^4.0",
         "laravel/tinker": "^3.0",

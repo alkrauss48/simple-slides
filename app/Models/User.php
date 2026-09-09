@@ -33,7 +33,7 @@ class User extends Authenticatable implements FilamentUser, VerifyEmailContract
     /**
      * The attributes that are mass assignable.
      *
-     * @var array<int, string>
+     * @var list<string>
      */
     protected $fillable = [
         'name',
@@ -47,7 +47,7 @@ class User extends Authenticatable implements FilamentUser, VerifyEmailContract
     /**
      * The attributes that should be hidden for serialization.
      *
-     * @var array<int, string>
+     * @var list<string>
      */
     protected $hidden = [
         'password',
@@ -130,7 +130,7 @@ class User extends Authenticatable implements FilamentUser, VerifyEmailContract
     /**
      * The presentations that this user has.
      *
-     * @return BelongsToMany<Presentation, $this>
+     * @return BelongsToMany<Presentation, $this, PresentationUser, 'pivot'>
      */
     public function sharedPresentations(): BelongsToMany
     {

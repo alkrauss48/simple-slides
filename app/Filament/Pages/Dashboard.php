@@ -88,7 +88,7 @@ class Dashboard extends BaseDashboard
                         DatePicker::make('start_date')
                             ->label('Start Date')
                             ->native(false)
-                            ->maxDate(fn (Get $get): ?string => $get('end_date') ?? now())
+                            ->maxDate(fn (Get $get): string => $get('end_date') ?? now())
                             ->hintIcon('heroicon-o-information-circle', tooltip: 'Only affects "Date Range" stats')
                             ->default(now()->subDays(8)),
                         DatePicker::make('end_date')

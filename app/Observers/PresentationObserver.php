@@ -11,8 +11,8 @@ class PresentationObserver
      */
     public function creating(Presentation $presentation): void
     {
-        if (auth()->check() && $presentation->user_id === null) {
-            $presentation->user_id = intval(auth()->id());
+        if (auth()->check() && ! isset($presentation->user_id)) {
+            $presentation->user()->associate(auth()->user());
         }
     }
 }

@@ -191,7 +191,7 @@ class Presentation extends Model implements HasMedia
     /**
      * The users that this presentation has.
      *
-     * @return BelongsToMany<User, $this>
+     * @return BelongsToMany<User, $this, PresentationUser, 'pivot'>
      */
     public function sharedUsers(): BelongsToMany
     {

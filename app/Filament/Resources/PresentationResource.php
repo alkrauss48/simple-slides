@@ -262,8 +262,7 @@ class PresentationResource extends Resource
      */
     public static function getEloquentQuery(): Builder
     {
-        // @phpstan-ignore-next-line
-        return parent::getEloquentQuery()
+        return Presentation::query()
             ->withoutGlobalScopes([
                 SoftDeletingScope::class,
             ])

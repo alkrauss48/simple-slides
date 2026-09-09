@@ -12,7 +12,7 @@ use Illuminate\Database\Eloquent\Factories\Sequence;
 use Illuminate\Support\Facades\App;
 
 /**
- * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\Presentation>
+ * @extends Factory<Presentation>
  */
 class PresentationFactory extends Factory
 {

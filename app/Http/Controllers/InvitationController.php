@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Enums\InviteStatus;
 use App\Models\PresentationUser;
 use App\Models\User;
 use Illuminate\Http\RedirectResponse;
@@ -17,7 +18,7 @@ class InvitationController extends Controller
     public function show(Request $request, string $token): RedirectResponse
     {
         $invitation = PresentationUser::where('invite_token', $token)
-            ->where('invite_status', \App\Enums\InviteStatus::PENDING)
+            ->where('invite_status', InviteStatus::PENDING)
             ->first();
 
         if (! $invitation) {
@@ -52,7 +53,7 @@ class InvitationController extends Controller
     public function accept(Request $request, string $token): RedirectResponse
     {
         $invitation = PresentationUser::where('invite_token', $token)
-            ->where('invite_status', \App\Enums\InviteStatus::PENDING)
+            ->where('invite_status', InviteStatus::PENDING)
             ->first();
 
         if (! $invitation) {

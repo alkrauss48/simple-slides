@@ -9,6 +9,10 @@ use App\Jobs\GenerateThumbnail;
 use App\Models\Presentation as Model;
 // End
 use App\Models\User;
+use Filament\Actions\DeleteAction;
+use Filament\Actions\ForceDeleteAction;
+use Filament\Actions\ReplicateAction;
+use Filament\Actions\RestoreAction;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Queue;
 
@@ -138,7 +142,7 @@ describe('admin users', function () {
         livewire(EditResource::class, [
             'record' => $record->getRouteKey(),
         ])
-            ->callAction(\Filament\Actions\DeleteAction::class);
+            ->callAction(DeleteAction::class);
 
         // $this->assertModelMissing($record);
 
@@ -152,7 +156,7 @@ describe('admin users', function () {
         livewire(EditResource::class, [
             'record' => $record->getRouteKey(),
         ])
-            ->assertActionHidden(\Filament\Actions\ForceDeleteAction::class);
+            ->assertActionHidden(ForceDeleteAction::class);
     });
 
     it('restore is not an option if the record is not soft deleted', function () {
@@ -161,7 +165,7 @@ describe('admin users', function () {
         livewire(EditResource::class, [
             'record' => $record->getRouteKey(),
         ])
-            ->assertActionHidden(\Filament\Actions\RestoreAction::class);
+            ->assertActionHidden(RestoreAction::class);
     });
 
     it('can force delete a soft-deleted record', function () {
@@ -172,7 +176,7 @@ describe('admin users', function () {
         livewire(EditResource::class, [
             'record' => $record->getRouteKey(),
         ])
-            ->callAction(\Filament\Actions\ForceDeleteAction::class);
+            ->callAction(ForceDeleteAction::class);
 
         $this->assertModelMissing($record);
     });
@@ -185,7 +189,7 @@ describe('admin users', function () {
         livewire(EditResource::class, [
             'record' => $record->getRouteKey(),
         ])
-            ->callAction(\Filament\Actions\RestoreAction::class);
+            ->callAction(RestoreAction::class);
 
         expect($record->refresh())
             ->deleted_at->toBe(null);
@@ -342,7 +346,7 @@ describe('non-admin users', function () {
         livewire(EditResource::class, [
             'record' => $record->getRouteKey(),
         ])
-            ->callAction(\Filament\Actions\DeleteAction::class);
+            ->callAction(DeleteAction::class);
 
         expect($record->refresh())
             ->deleted_at->not->toBe(null);
@@ -356,7 +360,7 @@ describe('non-admin users', function () {
         livewire(EditResource::class, [
             'record' => $record->getRouteKey(),
         ])
-            ->assertActionHidden(\Filament\Actions\ForceDeleteAction::class);
+            ->assertActionHidden(ForceDeleteAction::class);
     });
 
     it('restore is not an option if the record is not soft deleted', function () {
@@ -367,7 +371,7 @@ describe('non-admin users', function () {
         livewire(EditResource::class, [
             'record' => $record->getRouteKey(),
         ])
-            ->assertActionHidden(\Filament\Actions\RestoreAction::class);
+            ->assertActionHidden(RestoreAction::class);
     });
 
     it('can force delete a soft-deleted record created by the user', function () {
@@ -380,7 +384,7 @@ describe('non-admin users', function () {
         livewire(EditResource::class, [
             'record' => $record->getRouteKey(),
         ])
-            ->callAction(\Filament\Actions\ForceDeleteAction::class);
+            ->callAction(ForceDeleteAction::class);
 
         $this->assertModelMissing($record);
     });
@@ -395,7 +399,7 @@ describe('non-admin users', function () {
         livewire(EditResource::class, [
             'record' => $record->getRouteKey(),
         ])
-            ->callAction(\Filament\Actions\RestoreAction::class);
+            ->callAction(RestoreAction::class);
 
         expect($record->refresh())
             ->deleted_at->toBe(null);
@@ -482,7 +486,7 @@ describe('non-admin users', function () {
         expect(Model::count())->toBe(1);
 
         livewire(ListResource::class)
-            ->callTableAction(\Filament\Actions\ReplicateAction::class, $record);
+            ->callTableAction(ReplicateAction::class, $record);
 
         expect(Model::count())->toBe(2);
     });

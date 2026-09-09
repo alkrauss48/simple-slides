@@ -9,6 +9,7 @@ use App\Filament\Resources\ImageUploadResource\Widgets\StatsOverview;
 use App\Models\ImageUpload as Model;
 // End
 use App\Models\User;
+use Filament\Actions\DeleteAction;
 use Illuminate\Http\UploadedFile;
 
 use function Pest\Livewire\livewire;
@@ -136,7 +137,7 @@ describe('admin users', function () {
         livewire(EditResource::class, [
             'record' => $record->getRouteKey(),
         ])
-            ->callAction(\Filament\Actions\DeleteAction::class);
+            ->callAction(DeleteAction::class);
 
         $this->assertModelMissing($record);
     });
@@ -311,7 +312,7 @@ describe('non-admin users', function () {
         livewire(EditResource::class, [
             'record' => $record->getRouteKey(),
         ])
-            ->callAction(\Filament\Actions\DeleteAction::class);
+            ->callAction(DeleteAction::class);
 
         $this->assertModelMissing($record);
     });

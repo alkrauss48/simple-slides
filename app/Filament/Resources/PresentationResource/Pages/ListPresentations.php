@@ -3,6 +3,7 @@
 namespace App\Filament\Resources\PresentationResource\Pages;
 
 use App\Filament\Resources\PresentationResource;
+use App\Filament\Widgets\PendingInvitationsWidget;
 use Filament\Actions;
 use Filament\Resources\Pages\ListRecords;
 
@@ -28,7 +29,7 @@ class ListPresentations extends ListRecords
     protected function getHeaderWidgets(): array
     {
         return [
-            \App\Filament\Widgets\PendingInvitationsWidget::class,
+            PendingInvitationsWidget::class,
         ];
     }
 }

@@ -4,6 +4,7 @@ namespace App\Filament\Widgets;
 
 use App\Enums\InviteStatus;
 use App\Models\PresentationUser;
+use Filament\Notifications\Notification;
 use Filament\Widgets\Widget;
 use Illuminate\Support\Facades\Auth;
 
@@ -37,7 +38,7 @@ class PendingInvitationsWidget extends Widget
     {
         $invitation->accept();
 
-        \Filament\Notifications\Notification::make()
+        Notification::make()
             ->title('Invitation accepted!')
             ->success()
             ->send();
@@ -52,7 +53,7 @@ class PendingInvitationsWidget extends Widget
     {
         $invitation->reject();
 
-        \Filament\Notifications\Notification::make()
+        Notification::make()
             ->title('Invitation rejected')
             ->success()
             ->send();

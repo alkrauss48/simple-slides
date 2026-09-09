@@ -4,6 +4,7 @@ use App\Enums\InviteStatus;
 use App\Models\Presentation;
 use App\Models\PresentationUser;
 use App\Models\User;
+use Carbon\Carbon;
 
 test('PresentationUser automatically generates invite token on create', function () {
     $presentation = Presentation::factory()->create();
@@ -194,7 +195,7 @@ test('accept method updates status and sets accepted_at timestamp', function () 
     expect($presentationUser)
         ->invite_status->toBe(InviteStatus::ACCEPTED)
         ->accepted_at->not->toBeNull()
-        ->accepted_at->toBeInstanceOf(\Carbon\Carbon::class);
+        ->accepted_at->toBeInstanceOf(Carbon::class);
 });
 
 test('accept method sets user_id for authenticated user when not set', function () {
@@ -313,6 +314,6 @@ test('invited_at and accepted_at are cast to datetime', function () {
     ]);
 
     expect($presentationUser)
-        ->invited_at->toBeInstanceOf(\Carbon\Carbon::class)
-        ->accepted_at->toBeInstanceOf(\Carbon\Carbon::class);
+        ->invited_at->toBeInstanceOf(Carbon::class)
+        ->accepted_at->toBeInstanceOf(Carbon::class);
 });

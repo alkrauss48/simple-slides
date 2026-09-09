@@ -6,6 +6,7 @@ use App\Enums\InviteStatus;
 use App\Models\Presentation;
 use App\Models\PresentationUser;
 use App\Models\User;
+use App\Notifications\PresentationUserCreated;
 use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Notifications\Notification;
@@ -125,10 +126,10 @@ class SharedUsersRelationManager extends RelationManager
                         RateLimiter::hit($key, 60);
 
                         if ($record->user_id) {
-                            $record->user->notify(new \App\Notifications\PresentationUserCreated($record));
+                            $record->user->notify(new PresentationUserCreated($record));
                         } else {
                             LaravelNotification::route('mail', $record->email)
-                                ->notify(new \App\Notifications\PresentationUserCreated($record));
+                                ->notify(new PresentationUserCreated($record));
                         }
 
                         Notification::make()

@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\AdhocSlidesController;
+use App\Http\Controllers\InvitationController;
 use App\Http\Controllers\PresentationController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\SettingsController;
@@ -29,9 +30,9 @@ Route::get('/privacy', function (): Response {
 });
 
 // Invitation routes (must be before catch-all routes)
-Route::get('/invitations/{token}', [App\Http\Controllers\InvitationController::class, 'show'])
+Route::get('/invitations/{token}', [InvitationController::class, 'show'])
     ->name('invitations.show');
-Route::get('/invitations/{token}/accept', [App\Http\Controllers\InvitationController::class, 'accept'])
+Route::get('/invitations/{token}/accept', [InvitationController::class, 'accept'])
     ->name('invitations.accept');
 
 Route::get('/{user:username}/{slug}', [PresentationController::class, 'show'])

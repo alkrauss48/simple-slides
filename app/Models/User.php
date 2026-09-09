@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Enums\InviteStatus;
 use Database\Factories\UserFactory;
 use Filament\Models\Contracts\FilamentUser;
 use Filament\Panel;
@@ -94,13 +95,13 @@ class User extends Authenticatable implements FilamentUser, VerifyEmailContract
             $imageUploadIds = $this->imageUploads()->pluck('id');
 
             $query
-                ->where('model_type', \App\Models\ImageUpload::class)
+                ->where('model_type', ImageUpload::class)
                 ->whereIn('model_id', $imageUploadIds);
         })->orWhere(function (Builder $query) {
             $presentationIds = $this->presentations()->pluck('id');
 
             $query
-                ->where('model_type', \App\Models\Presentation::class)
+                ->where('model_type', Presentation::class)
                 ->whereIn('model_id', $presentationIds);
         })->sum('size');
 
@@ -158,6 +159,6 @@ class User extends Authenticatable implements FilamentUser, VerifyEmailContract
     public function pendingInvitations(): HasMany
     {
         return $this->presentationInvitations()
-            ->where('invite_status', \App\Enums\InviteStatus::PENDING);
+            ->where('invite_status', InviteStatus::PENDING);
     }
 }

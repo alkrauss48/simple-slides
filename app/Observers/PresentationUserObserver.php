@@ -3,6 +3,7 @@
 namespace App\Observers;
 
 use App\Models\PresentationUser;
+use App\Notifications\PresentationUserCreated;
 use Illuminate\Support\Facades\Notification;
 
 class PresentationUserObserver
@@ -14,10 +15,10 @@ class PresentationUserObserver
     {
         // Send invitation email (on-demand if user doesn't exist)
         if ($presentationUser->user_id) {
-            $presentationUser->user->notify(new \App\Notifications\PresentationUserCreated($presentationUser));
+            $presentationUser->user->notify(new PresentationUserCreated($presentationUser));
         } else {
             Notification::route('mail', $presentationUser->email)
-                ->notify(new \App\Notifications\PresentationUserCreated($presentationUser));
+                ->notify(new PresentationUserCreated($presentationUser));
         }
     }
 

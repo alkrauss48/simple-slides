@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Enums\InviteStatus;
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\Pivot;
@@ -15,8 +16,8 @@ use Illuminate\Support\Str;
  * @property string $email
  * @property string $invite_token
  * @property InviteStatus $invite_status
- * @property \Carbon\Carbon $invited_at
- * @property \Carbon\Carbon $accepted_at
+ * @property Carbon $invited_at
+ * @property Carbon $accepted_at
  * @property Presentation $presentation
  * @property User $user
  */

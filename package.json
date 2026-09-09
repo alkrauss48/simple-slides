@@ -1,4 +1,5 @@
 {
+    "name": "simple-slides",
     "private": true,
     "type": "module",
     "scripts": {

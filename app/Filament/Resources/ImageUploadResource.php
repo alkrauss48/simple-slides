@@ -2,22 +2,33 @@
 
 namespace App\Filament\Resources;
 
-use App\Filament\Resources\ImageUploadResource\Pages;
+use App\Filament\Resources\ImageUploadResource\Pages\CreateImageUpload;
+use App\Filament\Resources\ImageUploadResource\Pages\EditImageUpload;
+use App\Filament\Resources\ImageUploadResource\Pages\ListImageUploads;
+use App\Filament\Resources\ImageUploadResource\Widgets\StatsOverview;
 use App\Models\ImageUpload;
 use App\Models\User;
 use Closure;
-use Filament\Forms;
-use Filament\Forms\Components\Grid;
-use Filament\Forms\Components\Section;
+use Filament\Actions\ActionGroup;
+use Filament\Actions\BulkActionGroup;
+use Filament\Actions\DeleteBulkAction;
+use Filament\Actions\EditAction;
+use Filament\Forms\Components\Select;
 use Filament\Forms\Components\SpatieMediaLibraryFileUpload;
-use Filament\Forms\Form;
+use Filament\Forms\Components\TextInput;
 use Filament\Resources\Resource;
-use Filament\Tables;
+use Filament\Schemas\Components\Grid;
+use Filament\Schemas\Components\Section;
+use Filament\Schemas\Schema;
 use Filament\Tables\Columns\SpatieMediaLibraryImageColumn;
+use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
-use Webbingbrasil\FilamentCopyActions\Tables\Actions\CopyAction;
+use Webbingbrasil\FilamentCopyActions\Actions\CopyAction;
 
+/**
+ * @extends resource<ImageUpload>
+ */
 class ImageUploadResource extends Resource
 {
     protected static ?string $label = 'Image';
@@ -26,18 +37,20 @@ class ImageUploadResource extends Resource
 
     protected static ?string $model = ImageUpload::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-photo';
+    protected static string|\BackedEnum|null $navigationIcon = 'heroicon-o-photo';
 
-    protected static ?string $navigationGroup = 'Extras';
+    protected static string|\UnitEnum|null $navigationGroup = 'Extras';
 
-    public static function form(Form $form): Form
+    public static function form(Schema $schema): Schema
     {
-        return $form
-            ->schema([
+        return $schema
+            ->components([
                 Grid::make()
+                    ->columnSpanFull()
                     ->columns(3)
                     ->schema([
                         SpatieMediaLibraryFileUpload::make('image')
+                            ->visibility('public')
                             ->columnSpan([
                                 'md' => 2,
                             ])
@@ -60,15 +73,15 @@ class ImageUploadResource extends Resource
                             ->description('All the metadata related to your image.')
                             ->columnSpan(1)
                             ->schema([
-                                Forms\Components\TextInput::make('title')
+                                TextInput::make('title')
                                     ->helperText('This is your title for the image. No one else will see this.')
                                     ->required()
                                     ->maxLength(255),
-                                Forms\Components\TextInput::make('alt_text')
+                                TextInput::make('alt_text')
                                     ->helperText('This is the text that will be read by screen readers, or if the image can\'t be displayed. It\'s required because it\'s the right thing to do.')
                                     ->required()
                                     ->maxLength(255),
-                                Forms\Components\Select::make('user_id')
+                                Select::make('user_id')
                                     ->relationship('user', 'name')
                                     ->hidden(fn () => ! auth()->user()->isAdministrator())
                                     ->searchable()
@@ -83,20 +96,21 @@ class ImageUploadResource extends Resource
         return $table
             ->defaultSort('updated_at', 'desc')
             ->columns([
-                Tables\Columns\TextColumn::make('title')
+                TextColumn::make('title')
                     ->searchable(),
                 SpatieMediaLibraryImageColumn::make('image')
+                    ->visibility('public')
                     ->collection('image'),
-                Tables\Columns\TextColumn::make('user.name')
+                TextColumn::make('user.name')
                     ->numeric()
                     ->hidden(fn () => ! auth()->user()->isAdministrator())
                     ->sortable(),
-                Tables\Columns\TextColumn::make('created_at')
+                TextColumn::make('created_at')
                     ->label('Created At')
                     ->date()
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
-                Tables\Columns\TextColumn::make('updated_at')
+                TextColumn::make('updated_at')
                     ->label('Updated At')
                     ->date()
                     ->sortable()
@@ -105,9 +119,9 @@ class ImageUploadResource extends Resource
             ->filters([
                 //
             ])
-            ->actions([
-                Tables\Actions\ActionGroup::make([
-                    Tables\Actions\EditAction::make(),
+            ->recordActions([
+                ActionGroup::make([
+                    EditAction::make(),
                     CopyAction::make('copyImageUrl')
                         ->label('Copy Image URL')
                         ->copyable(fn (ImageUpload $record): string => $record->getFirstMediaUrl('image')),
@@ -116,9 +130,9 @@ class ImageUploadResource extends Resource
                         ->copyable(fn (ImageUpload $record): string => $record->markdownUrl),
                 ]),
             ])
-            ->bulkActions([
-                Tables\Actions\BulkActionGroup::make([
-                    Tables\Actions\DeleteBulkAction::make(),
+            ->toolbarActions([
+                BulkActionGroup::make([
+                    DeleteBulkAction::make(),
                 ]),
             ]);
     }
@@ -133,16 +147,16 @@ class ImageUploadResource extends Resource
     public static function getPages(): array
     {
         return [
-            'index' => Pages\ListImageUploads::route('/'),
-            'create' => Pages\CreateImageUpload::route('/create'),
-            'edit' => Pages\EditImageUpload::route('/{record}/edit'),
+            'index' => ListImageUploads::route('/'),
+            'create' => CreateImageUpload::route('/create'),
+            'edit' => EditImageUpload::route('/{record}/edit'),
         ];
     }
 
     public static function getWidgets(): array
     {
         return [
-            ImageUploadResource\Widgets\StatsOverview::class,
+            StatsOverview::class,
         ];
     }
 

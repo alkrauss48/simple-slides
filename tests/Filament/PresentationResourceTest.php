@@ -59,7 +59,9 @@ describe('admin users', function () {
             ->fillForm([
                 ...$newData->toArray(),
                 'thumbnail' => [
-                    UploadedFile::fake()->image('avatar.jpg'),
+                    // Must match the resource's declared crop ratio; Filament 4
+                    // validates image dimensions server-side.
+                    UploadedFile::fake()->image('avatar.jpg', 1200, 630),
                 ],
             ])
             ->call('create')
@@ -119,7 +121,9 @@ describe('admin users', function () {
             ->fillForm([
                 ...$newData->toArray(),
                 'thumbnail' => [
-                    UploadedFile::fake()->image('avatar.jpg'),
+                    // Must match the resource's declared crop ratio; Filament 4
+                    // validates image dimensions server-side.
+                    UploadedFile::fake()->image('avatar.jpg', 1200, 630),
                 ],
             ])
             ->call('save')
@@ -244,7 +248,9 @@ describe('non-admin users', function () {
             ->fillForm([
                 ...$newData->toArray(),
                 'thumbnail' => [
-                    UploadedFile::fake()->image('avatar.jpg'),
+                    // Must match the resource's declared crop ratio; Filament 4
+                    // validates image dimensions server-side.
+                    UploadedFile::fake()->image('avatar.jpg', 1200, 630),
                 ],
             ])
             ->call('create')
@@ -322,7 +328,9 @@ describe('non-admin users', function () {
             ->fillForm([
                 ...$newData->toArray(),
                 'thumbnail' => [
-                    UploadedFile::fake()->image('avatar.jpg'),
+                    // Must match the resource's declared crop ratio; Filament 4
+                    // validates image dimensions server-side.
+                    UploadedFile::fake()->image('avatar.jpg', 1200, 630),
                 ],
             ])
             ->call('save')

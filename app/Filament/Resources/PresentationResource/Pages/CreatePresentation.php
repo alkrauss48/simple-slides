@@ -3,7 +3,7 @@
 namespace App\Filament\Resources\PresentationResource\Pages;
 
 use App\Filament\Resources\PresentationResource;
-use Filament\Actions;
+use Filament\Actions\Action;
 use Filament\Resources\Pages\CreateRecord;
 
 class CreatePresentation extends CreateRecord
@@ -15,7 +15,7 @@ class CreatePresentation extends CreateRecord
     protected function getHeaderActions(): array
     {
         return [
-            Actions\Action::make('create')
+            Action::make('create')
                 ->action('create'),
         ];
     }

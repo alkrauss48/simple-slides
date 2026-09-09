@@ -4,9 +4,13 @@ namespace App\Filament\Resources\PresentationResource\Pages;
 
 use App\Filament\Resources\PresentationResource;
 use App\Models\Presentation;
-use Filament\Actions;
+use Filament\Actions\Action;
+use Filament\Actions\ActionGroup;
+use Filament\Actions\DeleteAction;
+use Filament\Actions\ForceDeleteAction;
+use Filament\Actions\RestoreAction;
 use Filament\Resources\Pages\EditRecord;
-use Webbingbrasil\FilamentCopyActions\Pages\Actions\CopyAction;
+use Webbingbrasil\FilamentCopyActions\Actions\CopyAction;
 
 class EditPresentation extends EditRecord
 {
@@ -20,11 +24,11 @@ class EditPresentation extends EditRecord
     protected function getHeaderActions(): array
     {
         return [
-            Actions\Action::make('save')
+            Action::make('save')
                 ->label('Save changes')
                 ->action('save'),
-            Actions\ActionGroup::make([
-                Actions\Action::make('view')
+            ActionGroup::make([
+                Action::make('view')
                     ->label('View')
                     ->color('gray')
                     ->url(fn (Presentation $record): string => route('presentations.show', [
@@ -41,9 +45,9 @@ class EditPresentation extends EditRecord
                         'user' => $record->user->username,
                         'slug' => $record->slug,
                     ])),
-                Actions\DeleteAction::make(),
-                Actions\ForceDeleteAction::make(),
-                Actions\RestoreAction::make(),
+                DeleteAction::make(),
+                ForceDeleteAction::make(),
+                RestoreAction::make(),
             ])
                 ->color('gray')
                 ->button()

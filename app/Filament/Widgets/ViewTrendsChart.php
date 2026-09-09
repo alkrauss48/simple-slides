@@ -13,13 +13,17 @@ class ViewTrendsChart extends ChartWidget
 {
     use InteractsWithPageFilters;
 
-    protected static ?string $heading = 'View Trends in Date Range';
+    // v4 renders widgets lazily by default; these were eager in v3, and
+    // lazy placeholders also hide widget errors from page-level tests.
+    protected static bool $isLazy = false;
+
+    protected ?string $heading = 'View Trends in Date Range';
 
     protected int|string|array $columnSpan = 'full';
 
-    protected static ?string $maxHeight = '300px';
+    protected ?string $maxHeight = '300px';
 
-    protected static ?string $pollingInterval = null;
+    protected ?string $pollingInterval = null;
 
     protected static ?int $sort = 5;
 
@@ -27,10 +31,10 @@ class ViewTrendsChart extends ChartWidget
     {
         $trend = Trend::query(
             AggregateView::forUser()
-                ->stats(presentationId: $this->filters['presentation_id'])
+                ->stats(presentationId: $this->pageFilters['presentation_id'])
         )->between(
-            start: Carbon::parse($this->filters['start_date'])->startOfDay(),
-            end: Carbon::parse($this->filters['end_date'])->endOfDay(),
+            start: Carbon::parse($this->pageFilters['start_date'])->startOfDay(),
+            end: Carbon::parse($this->pageFilters['end_date'])->endOfDay(),
         )
             ->perDay();
 

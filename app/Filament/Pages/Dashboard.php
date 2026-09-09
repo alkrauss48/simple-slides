@@ -4,21 +4,21 @@ namespace App\Filament\Pages;
 
 use App\Enums\PresentationFilter;
 use App\Models\Presentation;
-use Filament\Actions;
+use Filament\Actions\Action;
 use Filament\Forms\Components\DatePicker;
-use Filament\Forms\Components\Section;
 use Filament\Forms\Components\Select;
-use Filament\Forms\Form;
-use Filament\Forms\Get;
 use Filament\Pages\Dashboard as BaseDashboard;
 use Filament\Pages\Dashboard\Concerns\HasFiltersForm;
+use Filament\Schemas\Components\Section;
+use Filament\Schemas\Components\Utilities\Get;
+use Filament\Schemas\Schema;
 use Illuminate\Contracts\View\View;
 
 class Dashboard extends BaseDashboard
 {
     use HasFiltersForm;
 
-    public function getColumns(): int|string|array
+    public function getColumns(): int|array
     {
         return 2;
     }
@@ -31,12 +31,12 @@ class Dashboard extends BaseDashboard
     protected function getHeaderActions(): array
     {
         return [
-            Actions\Action::make('create')
+            Action::make('create')
                 ->label('New Presentation')
                 ->url(route('filament.admin.resources.presentations.create'))
                 ->icon('heroicon-m-plus')
                 ->button(),
-            Actions\Action::make('Reset Filters')
+            Action::make('Reset Filters')
                 ->color('gray')
                 ->action(function () {
                     $this->filters = [
@@ -48,11 +48,12 @@ class Dashboard extends BaseDashboard
         ];
     }
 
-    public function filtersForm(Form $form): Form
+    public function filtersForm(Schema $schema): Schema
     {
-        return $form
-            ->schema([
+        return $schema
+            ->components([
                 Section::make()
+                    ->columnSpanFull()
                     ->schema([
                         Select::make('presentation_id')
                             ->label('Presentation')

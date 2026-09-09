@@ -1,8 +1,8 @@
 <?php
 
 use App\Models\User;
-use Filament\Notifications\Auth\ResetPassword as ResetPasswordNotification;
-use Filament\Pages\Auth\PasswordReset\RequestPasswordReset;
+use Filament\Auth\Notifications\ResetPassword;
+use Filament\Auth\Pages\PasswordReset\RequestPasswordReset;
 use Illuminate\Support\Facades\Notification;
 
 use function Pest\Livewire\livewire;
@@ -22,7 +22,7 @@ test('password reset request can be initiated', function () {
         ->set('data.email', $user->email)
         ->call('request');
 
-    Notification::assertSentTo($user, ResetPasswordNotification::class);
+    Notification::assertSentTo($user, ResetPassword::class);
 });
 
 test('reset password form displays with valid token', function () {
@@ -34,7 +34,7 @@ test('reset password form displays with valid token', function () {
         ->set('data.email', $user->email)
         ->call('request');
 
-    Notification::assertSentTo($user, ResetPasswordNotification::class, function ($notification) {
+    Notification::assertSentTo($user, ResetPassword::class, function ($notification) {
         $response = $this->get($notification->url);
 
         $response->assertSuccessful();

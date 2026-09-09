@@ -9,12 +9,11 @@
     "license": "MIT",
     "require": {
         "php": "^8.5",
-        "filament/filament": "^3.0",
-        "filament/spatie-laravel-media-library-plugin": "^3.0",
+        "filament/filament": "^4.0",
+        "filament/spatie-laravel-media-library-plugin": "^4.0",
         "flowframe/laravel-trend": "^0",
         "guzzlehttp/guzzle": "^7.0",
         "inertiajs/inertia-laravel": "^2.0",
-        "jeffgreco13/filament-breezy": "^2.0",
         "laravel/framework": "^12.0",
         "laravel/sanctum": "^4.0",
         "laravel/tinker": "^2.0",
@@ -23,7 +22,7 @@
         "spatie/laravel-medialibrary": "^11.0",
         "spatie/laravel-sluggable": "^4.0",
         "tightenco/ziggy": "^2.0",
-        "webbingbrasil/filament-copyactions": "^3.0"
+        "webbingbrasil/filament-copyactions": "^4.0"
     },
     "require-dev": {
         "fakerphp/faker": "^1.0",

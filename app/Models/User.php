@@ -4,6 +4,10 @@ namespace App\Models;
 
 use App\Enums\InviteStatus;
 use Database\Factories\UserFactory;
+use Filament\Auth\MultiFactor\App\Concerns\InteractsWithAppAuthentication;
+use Filament\Auth\MultiFactor\App\Concerns\InteractsWithAppAuthenticationRecovery;
+use Filament\Auth\MultiFactor\App\Contracts\HasAppAuthentication;
+use Filament\Auth\MultiFactor\App\Contracts\HasAppAuthenticationRecovery;
 use Filament\Models\Contracts\FilamentUser;
 use Filament\Panel;
 use Illuminate\Auth\MustVerifyEmail;
@@ -15,21 +19,21 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
-use Jeffgreco13\FilamentBreezy\Traits\TwoFactorAuthenticatable;
 use Laravel\Sanctum\HasApiTokens;
 use Spatie\MediaLibrary\MediaCollections\Models\Media;
 
-class User extends Authenticatable implements FilamentUser, VerifyEmailContract
+class User extends Authenticatable implements FilamentUser, HasAppAuthentication, HasAppAuthenticationRecovery, VerifyEmailContract
 {
     use HasApiTokens;
-
     /** @use HasFactory<UserFactory> */
     use HasFactory;
+    use InteractsWithAppAuthentication;
+
+    use InteractsWithAppAuthenticationRecovery;
 
     use MustVerifyEmail;
     use Notifiable;
     use SoftDeletes;
-    use TwoFactorAuthenticatable;
 
     /**
      * The attributes that are mass assignable.

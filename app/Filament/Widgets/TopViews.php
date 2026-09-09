@@ -4,27 +4,39 @@ namespace App\Filament\Widgets;
 
 use App\Enums\PresentationFilter;
 use App\Models\AggregateView;
-use Filament\Tables\Actions\Action;
+use Filament\Actions\Action;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 use Filament\Widgets\Concerns\InteractsWithPageFilters;
 use Filament\Widgets\TableWidget as BaseWidget;
+use Illuminate\Database\Eloquent\Model;
 
 class TopViews extends BaseWidget
 {
     use InteractsWithPageFilters;
 
+    // v4 renders widgets lazily by default; these were eager in v3, and
+    // lazy placeholders also hide widget errors from page-level tests.
+    protected static bool $isLazy = false;
+
     protected static ?string $heading = 'Detailed Views in Date Range';
 
     protected int|string|array $columnSpan = 'full';
 
-    protected static ?string $pollingInterval = null;
-
     protected static ?int $sort = 10;
 
-    public function getTableRecordKey(mixed $record): string
+    public function getTableRecordKey(Model|array $record): string
     {
-        return $record->presentation_id.$record->adhoc_slug;
+        // The table query groups by these two columns, so they identify a row.
+        if ($record instanceof AggregateView) {
+            return $record->presentation_id.$record->adhoc_slug;
+        }
+
+        if (is_array($record)) {
+            return $record['presentation_id'].$record['adhoc_slug'];
+        }
+
+        return parent::getTableRecordKey($record);
     }
 
     public function table(Table $table): Table
@@ -33,9 +45,9 @@ class TopViews extends BaseWidget
             ->query(
                 AggregateView::forUser()
                     ->stats(
-                        presentationId: $this->filters['presentation_id'],
-                        startDate: $this->filters['start_date'],
-                        endDate: $this->filters['end_date'],
+                        presentationId: $this->pageFilters['presentation_id'],
+                        startDate: $this->pageFilters['start_date'],
+                        endDate: $this->pageFilters['end_date'],
                     )->selectRaw(
                         'presentation_id, '.
                         'adhoc_slug, '.
@@ -43,6 +55,9 @@ class TopViews extends BaseWidget
                         'sum(unique_count) as unique_count'
                     )->groupByRaw('presentation_id, adhoc_slug')
             )
+            // v4 appends a primary-key sort by default, which this grouped
+            // aggregate query cannot satisfy on Postgres.
+            ->defaultKeySort(false)
             ->defaultSort('total_count', 'desc')
             ->columns([
                 TextColumn::make('presentation.title')
@@ -86,7 +101,7 @@ class TopViews extends BaseWidget
                     ->url(route('filament.admin.resources.presentations.create'))
                     ->icon('heroicon-m-plus')
                     ->button(),
-            ])->actions([
+            ])->recordActions([
                 Action::make('View')
                     ->url(function (AggregateView $record): string {
                         if ($record->isInstructions) {

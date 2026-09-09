@@ -8,6 +8,10 @@ use Spatie\MediaLibrary\MediaCollections\Models\Media;
 
 class StatsOverview extends BaseWidget
 {
+    // v4 renders widgets lazily by default; these were eager in v3, and
+    // lazy placeholders also hide widget errors from page-level tests.
+    protected static bool $isLazy = false;
+
     protected function getStats(): array
     {
         if (auth()->user()->isAdministrator()) {

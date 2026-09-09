@@ -3,22 +3,39 @@
 namespace App\Filament\Resources;
 
 use App\Enums\SlideDelimiter;
-use App\Filament\Resources\PresentationResource\Pages;
+use App\Filament\Resources\PresentationResource\Pages\CreatePresentation;
+use App\Filament\Resources\PresentationResource\Pages\EditPresentation;
+use App\Filament\Resources\PresentationResource\Pages\ListPresentations;
 use App\Filament\Resources\PresentationResource\RelationManagers\SharedUsersRelationManager;
 use App\Jobs\GenerateThumbnail;
 use App\Models\Presentation;
 use App\Models\User;
 use Closure;
-use Filament\Forms;
-use Filament\Forms\Components\Grid;
-use Filament\Forms\Components\Section;
+use Filament\Actions\Action;
+use Filament\Actions\ActionGroup;
+use Filament\Actions\BulkActionGroup;
+use Filament\Actions\DeleteBulkAction;
+use Filament\Actions\EditAction;
+use Filament\Actions\ForceDeleteBulkAction;
+use Filament\Actions\ReplicateAction;
+use Filament\Actions\RestoreBulkAction;
+use Filament\Forms\Components\Hidden;
+use Filament\Forms\Components\MarkdownEditor;
+use Filament\Forms\Components\Select;
 use Filament\Forms\Components\SpatieMediaLibraryFileUpload;
-use Filament\Forms\Form;
-use Filament\Forms\Get;
+use Filament\Forms\Components\Textarea;
+use Filament\Forms\Components\TextInput;
+use Filament\Forms\Components\Toggle;
 use Filament\Notifications\Notification;
 use Filament\Resources\Resource;
-use Filament\Tables;
+use Filament\Schemas\Components\Grid;
+use Filament\Schemas\Components\Section;
+use Filament\Schemas\Components\Utilities\Get;
+use Filament\Schemas\Schema;
 use Filament\Tables\Columns\SpatieMediaLibraryImageColumn;
+use Filament\Tables\Columns\TextColumn;
+use Filament\Tables\Columns\ToggleColumn;
+use Filament\Tables\Filters\TrashedFilter;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
@@ -26,52 +43,77 @@ use Illuminate\Support\HtmlString;
 use Illuminate\Support\Str;
 use Illuminate\Validation\Rules\Unique;
 
+/**
+ * @extends resource<Presentation>
+ */
 class PresentationResource extends Resource
 {
+    /**
+     * The canonical og:image size. Filament 4 validates uploads against the
+     * declared crop aspect ratio server-side, so the ratio is derived from
+     * these rather than written out separately — 1200x630 is ~1.9048:1, not
+     * the 1.91:1 it is usually called, and the mismatch rejected every upload.
+     */
+    private const THUMBNAIL_WIDTH = 1200;
+
+    private const THUMBNAIL_HEIGHT = 630;
+
     protected static ?string $model = Presentation::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-presentation-chart-bar';
+    protected static string|\BackedEnum|null $navigationIcon = 'heroicon-o-presentation-chart-bar';
 
-    protected static ?string $navigationGroup = 'Main';
+    protected static string|\UnitEnum|null $navigationGroup = 'Main';
 
-    public static function form(Form $form): Form
+    public static function form(Schema $schema): Schema
     {
-        return $form
-            ->schema([
+        return $schema
+            ->components([
                 Grid::make()
+                    ->columnSpanFull()
                     ->columns(3)
                     ->schema([
-                        Forms\Components\MarkdownEditor::make('content')
+                        MarkdownEditor::make('content')
                             ->required()
                             ->default(Presentation::DEFAULT_MARKDOWN)
-                            ->hint(fn (Get $get) => new HtmlString(
-                                '<strong>Tip:</strong> '
-                                .'Slides are separated by '
-                                .SlideDelimiter::tryFrom($get('slide_delimiter'))?->helperText()
-                            ))->helperText(new HtmlString(
+                            ->hint(function (Get $get): HtmlString {
+                                // The model casts slide_delimiter to the enum, and v4
+                                // hands enum-backed state back as an instance rather
+                                // than a scalar, so accept either shape.
+                                $delimiter = $get('slide_delimiter');
+
+                                if (! $delimiter instanceof SlideDelimiter) {
+                                    $delimiter = SlideDelimiter::tryFrom((string) $delimiter);
+                                }
+
+                                return new HtmlString(
+                                    '<strong>Tip:</strong> '
+                                    .'Slides are separated by '
+                                    .$delimiter?->helperText()
+                                );
+                            })->helperText(new HtmlString(
                                 'Want an example? See the site\'s '
                                 .'<u><a target="_blank" href="/instructions.md">instructions</a></u>.'
                             ))->columnSpan([
                                 'md' => 2,
                             ])->disableToolbarButtons([
                                 'attachFiles',
-                            ])->saveUploadedFileAttachmentsUsing(function () {
+                            ])->saveUploadedFileAttachmentUsing(function () {
                                 // Block images from being uploaded.
                                 // This prevents drag-and-drop uploads.
                                 return null;
-                            })->getUploadedAttachmentUrlUsing(function () {
-                                // Required to go along with a null `saveUploadedFileAttachmentsUsing`
+                            })->getFileAttachmentUrlUsing(function () {
+                                // Required to go along with a null `saveUploadedFileAttachmentUsing`
                                 return null;
                             }),
                         Section::make('Details')
                             ->columnSpan(1)
                             ->schema([
-                                Forms\Components\TextInput::make('title')
+                                TextInput::make('title')
                                     ->required()
                                     ->live(debounce: 500)
                                     ->afterStateUpdated(fn ($state, callable $set) => $set('slug', Str::slug($state)))
                                     ->maxLength(255),
-                                Forms\Components\TextInput::make('slug')
+                                TextInput::make('slug')
                                     ->required()
                                     ->hintIcon('heroicon-o-information-circle', tooltip: 'The slug is autogenerated from the title, but you can still change it.')
                                     ->unique(
@@ -79,17 +121,17 @@ class PresentationResource extends Resource
                                         modifyRuleUsing: fn (Unique $rule, Get $get) => $rule->where('user_id', $get('user_id')),
                                     )
                                     ->maxLength(255),
-                                Forms\Components\Select::make('user_id')
+                                Select::make('user_id')
                                     ->relationship('user', 'name')
                                     ->hidden(fn () => ! auth()->user()->isAdministrator())
                                     ->searchable()
                                     ->default(auth()->id()),
-                                Forms\Components\Hidden::make('user_id')
+                                Hidden::make('user_id')
                                     ->default(auth()->id()),
-                                Forms\Components\Toggle::make('is_published')
+                                Toggle::make('is_published')
                                     ->label('Published')
                                     ->helperText('You can always view your own presentations, but if they aren\'t published, then no one else can.'),
-                                Forms\Components\Textarea::make('description')
+                                Textarea::make('description')
                                     ->helperText(
                                         'A short summary of your presentation. '
                                         .'This will be only be seen when sharing via social media. '
@@ -97,7 +139,7 @@ class PresentationResource extends Resource
                                     )->placeholder('In this talk, we explore...')
                                     ->maxLength(160),
 
-                                Forms\Components\Select::make('slide_delimiter')
+                                Select::make('slide_delimiter')
                                     ->label('Slide Delimiter')
                                     ->required()
                                     ->live()
@@ -108,13 +150,18 @@ class PresentationResource extends Resource
                                     ->default(SlideDelimiter::DOUBLE_NEW_LINE->value)
                                     ->options(SlideDelimiter::array()),
                                 SpatieMediaLibraryFileUpload::make('thumbnail')
+                                    ->visibility('public')
                                     ->collection('thumbnail')
                                     ->image()
                                     ->imageEditor()
                                     ->imageResizeMode('cover')
-                                    ->imageCropAspectRatio('1.91:1')
-                                    ->imageResizeTargetWidth('1200')
-                                    ->imageResizeTargetHeight('630')
+                                    ->imageCropAspectRatio(
+                                        // Laravel parses the ratio as `%f/%d`,
+                                        // so it must be a decimal against 1.
+                                        round(self::THUMBNAIL_WIDTH / self::THUMBNAIL_HEIGHT, 4).':1'
+                                    )
+                                    ->imageResizeTargetWidth((string) self::THUMBNAIL_WIDTH)
+                                    ->imageResizeTargetHeight((string) self::THUMBNAIL_HEIGHT)
                                     ->rules([
                                         function () {
                                             return function (string $attribute, $value, Closure $fail) {
@@ -127,7 +174,7 @@ class PresentationResource extends Resource
                                         },
                                     ])
                                     ->hintAction(
-                                        Forms\Components\Actions\Action::make('Generate Thumbnail')
+                                        Action::make('Generate Thumbnail')
                                             ->label('Auto-Generate')
                                             ->disabled(fn (?Presentation $record) => ! $record?->id)
                                             ->requiresConfirmation()
@@ -181,47 +228,52 @@ class PresentationResource extends Resource
         return $table
             ->defaultSort('updated_at', 'desc')
             ->columns([
-                SpatieMediaLibraryImageColumn::make('thumbnail')->collection('thumbnail'),
-                Tables\Columns\TextColumn::make('title')
+                SpatieMediaLibraryImageColumn::make('thumbnail')
+                    ->visibility('public')
+                    ->collection('thumbnail'),
+                TextColumn::make('title')
                     ->sortable()
                     ->searchable(),
-                Tables\Columns\TextColumn::make('slug')
+                TextColumn::make('slug')
                     ->sortable()
                     ->toggleable()
                     ->searchable(),
-                Tables\Columns\ToggleColumn::make('is_published')
+                ToggleColumn::make('is_published')
                     ->label('Published')
                     ->sortable(),
-                Tables\Columns\TextColumn::make('user.name')
+                TextColumn::make('user.name')
                     ->hidden(fn () => ! auth()->user()->isAdministrator())
                     ->sortable(),
-                Tables\Columns\TextColumn::make('created_at')
+                TextColumn::make('created_at')
                     ->date()
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
-                Tables\Columns\TextColumn::make('updated_at')
+                TextColumn::make('updated_at')
                     ->date()
                     ->sortable()
                     ->toggleable(),
-                Tables\Columns\TextColumn::make('deleted_at')
+                TextColumn::make('deleted_at')
                     ->date()
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
             ])
+            // v4 defers filters behind an Apply button by default; these are
+            // one-click toggles, so keep them applying immediately.
+            ->deferFilters(false)
             ->filters([
-                Tables\Filters\TrashedFilter::make(),
+                TrashedFilter::make(),
             ])
-            ->actions([
-                Tables\Actions\ActionGroup::make([
-                    Tables\Actions\Action::make('View')
+            ->recordActions([
+                ActionGroup::make([
+                    Action::make('View')
                         ->url(fn (Presentation $record): string => route('presentations.show', [
                             'user' => $record->user->username,
                             'slug' => $record->slug,
                         ]))
                         ->icon('heroicon-o-arrow-top-right-on-square')
                         ->openUrlInNewTab(),
-                    Tables\Actions\EditAction::make(),
-                    Tables\Actions\ReplicateAction::make()
+                    EditAction::make(),
+                    ReplicateAction::make()
                         ->beforeReplicaSaved(function (Presentation $replica, Presentation $record): void {
                             $replica->title = 'Copy of '.$record->title;
                             $replica->slug = 'copy-of-'.$record->slug;
@@ -230,11 +282,11 @@ class PresentationResource extends Resource
                         ->successNotificationTitle('Presentation replicated'),
                 ]),
             ])
-            ->bulkActions([
-                Tables\Actions\BulkActionGroup::make([
-                    Tables\Actions\DeleteBulkAction::make(),
-                    Tables\Actions\ForceDeleteBulkAction::make(),
-                    Tables\Actions\RestoreBulkAction::make(),
+            ->toolbarActions([
+                BulkActionGroup::make([
+                    DeleteBulkAction::make(),
+                    ForceDeleteBulkAction::make(),
+                    RestoreBulkAction::make(),
                 ]),
             ]);
     }
@@ -249,9 +301,9 @@ class PresentationResource extends Resource
     public static function getPages(): array
     {
         return [
-            'index' => Pages\ListPresentations::route('/'),
-            'create' => Pages\CreatePresentation::route('/create'),
-            'edit' => Pages\EditPresentation::route('/{record}/edit'),
+            'index' => ListPresentations::route('/'),
+            'create' => CreatePresentation::route('/create'),
+            'edit' => EditPresentation::route('/{record}/edit'),
         ];
     }
 

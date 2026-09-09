@@ -12,7 +12,11 @@ class ViewStats extends BaseWidget
 {
     use InteractsWithPageFilters;
 
-    protected static ?string $pollingInterval = null;
+    // v4 renders widgets lazily by default; these were eager in v3, and
+    // lazy placeholders also hide widget errors from page-level tests.
+    protected static bool $isLazy = false;
+
+    protected ?string $pollingInterval = null;
 
     protected static ?int $sort = 1;
 
@@ -28,7 +32,7 @@ class ViewStats extends BaseWidget
     private function dailyViews(): Stat
     {
         $views = DailyView::forUser()
-            ->stats(presentationId: $this->filters['presentation_id'])
+            ->stats(presentationId: $this->pageFilters['presentation_id'])
             ->get();
 
         $totalviews = $views->count();
@@ -48,9 +52,9 @@ class ViewStats extends BaseWidget
     {
         $views = AggregateView::forUser()
             ->stats(
-                presentationId: $this->filters['presentation_id'],
-                startDate: $withinRange ? $this->filters['start_date'] : null,
-                endDate: $withinRange ? $this->filters['end_date'] : null,
+                presentationId: $this->pageFilters['presentation_id'],
+                startDate: $withinRange ? $this->pageFilters['start_date'] : null,
+                endDate: $withinRange ? $this->pageFilters['end_date'] : null,
             )->get();
 
         $totalviews = $views->sum('total_count');

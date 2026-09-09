@@ -7,11 +7,17 @@ use App\Models\Presentation;
 use App\Models\PresentationUser;
 use App\Models\User;
 use App\Notifications\PresentationUserCreated;
-use Filament\Forms;
-use Filament\Forms\Form;
+use Filament\Actions\Action;
+use Filament\Actions\BulkActionGroup;
+use Filament\Actions\CreateAction;
+use Filament\Actions\DeleteAction;
+use Filament\Actions\DeleteBulkAction;
+use Filament\Forms\Components\TextInput;
 use Filament\Notifications\Notification;
 use Filament\Resources\RelationManagers\RelationManager;
-use Filament\Tables;
+use Filament\Schemas\Schema;
+use Filament\Tables\Columns\TextColumn;
+use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Table;
 use Illuminate\Support\Facades\Notification as LaravelNotification;
 use Illuminate\Support\Facades\RateLimiter;
@@ -22,13 +28,11 @@ class SharedUsersRelationManager extends RelationManager
 
     protected static ?string $title = 'Collaborating Users';
 
-    protected static ?string $description = 'Collaborating Users';
-
-    public function form(Form $form): Form
+    public function form(Schema $schema): Schema
     {
-        return $form
-            ->schema([
-                Forms\Components\TextInput::make('email')
+        return $schema
+            ->components([
+                TextInput::make('email')
                     ->required()
                     ->email()
                     ->maxLength(255)
@@ -43,35 +47,38 @@ class SharedUsersRelationManager extends RelationManager
             ->emptyStateHeading(fn () => 'No users have been invited yet.')
             ->emptyStateDescription(fn () => 'Inviting users will allow them to edit this presentation.')
             ->columns([
-                Tables\Columns\TextColumn::make('user.name')
+                TextColumn::make('user.name')
                     ->label('Name')
                     ->placeholder('Not yet registered'),
-                Tables\Columns\TextColumn::make('email')
+                TextColumn::make('email')
                     ->label('Email'),
-                Tables\Columns\TextColumn::make('invite_status')
+                TextColumn::make('invite_status')
                     ->badge()
                     ->color(fn (InviteStatus $state): string => $state->color()),
-                Tables\Columns\TextColumn::make('invited_at')
+                TextColumn::make('invited_at')
                     ->dateTime()
                     ->sortable(),
-                Tables\Columns\TextColumn::make('accepted_at')
+                TextColumn::make('accepted_at')
                     ->dateTime()
                     ->sortable()
                     ->placeholder('Not accepted'),
             ])
+            // v4 defers filters behind an Apply button by default; these are
+            // one-click toggles, so keep them applying immediately.
+            ->deferFilters(false)
             ->filters([
-                Tables\Filters\SelectFilter::make('invite_status')
+                SelectFilter::make('invite_status')
                     ->options(InviteStatus::array())
                     ->multiple(),
             ])
             ->headerActions([
-                Tables\Actions\CreateAction::make()
+                CreateAction::make()
                     ->modalHeading('Invite User')
                     ->modalSubmitActionLabel('Invite')
                     ->createAnother(false)
                     ->label('Invite User')
-                    ->form([
-                        Forms\Components\TextInput::make('email')
+                    ->schema([
+                        TextInput::make('email')
                             ->required()
                             ->email()
                             ->maxLength(255)
@@ -100,8 +107,8 @@ class SharedUsersRelationManager extends RelationManager
                         return $invitation;
                     }),
             ])
-            ->actions([
-                Tables\Actions\Action::make('resend')
+            ->recordActions([
+                Action::make('resend')
                     ->label('Resend Invitation')
                     ->icon('heroicon-o-paper-airplane')
                     ->color('gray')
@@ -137,12 +144,12 @@ class SharedUsersRelationManager extends RelationManager
                             ->success()
                             ->send();
                     }),
-                Tables\Actions\DeleteAction::make()
+                DeleteAction::make()
                     ->label('Remove User'),
             ])
-            ->bulkActions([
-                Tables\Actions\BulkActionGroup::make([
-                    Tables\Actions\DeleteBulkAction::make(),
+            ->toolbarActions([
+                BulkActionGroup::make([
+                    DeleteBulkAction::make(),
                 ]),
             ]);
     }

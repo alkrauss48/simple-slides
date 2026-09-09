@@ -3,7 +3,8 @@
 namespace App\Filament\Resources\ImageUploadResource\Pages;
 
 use App\Filament\Resources\ImageUploadResource;
-use Filament\Actions;
+use App\Filament\Resources\ImageUploadResource\Widgets\StatsOverview;
+use Filament\Actions\CreateAction;
 use Filament\Resources\Pages\ListRecords;
 
 class ListImageUploads extends ListRecords
@@ -13,14 +14,14 @@ class ListImageUploads extends ListRecords
     protected function getHeaderActions(): array
     {
         return [
-            Actions\CreateAction::make(),
+            CreateAction::make(),
         ];
     }
 
     protected function getHeaderWidgets(): array
     {
         return [
-            ImageUploadResource\Widgets\StatsOverview::class,
+            StatsOverview::class,
         ];
     }
 }

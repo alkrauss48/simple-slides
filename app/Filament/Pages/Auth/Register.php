@@ -2,15 +2,20 @@
 
 namespace App\Filament\Pages\Auth;
 
+use App\Filament\Pages\Auth\Traits\RemembersReturnUrl;
+use Filament\Auth\Pages\Register as BaseRegister;
 use Filament\Forms\Components\TextInput;
-use Filament\Forms\Form;
-use Filament\Pages\Auth\Register as BaseRegister;
+use Filament\Schemas\Schema;
 
 class Register extends BaseRegister
 {
+    use RemembersReturnUrl;
+
     public function mount(): void
     {
         parent::mount();
+
+        $this->rememberReturnUrl();
 
         // Pre-fill email if provided in query parameters
         $request = request();
@@ -19,10 +24,10 @@ class Register extends BaseRegister
         }
     }
 
-    public function form(Form $form): Form
+    public function form(Schema $schema): Schema
     {
-        return $form
-            ->schema([
+        return $schema
+            ->components([
                 $this->getNameFormComponent(),
                 $this->getEmailFormComponent(),
                 TextInput::make('username')
@@ -33,17 +38,5 @@ class Register extends BaseRegister
                 $this->getPasswordFormComponent(),
                 $this->getPasswordConfirmationFormComponent(),
             ]);
-    }
-
-    protected function getRedirectUrl(): string
-    {
-        $request = request();
-
-        // If returnTo parameter is provided, redirect there after successful registration
-        if ($request->has('returnTo')) {
-            return $request->get('returnTo');
-        }
-
-        return parent::getRedirectUrl();
     }
 }

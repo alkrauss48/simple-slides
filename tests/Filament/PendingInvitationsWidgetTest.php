@@ -38,6 +38,21 @@ it('renders a pending invitation', function () {
         ->assertSee('Reject');
 });
 
+it('styles itself with Filament classes rather than bare Tailwind utilities', function () {
+    // Filament stopped shipping raw Tailwind utilities in the panel CSS, and
+    // this app's Tailwind build never loads inside the panel, so utilities
+    // written here would render unstyled with nothing to catch it.
+    $html = livewire(PendingInvitationsWidget::class)->html();
+
+    expect($html)
+        ->toContain('fi-section')
+        ->toContain('fi-btn');
+
+    foreach (['bg-gray-50', 'dark:bg-gray-800', 'rounded-lg', 'justify-between', 'font-medium'] as $utility) {
+        expect($html)->not->toContain($utility);
+    }
+});
+
 it('accepts an invitation', function () {
     livewire(PendingInvitationsWidget::class)
         ->call('acceptInvitation', $this->invitation->id);

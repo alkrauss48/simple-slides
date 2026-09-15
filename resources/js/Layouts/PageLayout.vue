@@ -52,7 +52,7 @@ onUnmounted(() => {
                     <div class="menu-container relative md:hidden">
                         <button
                             @click="toggleMenu"
-                            class="p-2 rounded-md text-gray-700 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                            class="p-2 rounded-md text-gray-700 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-gray-700 focus:outline-hidden focus:ring-2 focus:ring-blue-500"
                             aria-label="Toggle menu"
                         >
                             <svg
@@ -80,7 +80,7 @@ onUnmounted(() => {
                         <!-- Mobile Dropdown Menu -->
                         <div
                             v-if="isMenuOpen"
-                            class="absolute right-0 mt-2 w-48 bg-white dark:bg-gray-800 rounded-md shadow-lg ring-1 ring-black ring-opacity-5 z-50"
+                            class="absolute right-0 mt-2 w-48 bg-white dark:bg-gray-800 rounded-md shadow-lg ring-1 ring-black/5 z-50"
                         >
                             <div class="py-1">
                                 <Link

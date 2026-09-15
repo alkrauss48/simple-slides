@@ -44,7 +44,7 @@ watch(darkMode, async (newValue: boolean) => {
   <main>
       <AppHead />
       <div class="fixed py-4 px-8 w-full bg-gray-200 dark:bg-gray-800 flex
-          justify-between border-b-1 border-gray-300">
+          justify-between border-gray-300">
           <div class="flex items-center">
               <Link
                   href="/"
@@ -72,7 +72,7 @@ watch(darkMode, async (newValue: boolean) => {
       </div>
     <form
       @submit.prevent="go()"
-      class="h-[100dvh] flex flex-col justify-center items-center"
+      class="h-dvh flex flex-col justify-center items-center"
       action=""
       method="post"
     >

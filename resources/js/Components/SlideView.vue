@@ -165,7 +165,7 @@ defineExpose({
 </script>
 
 <template>
-    <div class="slide-view w-full h-[100dvh] flex justify-center items-center">
+    <div class="slide-view w-full h-dvh flex justify-center items-center">
         <SlideContent :key="content" v-if="fontLoaded" :content="content" />
         <SlideArrows
             @next="incrementContent(1)"

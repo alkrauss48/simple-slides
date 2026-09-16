@@ -4,6 +4,7 @@ Before planning or editing, find the row whose globs match the file's path and r
 
 | Applies to | Rule file |
 | --- | --- |
+| config/inertia.php | .ai/rules/config.md |
 | resources/css/app.css | .ai/rules/css.md |
 | app/Filament/Resources/** | .ai/rules/filament.md |
 | package.json | .ai/rules/general.md |

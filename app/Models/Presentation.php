@@ -67,6 +67,9 @@ class Presentation extends Model implements HasMedia
     {
         return [
             'slide_delimiter' => SlideDelimiter::class,
+            // Filament writes form state back as strings; without this the
+            // policy's strict owner comparison fails right after a save.
+            'user_id' => 'integer',
         ];
     }
 

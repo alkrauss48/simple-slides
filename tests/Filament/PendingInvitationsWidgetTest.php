@@ -74,3 +74,52 @@ it('is hidden when there are no pending invitations', function () {
 
     expect(PendingInvitationsWidget::canView())->toBeFalse();
 });
+
+/**
+ * Filament's CanAuthorizeAccess aborts 403 on hydration when canView() is false,
+ * so an attacker only reaches these methods if they have a pending invitation of
+ * their own. Give them one — otherwise the widget's own access check answers the
+ * request and the test proves nothing about the per-invitation guard.
+ */
+function actAsUserWithTheirOwnPendingInvitation(): User
+{
+    $attacker = User::factory()->create();
+
+    PresentationUser::create([
+        'presentation_id' => Presentation::factory()->create()->id,
+        'user_id' => $attacker->id,
+        'email' => $attacker->email,
+        'invite_status' => InviteStatus::PENDING,
+        'invited_at' => now(),
+    ]);
+
+    test()->actingAs($attacker);
+
+    return $attacker;
+}
+
+it('does not let another user accept an invitation addressed to someone else', function () {
+    // Livewire resolves the argument from a client-supplied ID, so without an
+    // ownership check any panel user could claim a stranger's invitation — and
+    // accept() would stamp their own user_id onto it.
+    actAsUserWithTheirOwnPendingInvitation();
+
+    livewire(PendingInvitationsWidget::class)
+        ->call('acceptInvitation', $this->invitation->id)
+        ->assertForbidden();
+
+    expect($this->invitation->refresh())
+        ->invite_status->toBe(InviteStatus::PENDING)
+        ->user_id->toBe($this->user->id);
+});
+
+it('does not let another user reject an invitation addressed to someone else', function () {
+    actAsUserWithTheirOwnPendingInvitation();
+
+    livewire(PendingInvitationsWidget::class)
+        ->call('rejectInvitation', $this->invitation->id)
+        ->assertForbidden();
+
+    expect($this->invitation->refresh()->invite_status)
+        ->toBe(InviteStatus::PENDING);
+});

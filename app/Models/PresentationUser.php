@@ -4,6 +4,7 @@ namespace App\Models;
 
 use App\Enums\InviteStatus;
 use Carbon\Carbon;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\Pivot;
@@ -71,6 +72,20 @@ class PresentationUser extends Pivot
                 $presentationUser->invite_token = Str::random(32);
             }
         });
+    }
+
+    /**
+     * Scope a query to only include invitations pending for the authenticated user.
+     *
+     * Invitations are addressed by email rather than by user_id, so this is the
+     * single definition of "this invitation is mine to act on".
+     *
+     * @param  Builder<PresentationUser>  $query
+     */
+    public function scopePendingForCurrentUser(Builder $query): void
+    {
+        $query->where('email', auth()->user()->email)
+            ->where('invite_status', InviteStatus::PENDING);
     }
 
     /**

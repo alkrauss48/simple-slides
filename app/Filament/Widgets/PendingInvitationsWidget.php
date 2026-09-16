@@ -2,11 +2,9 @@
 
 namespace App\Filament\Widgets;
 
-use App\Enums\InviteStatus;
 use App\Models\PresentationUser;
 use Filament\Notifications\Notification;
 use Filament\Widgets\Widget;
-use Illuminate\Support\Facades\Auth;
 
 class PendingInvitationsWidget extends Widget
 {
@@ -20,8 +18,7 @@ class PendingInvitationsWidget extends Widget
 
     public function getViewData(): array
     {
-        $pendingInvitations = PresentationUser::where('email', Auth::user()->email)
-            ->where('invite_status', InviteStatus::PENDING)
+        $pendingInvitations = PresentationUser::pendingForCurrentUser()
             ->with(['presentation.user'])
             ->get();
 
@@ -33,13 +30,13 @@ class PendingInvitationsWidget extends Widget
     public static function canView(): bool
     {
         // Only show the widget if there are pending invitations
-        return PresentationUser::where('email', Auth::user()->email)
-            ->where('invite_status', InviteStatus::PENDING)
-            ->exists();
+        return PresentationUser::pendingForCurrentUser()->exists();
     }
 
     public function acceptInvitation(PresentationUser $invitation): void
     {
+        $this->authorizeInvitation($invitation);
+
         $invitation->accept();
 
         Notification::make()
@@ -55,11 +52,28 @@ class PendingInvitationsWidget extends Widget
 
     public function rejectInvitation(PresentationUser $invitation): void
     {
+        $this->authorizeInvitation($invitation);
+
         $invitation->reject();
 
         Notification::make()
             ->title('Invitation rejected')
             ->success()
             ->send();
+    }
+
+    /**
+     * Livewire resolves these arguments straight from a client-supplied ID, so
+     * every entry point has to re-check that the invitation is one the current
+     * user was actually sent — otherwise accept() would claim it for them.
+     */
+    protected function authorizeInvitation(PresentationUser $invitation): void
+    {
+        abort_unless(
+            PresentationUser::pendingForCurrentUser()
+                ->whereKey($invitation->getKey())
+                ->exists(),
+            403,
+        );
     }
 }

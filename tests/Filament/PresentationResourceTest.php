@@ -1,10 +1,10 @@
 <?php
 
 // Start - Edit these imports
-use App\Filament\Resources\PresentationResource as Resource;
-use App\Filament\Resources\PresentationResource\Pages\CreatePresentation as CreateResource;
-use App\Filament\Resources\PresentationResource\Pages\EditPresentation as EditResource;
-use App\Filament\Resources\PresentationResource\Pages\ListPresentations as ListResource;
+use App\Filament\Resources\Presentations\Pages\CreatePresentation as CreateResource;
+use App\Filament\Resources\Presentations\Pages\EditPresentation as EditResource;
+use App\Filament\Resources\Presentations\Pages\ListPresentations as ListResource;
+use App\Filament\Resources\Presentations\PresentationResource as Resource;
 use App\Jobs\GenerateThumbnail;
 use App\Models\Presentation as Model;
 // End

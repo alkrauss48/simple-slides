@@ -1,8 +1,8 @@
 <?php
 
-namespace App\Filament\Resources\ImageUploadResource\Pages;
+namespace App\Filament\Resources\ImageUploads\Pages;
 
-use App\Filament\Resources\ImageUploadResource;
+use App\Filament\Resources\ImageUploads\ImageUploadResource;
 use App\Models\ImageUpload;
 use Filament\Actions\ActionGroup;
 use Filament\Actions\DeleteAction;

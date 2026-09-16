@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Filament\Resources\PresentationResource\RelationManagers;
+namespace App\Filament\Resources\Presentations\RelationManagers;
 
 use App\Enums\InviteStatus;
 use App\Models\Presentation;

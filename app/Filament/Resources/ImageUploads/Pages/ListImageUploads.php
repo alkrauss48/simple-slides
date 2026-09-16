@@ -1,9 +1,9 @@
 <?php
 
-namespace App\Filament\Resources\ImageUploadResource\Pages;
+namespace App\Filament\Resources\ImageUploads\Pages;
 
-use App\Filament\Resources\ImageUploadResource;
-use App\Filament\Resources\ImageUploadResource\Widgets\StatsOverview;
+use App\Filament\Resources\ImageUploads\ImageUploadResource;
+use App\Filament\Resources\ImageUploads\Widgets\StatsOverview;
 use Filament\Actions\CreateAction;
 use Filament\Resources\Pages\ListRecords;
 

@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Filament\Resources\ImageUploadResource\Widgets;
+namespace App\Filament\Resources\ImageUploads\Widgets;
 
 use Filament\Widgets\StatsOverviewWidget as BaseWidget;
 use Filament\Widgets\StatsOverviewWidget\Stat;

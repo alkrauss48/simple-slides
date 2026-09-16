@@ -1,8 +1,8 @@
 <?php
 
-namespace App\Filament\Resources\PresentationResource\Pages;
+namespace App\Filament\Resources\Presentations\Pages;
 
-use App\Filament\Resources\PresentationResource;
+use App\Filament\Resources\Presentations\PresentationResource;
 use App\Models\Presentation;
 use Filament\Actions\Action;
 use Filament\Actions\ActionGroup;

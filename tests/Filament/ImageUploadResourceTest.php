@@ -1,11 +1,11 @@
 <?php
 
 // Start - Edit these imports
-use App\Filament\Resources\ImageUploadResource as Resource;
-use App\Filament\Resources\ImageUploadResource\Pages\CreateImageUpload as CreateResource;
-use App\Filament\Resources\ImageUploadResource\Pages\EditImageUpload as EditResource;
-use App\Filament\Resources\ImageUploadResource\Pages\ListImageUploads as ListResource;
-use App\Filament\Resources\ImageUploadResource\Widgets\StatsOverview;
+use App\Filament\Resources\ImageUploads\ImageUploadResource as Resource;
+use App\Filament\Resources\ImageUploads\Pages\CreateImageUpload as CreateResource;
+use App\Filament\Resources\ImageUploads\Pages\EditImageUpload as EditResource;
+use App\Filament\Resources\ImageUploads\Pages\ListImageUploads as ListResource;
+use App\Filament\Resources\ImageUploads\Widgets\StatsOverview;
 use App\Models\ImageUpload as Model;
 // End
 use App\Models\User;

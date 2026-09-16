@@ -4,7 +4,9 @@ namespace App\Models;
 
 use App\Enums\InviteStatus;
 use App\Enums\SlideDelimiter;
+use App\Observers\PresentationObserver;
 use Database\Factories\PresentationFactory;
+use Illuminate\Database\Eloquent\Attributes\ObservedBy;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -18,6 +20,7 @@ use Spatie\MediaLibrary\InteractsWithMedia;
 use Spatie\Sluggable\HasSlug;
 use Spatie\Sluggable\SlugOptions;
 
+#[ObservedBy(PresentationObserver::class)]
 class Presentation extends Model implements HasMedia
 {
     /** @use HasFactory<PresentationFactory> */

@@ -3,7 +3,9 @@
 namespace App\Models;
 
 use App\Enums\InviteStatus;
+use App\Observers\PresentationUserObserver;
 use Carbon\Carbon;
+use Illuminate\Database\Eloquent\Attributes\ObservedBy;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -22,6 +24,7 @@ use Illuminate\Support\Str;
  * @property Presentation $presentation
  * @property User $user
  */
+#[ObservedBy(PresentationUserObserver::class)]
 class PresentationUser extends Pivot
 {
     /**

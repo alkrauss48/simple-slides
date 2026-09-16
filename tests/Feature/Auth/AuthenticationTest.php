@@ -2,7 +2,6 @@
 
 use App\Filament\Pages\Auth\Login;
 use App\Models\User;
-use App\Providers\RouteServiceProvider;
 
 use function Pest\Livewire\livewire;
 
@@ -20,7 +19,7 @@ test('users can authenticate using the login screen', function () {
         ->set('data.password', 'password')
         ->call('authenticate')
         ->assertHasNoErrors()
-        ->assertRedirect(RouteServiceProvider::HOME);
+        ->assertRedirect(filament()->getUrl());
 
     $this->assertAuthenticated();
 });

@@ -30,9 +30,13 @@ Route::get('/privacy', function (): Response {
 });
 
 // Invitation routes (must be before catch-all routes)
+// Both are signature-checked: the invite token alone is a bearer credential, so
+// without this the 7-day expiry baked into the emailed URL is never enforced.
 Route::get('/invitations/{token}', [InvitationController::class, 'show'])
+    ->middleware('signed')
     ->name('invitations.show');
 Route::get('/invitations/{token}/accept', [InvitationController::class, 'accept'])
+    ->middleware('signed')
     ->name('invitations.accept');
 
 Route::get('/{user:username}/{slug}', [PresentationController::class, 'show'])

@@ -1,14 +1,18 @@
 <?php
 
 // Start - Edit these imports
-use App\Filament\Resources\PresentationResource as Resource;
-use App\Filament\Resources\PresentationResource\Pages\CreatePresentation as CreateResource;
-use App\Filament\Resources\PresentationResource\Pages\EditPresentation as EditResource;
-use App\Filament\Resources\PresentationResource\Pages\ListPresentations as ListResource;
+use App\Filament\Resources\Presentations\Pages\CreatePresentation as CreateResource;
+use App\Filament\Resources\Presentations\Pages\EditPresentation as EditResource;
+use App\Filament\Resources\Presentations\Pages\ListPresentations as ListResource;
+use App\Filament\Resources\Presentations\PresentationResource as Resource;
 use App\Jobs\GenerateThumbnail;
 use App\Models\Presentation as Model;
 // End
 use App\Models\User;
+use Filament\Actions\DeleteAction;
+use Filament\Actions\ForceDeleteAction;
+use Filament\Actions\ReplicateAction;
+use Filament\Actions\RestoreAction;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Queue;
 
@@ -55,7 +59,9 @@ describe('admin users', function () {
             ->fillForm([
                 ...$newData->toArray(),
                 'thumbnail' => [
-                    UploadedFile::fake()->image('avatar.jpg'),
+                    // Must match the resource's declared crop ratio; Filament 4
+                    // validates image dimensions server-side.
+                    UploadedFile::fake()->image('avatar.jpg', 1200, 630),
                 ],
             ])
             ->call('create')
@@ -115,7 +121,9 @@ describe('admin users', function () {
             ->fillForm([
                 ...$newData->toArray(),
                 'thumbnail' => [
-                    UploadedFile::fake()->image('avatar.jpg'),
+                    // Must match the resource's declared crop ratio; Filament 4
+                    // validates image dimensions server-side.
+                    UploadedFile::fake()->image('avatar.jpg', 1200, 630),
                 ],
             ])
             ->call('save')
@@ -138,7 +146,7 @@ describe('admin users', function () {
         livewire(EditResource::class, [
             'record' => $record->getRouteKey(),
         ])
-            ->callAction(\Filament\Actions\DeleteAction::class);
+            ->callAction(DeleteAction::class);
 
         // $this->assertModelMissing($record);
 
@@ -152,7 +160,7 @@ describe('admin users', function () {
         livewire(EditResource::class, [
             'record' => $record->getRouteKey(),
         ])
-            ->assertActionHidden(\Filament\Actions\ForceDeleteAction::class);
+            ->assertActionHidden(ForceDeleteAction::class);
     });
 
     it('restore is not an option if the record is not soft deleted', function () {
@@ -161,7 +169,7 @@ describe('admin users', function () {
         livewire(EditResource::class, [
             'record' => $record->getRouteKey(),
         ])
-            ->assertActionHidden(\Filament\Actions\RestoreAction::class);
+            ->assertActionHidden(RestoreAction::class);
     });
 
     it('can force delete a soft-deleted record', function () {
@@ -172,7 +180,7 @@ describe('admin users', function () {
         livewire(EditResource::class, [
             'record' => $record->getRouteKey(),
         ])
-            ->callAction(\Filament\Actions\ForceDeleteAction::class);
+            ->callAction(ForceDeleteAction::class);
 
         $this->assertModelMissing($record);
     });
@@ -185,7 +193,7 @@ describe('admin users', function () {
         livewire(EditResource::class, [
             'record' => $record->getRouteKey(),
         ])
-            ->callAction(\Filament\Actions\RestoreAction::class);
+            ->callAction(RestoreAction::class);
 
         expect($record->refresh())
             ->deleted_at->toBe(null);
@@ -240,7 +248,9 @@ describe('non-admin users', function () {
             ->fillForm([
                 ...$newData->toArray(),
                 'thumbnail' => [
-                    UploadedFile::fake()->image('avatar.jpg'),
+                    // Must match the resource's declared crop ratio; Filament 4
+                    // validates image dimensions server-side.
+                    UploadedFile::fake()->image('avatar.jpg', 1200, 630),
                 ],
             ])
             ->call('create')
@@ -318,7 +328,9 @@ describe('non-admin users', function () {
             ->fillForm([
                 ...$newData->toArray(),
                 'thumbnail' => [
-                    UploadedFile::fake()->image('avatar.jpg'),
+                    // Must match the resource's declared crop ratio; Filament 4
+                    // validates image dimensions server-side.
+                    UploadedFile::fake()->image('avatar.jpg', 1200, 630),
                 ],
             ])
             ->call('save')
@@ -342,7 +354,7 @@ describe('non-admin users', function () {
         livewire(EditResource::class, [
             'record' => $record->getRouteKey(),
         ])
-            ->callAction(\Filament\Actions\DeleteAction::class);
+            ->callAction(DeleteAction::class);
 
         expect($record->refresh())
             ->deleted_at->not->toBe(null);
@@ -356,7 +368,7 @@ describe('non-admin users', function () {
         livewire(EditResource::class, [
             'record' => $record->getRouteKey(),
         ])
-            ->assertActionHidden(\Filament\Actions\ForceDeleteAction::class);
+            ->assertActionHidden(ForceDeleteAction::class);
     });
 
     it('restore is not an option if the record is not soft deleted', function () {
@@ -367,7 +379,7 @@ describe('non-admin users', function () {
         livewire(EditResource::class, [
             'record' => $record->getRouteKey(),
         ])
-            ->assertActionHidden(\Filament\Actions\RestoreAction::class);
+            ->assertActionHidden(RestoreAction::class);
     });
 
     it('can force delete a soft-deleted record created by the user', function () {
@@ -380,7 +392,7 @@ describe('non-admin users', function () {
         livewire(EditResource::class, [
             'record' => $record->getRouteKey(),
         ])
-            ->callAction(\Filament\Actions\ForceDeleteAction::class);
+            ->callAction(ForceDeleteAction::class);
 
         $this->assertModelMissing($record);
     });
@@ -395,7 +407,7 @@ describe('non-admin users', function () {
         livewire(EditResource::class, [
             'record' => $record->getRouteKey(),
         ])
-            ->callAction(\Filament\Actions\RestoreAction::class);
+            ->callAction(RestoreAction::class);
 
         expect($record->refresh())
             ->deleted_at->toBe(null);
@@ -482,7 +494,7 @@ describe('non-admin users', function () {
         expect(Model::count())->toBe(1);
 
         livewire(ListResource::class)
-            ->callTableAction(\Filament\Actions\ReplicateAction::class, $record);
+            ->callTableAction(ReplicateAction::class, $record);
 
         expect(Model::count())->toBe(2);
     });

@@ -4,12 +4,17 @@ namespace App\Filament\Widgets;
 
 use App\Enums\InviteStatus;
 use App\Models\PresentationUser;
+use Filament\Notifications\Notification;
 use Filament\Widgets\Widget;
 use Illuminate\Support\Facades\Auth;
 
 class PendingInvitationsWidget extends Widget
 {
-    protected static string $view = 'filament.widgets.pending-invitations';
+    // v4 renders widgets lazily by default; these were eager in v3, and
+    // lazy placeholders also hide widget errors from page-level tests.
+    protected static bool $isLazy = false;
+
+    protected string $view = 'filament.widgets.pending-invitations';
 
     protected int|string|array $columnSpan = 'full';
 
@@ -37,7 +42,7 @@ class PendingInvitationsWidget extends Widget
     {
         $invitation->accept();
 
-        \Filament\Notifications\Notification::make()
+        Notification::make()
             ->title('Invitation accepted!')
             ->success()
             ->send();
@@ -52,7 +57,7 @@ class PendingInvitationsWidget extends Widget
     {
         $invitation->reject();
 
-        \Filament\Notifications\Notification::make()
+        Notification::make()
             ->title('Invitation rejected')
             ->success()
             ->send();

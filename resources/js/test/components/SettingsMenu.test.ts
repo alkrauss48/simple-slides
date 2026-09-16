@@ -46,6 +46,21 @@ const mountWrapper = (auth?: any) : VueWrapper<any> => {
     });
 };
 
+/**
+ * Mounts into the real document so that events dispatched on the component
+ * actually reach the document-level click and keydown listeners the menu
+ * registers. Without this, those listeners never fire and any test asserting
+ * on them passes vacuously.
+ */
+const mountAttachedWrapper = (auth?: any) : VueWrapper<any> => {
+    return mount(SettingsMenu, {
+        attachTo: document.body,
+        props: {
+            auth
+        }
+    });
+};
+
 describe('SettingsMenu - Menu Toggle', () => {
     test('menu is closed by default', () => {
         const wrapper = mountWrapper();
@@ -180,6 +195,63 @@ describe('SettingsMenu - Loop Interval', () => {
         const loopInput = wrapper.find('#loop-interval');
         expect(loopInput.exists()).toBe(true);
         expect(loopInput.attributes('type')).toBe('number');
+    });
+
+    test('label is short and the unit is conveyed by an associated suffix', async () => {
+        const wrapper = mountWrapper();
+        await wrapper.find('button[aria-label="Settings Menu"]').trigger('click');
+
+        expect(wrapper.find('label[for="loop-interval"]').text()).toBe('Auto-Loop');
+
+        const unit = wrapper.find('#loop-interval-unit');
+        expect(unit.text()).toBe('seconds');
+        expect(wrapper.find('#loop-interval').attributes('aria-describedby')).toBe('loop-interval-unit');
+    });
+
+    test('help text is hidden behind the tooltip instead of shown inline', async () => {
+        const wrapper = mountWrapper();
+        await wrapper.find('button[aria-label="Settings Menu"]').trigger('click');
+
+        expect(wrapper.text()).not.toContain('Minimum 2 seconds');
+
+        await wrapper.find('button[aria-label="About the auto-loop interval"]').trigger('focus');
+
+        expect(wrapper.find('[role="tooltip"]').text()).toContain('Minimum 2 seconds');
+    });
+
+    test('Escape closes the tooltip without closing the menu', async () => {
+        const wrapper = mountAttachedWrapper();
+        await wrapper.find('button[aria-label="Settings Menu"]').trigger('click');
+        await nextTick();
+
+        // Wait for the menu's document-level Escape listener to be attached
+        await new Promise(resolve => setTimeout(resolve, 10));
+
+        const tooltipTrigger = wrapper.find('button[aria-label="About the auto-loop interval"]');
+        await tooltipTrigger.trigger('click');
+        expect(wrapper.find('[role="tooltip"]').exists()).toBe(true);
+
+        await tooltipTrigger.trigger('keydown', { key: 'Escape' });
+
+        expect(wrapper.find('[role="tooltip"]').exists()).toBe(false);
+        expect(wrapper.vm.isOpen).toBe(true);
+
+        wrapper.unmount();
+    });
+
+    test('clicking the tooltip does not close the menu', async () => {
+        const wrapper = mountAttachedWrapper();
+        await wrapper.find('button[aria-label="Settings Menu"]').trigger('click');
+        await nextTick();
+
+        await new Promise(resolve => setTimeout(resolve, 10));
+
+        await wrapper.find('button[aria-label="About the auto-loop interval"]').trigger('click');
+        await nextTick();
+
+        expect(wrapper.vm.isOpen).toBe(true);
+
+        wrapper.unmount();
     });
 });
 

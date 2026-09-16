@@ -37,7 +37,7 @@ class GenerateThumbnail implements ShouldQueue
             'slug' => $this->presentation->slug,
         ]))
             ->waitUntilNetworkIdle()
-            ->windowSize(1200, 630)
+            ->windowSize(Presentation::THUMBNAIL_WIDTH, Presentation::THUMBNAIL_HEIGHT)
             ->newHeadless()
             ->setOption('args', [
                 '--disable-web-security',

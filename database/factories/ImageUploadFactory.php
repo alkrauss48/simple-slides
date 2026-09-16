@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Support\Facades\App;
 
 /**
- * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\ImageUpload>
+ * @extends Factory<ImageUpload>
  */
 class ImageUploadFactory extends Factory
 {

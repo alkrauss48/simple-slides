@@ -1,6 +1,8 @@
 <?php
 
+use App\Enums\InviteStatus;
 use App\Models\Presentation;
+use App\Models\PresentationUser;
 use App\Models\User;
 use Illuminate\Support\Str;
 
@@ -57,11 +59,11 @@ describe('forUser', function () {
         $presentation = Presentation::factory()->create(['user_id' => $otherUser->id]);
 
         // Share presentation with user
-        \App\Models\PresentationUser::create([
+        PresentationUser::create([
             'presentation_id' => $presentation->id,
             'user_id' => $this->user->id,
             'email' => $this->user->email,
-            'invite_status' => \App\Enums\InviteStatus::ACCEPTED,
+            'invite_status' => InviteStatus::ACCEPTED,
             'accepted_at' => now(),
         ]);
 
@@ -76,11 +78,11 @@ describe('forUser', function () {
         $presentation = Presentation::factory()->create(['user_id' => $otherUser->id]);
 
         // Create pending invitation
-        \App\Models\PresentationUser::create([
+        PresentationUser::create([
             'presentation_id' => $presentation->id,
             'user_id' => $this->user->id,
             'email' => $this->user->email,
-            'invite_status' => \App\Enums\InviteStatus::PENDING,
+            'invite_status' => InviteStatus::PENDING,
         ]);
 
         $this->actingAs($this->user);
@@ -94,11 +96,11 @@ describe('forUser', function () {
         $presentation = Presentation::factory()->create(['user_id' => $otherUser->id]);
 
         // Create rejected invitation
-        \App\Models\PresentationUser::create([
+        PresentationUser::create([
             'presentation_id' => $presentation->id,
             'user_id' => $this->user->id,
             'email' => $this->user->email,
-            'invite_status' => \App\Enums\InviteStatus::REJECTED,
+            'invite_status' => InviteStatus::REJECTED,
         ]);
 
         $this->actingAs($this->user);
@@ -114,19 +116,19 @@ describe('Presentation relationships', function () {
         $user1 = User::factory()->create();
         $user2 = User::factory()->create();
 
-        \App\Models\PresentationUser::create([
+        PresentationUser::create([
             'presentation_id' => $presentation->id,
             'user_id' => $user1->id,
             'email' => $user1->email,
-            'invite_status' => \App\Enums\InviteStatus::ACCEPTED,
+            'invite_status' => InviteStatus::ACCEPTED,
             'accepted_at' => now(),
         ]);
 
-        \App\Models\PresentationUser::create([
+        PresentationUser::create([
             'presentation_id' => $presentation->id,
             'user_id' => $user2->id,
             'email' => $user2->email,
-            'invite_status' => \App\Enums\InviteStatus::PENDING,
+            'invite_status' => InviteStatus::PENDING,
         ]);
 
         expect($presentation->sharedUsers)->toHaveCount(2);
@@ -140,24 +142,24 @@ describe('Presentation relationships', function () {
         $user1 = User::factory()->create();
         $user2 = User::factory()->create();
 
-        \App\Models\PresentationUser::create([
+        PresentationUser::create([
             'presentation_id' => $presentation->id,
             'user_id' => $user1->id,
             'email' => $user1->email,
-            'invite_status' => \App\Enums\InviteStatus::ACCEPTED,
+            'invite_status' => InviteStatus::ACCEPTED,
             'accepted_at' => now(),
         ]);
 
-        \App\Models\PresentationUser::create([
+        PresentationUser::create([
             'presentation_id' => $presentation->id,
             'user_id' => $user2->id,
             'email' => $user2->email,
-            'invite_status' => \App\Enums\InviteStatus::PENDING,
+            'invite_status' => InviteStatus::PENDING,
         ]);
 
         expect($presentation->presentationUsers)
             ->toHaveCount(2)
-            ->each->toBeInstanceOf(\App\Models\PresentationUser::class);
+            ->each->toBeInstanceOf(PresentationUser::class);
     });
 
     test('Presentation has pendingInvitations relationship', function () {
@@ -166,26 +168,26 @@ describe('Presentation relationships', function () {
         $user2 = User::factory()->create();
         $user3 = User::factory()->create();
 
-        \App\Models\PresentationUser::create([
+        PresentationUser::create([
             'presentation_id' => $presentation->id,
             'user_id' => $user1->id,
             'email' => $user1->email,
-            'invite_status' => \App\Enums\InviteStatus::PENDING,
+            'invite_status' => InviteStatus::PENDING,
         ]);
 
-        \App\Models\PresentationUser::create([
+        PresentationUser::create([
             'presentation_id' => $presentation->id,
             'user_id' => $user2->id,
             'email' => $user2->email,
-            'invite_status' => \App\Enums\InviteStatus::ACCEPTED,
+            'invite_status' => InviteStatus::ACCEPTED,
             'accepted_at' => now(),
         ]);
 
-        \App\Models\PresentationUser::create([
+        PresentationUser::create([
             'presentation_id' => $presentation->id,
             'user_id' => $user3->id,
             'email' => $user3->email,
-            'invite_status' => \App\Enums\InviteStatus::REJECTED,
+            'invite_status' => InviteStatus::REJECTED,
         ]);
 
         $pendingInvitations = $presentation->pendingInvitations;

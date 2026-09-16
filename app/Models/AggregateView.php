@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Enums\InviteStatus;
 use App\Enums\PresentationFilter;
 use Database\Factories\AggregateViewFactory;
 use Illuminate\Database\Eloquent\Builder;
@@ -99,8 +100,8 @@ class AggregateView extends Model
         $ownedPresentationIds = auth()->user()->presentations()->pluck('id');
 
         // Get IDs of presentations shared with the user (with accepted invitations)
-        $sharedPresentationIds = \App\Models\PresentationUser::where('user_id', auth()->id())
-            ->where('invite_status', \App\Enums\InviteStatus::ACCEPTED)
+        $sharedPresentationIds = PresentationUser::where('user_id', auth()->id())
+            ->where('invite_status', InviteStatus::ACCEPTED)
             ->pluck('presentation_id');
 
         // Combine both collections

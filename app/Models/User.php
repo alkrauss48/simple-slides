@@ -2,7 +2,12 @@
 
 namespace App\Models;
 
+use App\Enums\InviteStatus;
 use Database\Factories\UserFactory;
+use Filament\Auth\MultiFactor\App\Concerns\InteractsWithAppAuthentication;
+use Filament\Auth\MultiFactor\App\Concerns\InteractsWithAppAuthenticationRecovery;
+use Filament\Auth\MultiFactor\App\Contracts\HasAppAuthentication;
+use Filament\Auth\MultiFactor\App\Contracts\HasAppAuthenticationRecovery;
 use Filament\Models\Contracts\FilamentUser;
 use Filament\Panel;
 use Illuminate\Auth\MustVerifyEmail;
@@ -14,26 +19,26 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
-use Jeffgreco13\FilamentBreezy\Traits\TwoFactorAuthenticatable;
 use Laravel\Sanctum\HasApiTokens;
 use Spatie\MediaLibrary\MediaCollections\Models\Media;
 
-class User extends Authenticatable implements FilamentUser, VerifyEmailContract
+class User extends Authenticatable implements FilamentUser, HasAppAuthentication, HasAppAuthenticationRecovery, VerifyEmailContract
 {
     use HasApiTokens;
 
     /** @use HasFactory<UserFactory> */
     use HasFactory;
 
+    use InteractsWithAppAuthentication;
+    use InteractsWithAppAuthenticationRecovery;
     use MustVerifyEmail;
     use Notifiable;
     use SoftDeletes;
-    use TwoFactorAuthenticatable;
 
     /**
      * The attributes that are mass assignable.
      *
-     * @var array<int, string>
+     * @var list<string>
      */
     protected $fillable = [
         'name',
@@ -47,7 +52,7 @@ class User extends Authenticatable implements FilamentUser, VerifyEmailContract
     /**
      * The attributes that should be hidden for serialization.
      *
-     * @var array<int, string>
+     * @var list<string>
      */
     protected $hidden = [
         'password',
@@ -94,13 +99,13 @@ class User extends Authenticatable implements FilamentUser, VerifyEmailContract
             $imageUploadIds = $this->imageUploads()->pluck('id');
 
             $query
-                ->where('model_type', \App\Models\ImageUpload::class)
+                ->where('model_type', ImageUpload::class)
                 ->whereIn('model_id', $imageUploadIds);
         })->orWhere(function (Builder $query) {
             $presentationIds = $this->presentations()->pluck('id');
 
             $query
-                ->where('model_type', \App\Models\Presentation::class)
+                ->where('model_type', Presentation::class)
                 ->whereIn('model_id', $presentationIds);
         })->sum('size');
 
@@ -130,7 +135,7 @@ class User extends Authenticatable implements FilamentUser, VerifyEmailContract
     /**
      * The presentations that this user has.
      *
-     * @return BelongsToMany<Presentation, $this>
+     * @return BelongsToMany<Presentation, $this, PresentationUser, 'pivot'>
      */
     public function sharedPresentations(): BelongsToMany
     {
@@ -158,6 +163,6 @@ class User extends Authenticatable implements FilamentUser, VerifyEmailContract
     public function pendingInvitations(): HasMany
     {
         return $this->presentationInvitations()
-            ->where('invite_status', \App\Enums\InviteStatus::PENDING);
+            ->where('invite_status', InviteStatus::PENDING);
     }
 }

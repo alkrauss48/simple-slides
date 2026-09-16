@@ -2,11 +2,12 @@
 
 namespace Database\Factories;
 
+use App\Models\DailyView;
 use App\Models\Presentation;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
- * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\DailyView>
+ * @extends Factory<DailyView>
  */
 class DailyViewFactory extends Factory
 {

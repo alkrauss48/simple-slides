@@ -75,20 +75,20 @@ const goToPresentation = (presentation: PresentationListItem) => {
                         v-for="presentation in presentations.data"
                         :key="presentation.id"
                         @click="goToPresentation(presentation)"
-                        class="bg-white dark:bg-gray-800 rounded-lg shadow hover:shadow-lg transition-shadow p-6 text-left border border-gray-200 dark:border-gray-700 hover:border-blue-500 dark:hover:border-blue-400 flex flex-col"
+                        class="bg-white dark:bg-gray-800 rounded-lg shadow-sm hover:shadow-lg transition-shadow p-6 text-left border border-gray-200 dark:border-gray-700 hover:border-blue-500 dark:hover:border-blue-400 flex flex-col"
                     >
-                        <h2 class="text-xl font-semibold text-gray-900 dark:text-white mb-2 min-h-[3.5rem]">
+                        <h2 class="text-xl font-semibold text-gray-900 dark:text-white mb-2 min-h-14">
                             {{ presentation.title }}
                         </h2>
                         <p
                             v-if="presentation.description"
-                            class="text-gray-600 dark:text-gray-400 text-sm mb-4 flex-grow"
+                            class="text-gray-600 dark:text-gray-400 text-sm mb-4 grow"
                         >
                             {{ presentation.description }}
                         </p>
                         <div
                             v-else
-                            class="flex-grow"
+                            class="grow"
                         ></div>
                         <div class="text-xs text-gray-500 dark:text-gray-500 mt-auto">
                             Updated {{ presentation.updated_at }}

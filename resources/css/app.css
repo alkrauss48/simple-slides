@@ -1,6 +1,47 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@import 'tailwindcss';
+
+@plugin '@tailwindcss/forms';
+
+@source '../../vendor/laravel/framework/src/Illuminate/Pagination/resources/views/*.blade.php';
+@source '../../storage/framework/views/*.php';
+
+@custom-variant dark (&:is(.dark *));
+
+@theme {
+  --font-sans:
+    Figtree, ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji',
+    'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
+}
+
+/*
+  The default border color has changed to `currentcolor` in Tailwind CSS v4,
+  so we've added these compatibility styles to make sure everything still
+  looks the same as it did with Tailwind CSS v3.
+
+  If we ever want to remove these styles, we need to add an explicit border
+  color utility to any element that depends on these defaults.
+*/
+@layer base {
+  *,
+  ::after,
+  ::before,
+  ::backdrop,
+  ::file-selector-button {
+    border-color: var(--color-gray-200, currentcolor);
+  }
+}
+
+/*
+  Tailwind CSS v4's Preflight dropped v3's `button { cursor: pointer }` rule to
+  match the default browser behavior. We restore it so that every button still
+  reads as clickable.
+*/
+@layer base {
+  button:not(:disabled),
+  [role="button"]:not(:disabled) {
+    cursor: pointer;
+  }
+}
 
 body {
   font-family: "Montserrat", Helvetica, sans-serif;
@@ -13,7 +54,7 @@ body {
 }
 
 .slide-arrow-button {
-  @apply fixed bottom-6 w-0 h-0 touch-none border-y-[20px] border-y-transparent;
+  @apply fixed bottom-6 w-0 h-0 touch-none border-y-20 border-y-transparent;
 }
 
 .button {

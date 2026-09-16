@@ -2,11 +2,12 @@
 
 namespace Database\Factories;
 
+use App\Models\AggregateView;
 use App\Models\Presentation;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
- * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\AggregateView>
+ * @extends Factory<AggregateView>
  */
 class AggregateViewFactory extends Factory
 {

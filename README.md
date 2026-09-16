@@ -116,13 +116,35 @@ sail npx vitest
 
 ## To Generate Thumbnails for Presentations
 
-This uses puppeteer and Browsershot, which requires some extra config on top of
-Laravel Sail. To configure this, you need to run the following commands:
+Thumbnails are rendered by [Browsershot](https://spatie.be/docs/browsershot),
+which drives a headless Chrome through puppeteer. The Sail image already has
+every library Chrome needs, but the Chrome binary itself is downloaded
+separately and is not part of the image:
 
-```
-sail root-shell ./docker/sail-extra.sh
+```sh
 sail npx puppeteer browsers install chrome
 ```
+
+Run this once after `sail npm install`. You also need to re-run it:
+
+-   After the container is rebuilt or recreated. The download lives in
+    `/home/sail/.cache/puppeteer` inside the container, which is not on the
+    bind mount, so it does not survive.
+-   After `puppeteer` is upgraded, because each puppeteer release pins a
+    specific Chrome build.
+
+In either case, the "Generate Thumbnail" action fails with
+`Error: Could not find Chrome (ver. <version>)`. Re-running the install command
+above fixes it.
+
+To check what is currently installed:
+
+```sh
+sail ls /home/sail/.cache/puppeteer/chrome
+```
+
+The directory name (e.g. `linux-153.0.8010.36`) must match the version in
+`node_modules/puppeteer-core/lib/puppeteer/revisions.js`.
 
 ## Recommended IDE Setup
 

@@ -59,9 +59,9 @@ test('observer does not send notification when user_id is set but user does not 
     // We expect this to fail or handle gracefully
     try {
         $presentationUser->saveOrFail();
-    } catch (\Exception $e) {
+    } catch (Exception $e) {
         // Foreign key constraint should prevent this
-        expect($e)->toBeInstanceOf(\Exception::class);
+        expect($e)->toBeInstanceOf(Exception::class);
     }
 });
 

@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Enums\InviteStatus;
 use App\Enums\PresentationFilter;
 use Database\Factories\DailyViewFactory;
 use Illuminate\Database\Eloquent\Builder;
@@ -19,7 +20,7 @@ class DailyView extends Model
     /**
      * The attributes that are mass assignable.
      *
-     * @var array<int, string>
+     * @var list<string>
      */
     protected $fillable = [
         'presentation_id',
@@ -81,7 +82,7 @@ class DailyView extends Model
                     // Include views for presentations shared with the user (with accepted invitations)
                     ->orWhereHas('presentationUsers', function ($query) {
                         $query->where('user_id', auth()->id())
-                            ->where('invite_status', \App\Enums\InviteStatus::ACCEPTED);
+                            ->where('invite_status', InviteStatus::ACCEPTED);
                     });
             });
         });

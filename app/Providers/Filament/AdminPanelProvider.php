@@ -2,13 +2,15 @@
 
 namespace App\Providers\Filament;
 
+use App\Filament\Pages\Auth\EditProfile;
 use App\Filament\Pages\Auth\Login;
 use App\Filament\Pages\Auth\Register;
-use App\Livewire\UsernameComponent;
+use Filament\Auth\MultiFactor\App\AppAuthentication;
 use Filament\Http\Middleware\Authenticate;
+use Filament\Http\Middleware\AuthenticateSession;
 use Filament\Http\Middleware\DisableBladeIconComponents;
 use Filament\Http\Middleware\DispatchServingFilamentEvent;
-use Filament\Pages;
+use Filament\Navigation\MenuItem;
 use Filament\Panel;
 use Filament\PanelProvider;
 use Filament\Support\Colors\Color;
@@ -16,10 +18,9 @@ use Illuminate\Cookie\Middleware\AddQueuedCookiesToResponse;
 use Illuminate\Cookie\Middleware\EncryptCookies;
 use Illuminate\Foundation\Http\Middleware\VerifyCsrfToken;
 use Illuminate\Routing\Middleware\SubstituteBindings;
-use Illuminate\Session\Middleware\AuthenticateSession;
 use Illuminate\Session\Middleware\StartSession;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\View\Middleware\ShareErrorsFromSession;
-use Jeffgreco13\FilamentBreezy\BreezyCore;
 
 class AdminPanelProvider extends PanelProvider
 {
@@ -31,8 +32,12 @@ class AdminPanelProvider extends PanelProvider
             ->path('admin')
             ->login(Login::class)
             ->registration(Register::class)
-            ->passwordreset()
+            ->passwordReset()
             ->emailVerification()
+            ->profile(EditProfile::class, isSimple: false)
+            ->multiFactorAuthentication([
+                AppAuthentication::make()->recoverable(),
+            ])
             ->colors([
                 'primary' => Color::Amber,
             ])
@@ -46,16 +51,21 @@ class AdminPanelProvider extends PanelProvider
                 'Main',
                 'Extras',
             ])
-            ->plugins([
-                BreezyCore::make()
-                    ->myProfileComponents([UsernameComponent::class])
-                    ->myProfile(
-                        shouldRegisterUserMenu: true, // Sets the 'account' link in the panel User Menu (default = true)
-                        shouldRegisterNavigation: false, // Adds a main navigation item for the My Profile page (default = false)
-                        hasAvatars: false, // Enables the avatar upload form component (default = false)
-                        slug: 'profile' // Sets the slug for the profile page (default = 'my-profile')
-                    )->enableTwoFactorAuthentication(
-                        force: false, // force the user to enable 2FA before they can use the application (default = false)
+            ->userMenuItems([
+                MenuItem::make()
+                    ->label('Public Profile')
+                    ->icon('heroicon-s-user')
+                    ->visible(fn (): bool => filled(Auth::user()?->username))
+                    ->url(
+                        fn (): string => route('profile.show', ['user' => Auth::user()->username]),
+                        shouldOpenInNewTab: true
+                    ),
+                MenuItem::make()
+                    ->label('Helpful Videos')
+                    ->icon('heroicon-s-play-circle')
+                    ->url(
+                        'https://www.youtube.com/playlist?list=PLWXp2X5PBDOkzYGV3xd0zviD6xR8OoiFR',
+                        shouldOpenInNewTab: true
                     ),
             ])
             ->middleware([

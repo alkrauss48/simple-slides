@@ -11,8 +11,8 @@ class ImageUploadObserver
      */
     public function creating(ImageUpload $imageUpload): void
     {
-        if (auth()->check() && $imageUpload->user_id === null) {
-            $imageUpload->user_id = intval(auth()->id());
+        if (auth()->check() && ! isset($imageUpload->user_id)) {
+            $imageUpload->user()->associate(auth()->user());
         }
     }
 }

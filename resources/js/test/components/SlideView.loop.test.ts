@@ -25,7 +25,7 @@ test('loopInterval is not null with valid loop set', async () => {
 
 test('loopInterval is cleared with valid loop set', async () => {
     const wrapper = mountWrapper();
-    const spy = vi.spyOn(global, 'clearInterval');
+    const spy = vi.spyOn(globalThis, 'clearInterval');
     const intervalId = wrapper.vm.loopInterval;
 
     wrapper.vm.checkAndClearLoopInterval();
@@ -36,7 +36,7 @@ test('loopInterval is cleared with valid loop set', async () => {
 
 test('loopInterval is cleared on valid key press', async () => {
     const wrapper = mountWrapper();
-    const spy = vi.spyOn(global, 'clearInterval');
+    const spy = vi.spyOn(globalThis, 'clearInterval');
     const intervalId = wrapper.vm.loopInterval;
 
     wrapper.vm.bindKeyDown({ key: Keys.ENTER });
@@ -47,7 +47,7 @@ test('loopInterval is cleared on valid key press', async () => {
 
 test('loopInterval is not cleared on invalid key press', async () => {
     const wrapper = mountWrapper();
-    const spy = vi.spyOn(global, 'clearInterval');
+    const spy = vi.spyOn(globalThis, 'clearInterval');
 
     wrapper.vm.bindKeyDown({ key: 'x' });
 

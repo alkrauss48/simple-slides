@@ -19,13 +19,10 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
-use Laravel\Sanctum\HasApiTokens;
 use Spatie\MediaLibrary\MediaCollections\Models\Media;
 
 class User extends Authenticatable implements FilamentUser, HasAppAuthentication, HasAppAuthenticationRecovery, VerifyEmailContract
 {
-    use HasApiTokens;
-
     /** @use HasFactory<UserFactory> */
     use HasFactory;
 

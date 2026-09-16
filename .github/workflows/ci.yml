@@ -1,6 +1,12 @@
 name: ci
 
-on: push
+on:
+  push:
+  pull_request:
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
 
 env:
   php_version: "8.5"
@@ -12,7 +18,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
       - name: Setup PHP, with composer and extensions
         uses: shivammathur/setup-php@v2
         with:
@@ -30,7 +36,7 @@ jobs:
           key: ${{ runner.os }}-composer-${{ hashFiles('**/composer.lock') }}
           restore-keys: ${{ runner.os }}-composer-
       - name: Install Composer dependencies
-        run: composer install --no-progress --no-suggest --prefer-dist --optimize-autoloader
+        run: composer install --no-progress --prefer-dist --optimize-autoloader
       - name: Install Node.js
         uses: actions/setup-node@v5
         with:
@@ -51,7 +57,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
       - name: Setup PHP, with composer and extensions
         uses: shivammathur/setup-php@v2
         with:
@@ -69,9 +75,35 @@ jobs:
           key: ${{ runner.os }}-composer-${{ hashFiles('**/composer.lock') }}
           restore-keys: ${{ runner.os }}-composer-
       - name: Install Composer dependencies
-        run: composer install --no-progress --no-suggest --prefer-dist --optimize-autoloader
+        run: composer install --no-progress --prefer-dist --optimize-autoloader
       - name: PHP Lint
         run: ./vendor/bin/phpstan analyse
+  pint:
+    name: Back-end Format
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v5
+      - name: Setup PHP, with composer and extensions
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: ${{ env.php_version }}
+          extensions: bcmath, dom, fileinfo, gd, imagick, mbstring, pgsql, zip
+          tools: composer, pecl
+      - name: Get composer cache directory
+        id: composer-cache
+        run: |
+          printf 'dir=%s\n' "$(composer config cache-files-dir)" >> "$GITHUB_OUTPUT"
+      - name: Cache Composer dependencies
+        uses: actions/cache@v4
+        with:
+          path: ${{ steps.composer-cache.outputs.dir }}
+          key: ${{ runner.os }}-composer-${{ hashFiles('**/composer.lock') }}
+          restore-keys: ${{ runner.os }}-composer-
+      - name: Install Composer dependencies
+        run: composer install --no-progress --prefer-dist --optimize-autoloader
+      - name: Check formatting
+        run: ./vendor/bin/pint --test
   frontend-test:
     name: Front-end Test
     env:
@@ -79,7 +111,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
       - name: Setup PHP, with composer and extensions
         uses: shivammathur/setup-php@v2
         with:
@@ -97,7 +129,7 @@ jobs:
           key: ${{ runner.os }}-composer-${{ hashFiles('**/composer.lock') }}
           restore-keys: ${{ runner.os }}-composer-
       - name: Install Composer dependencies
-        run: composer install --no-progress --no-suggest --prefer-dist --optimize-autoloader
+        run: composer install --no-progress --prefer-dist --optimize-autoloader
       - name: Install Node.js
         uses: actions/setup-node@v5
         with:
@@ -117,8 +149,7 @@ jobs:
     name: Back-end Test
     runs-on: ubuntu-latest
     env:
-      BROADCAST_DRIVER: log
-      CACHE_DRIVER: redis
+      CACHE_STORE: redis
       DB_CONNECTION: pgsql
       DB_DATABASE: laravel
       DB_HOST: localhost
@@ -138,13 +169,13 @@ jobs:
           - 5432/tcp
         options: --health-cmd pg_isready --health-interval 10s --health-timeout 5s --health-retries 3
       redis:
-        image: redis
+        image: redis:8
         ports:
           - 6379/tcp
         options: --health-cmd="redis-cli ping" --health-interval=10s --health-timeout=5s --health-retries=3
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
       - name: Setup PHP, with composer and extensions
         uses: shivammathur/setup-php@v2
         with:
@@ -174,7 +205,7 @@ jobs:
           echo "DB_PORT=$DB_PORT" >> $GITHUB_ENV
           echo "REDIS_PORT=$REDIS_PORT" >> $GITHUB_ENV
       - name: Install Composer dependencies
-        run: composer install --no-progress --no-suggest --prefer-dist --optimize-autoloader
+        run: composer install --no-progress --prefer-dist --optimize-autoloader
       - name: Cache frontend dependencies
         uses: actions/cache@v4
         with:
@@ -198,12 +229,12 @@ jobs:
         run: vendor/bin/pest
   build:
     name: Build
-    needs: ['frontend-lint', 'backend-lint', 'frontend-test', 'backend-test']
+    needs: ['frontend-lint', 'backend-lint', 'pint', 'frontend-test', 'backend-test']
     runs-on: ubuntu-latest
     steps:
       -
         name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
       -
         name: Docker meta
         id: meta
@@ -212,6 +243,7 @@ jobs:
           images: alkrauss48/simple-slides-laravel
           tags: |
             type=ref,prefix=dev-,event=branch
+            type=ref,prefix=pr-,event=pr
             type=semver,pattern={{version}}
             type=semver,pattern={{major}}
             type=semver,pattern={{major}}.{{minor}}
@@ -220,6 +252,7 @@ jobs:
         uses: docker/setup-buildx-action@v3
       -
         name: Login to DockerHub
+        if: github.event_name == 'push'
         uses: docker/login-action@v3
         with:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
@@ -231,6 +264,6 @@ jobs:
         with:
           context: .
           file: docker/app/Dockerfile
-          push: true
+          push: ${{ github.event_name == 'push' }}
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}

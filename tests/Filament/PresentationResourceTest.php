@@ -343,6 +343,22 @@ describe('non-admin users', function () {
             ->is_published->toBe($newData->is_published);
     });
 
+    it('stays on the edit page after saving', function () {
+        $record = Model::factory()->create([
+            'user_id' => $this->nonAdmin->id,
+        ]);
+
+        livewire(EditResource::class, [
+            'record' => $record->getRouteKey(),
+        ])
+            ->fillForm([
+                'title' => 'An updated title',
+            ])
+            ->call('save')
+            ->assertHasNoFormErrors()
+            ->assertNoRedirect();
+    });
+
     it('can soft delete record created by the user', function () {
         $record = Model::factory()->create([
             'user_id' => $this->nonAdmin->id,

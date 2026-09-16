@@ -32,7 +32,7 @@ class Register extends BaseRegister
                 $this->getEmailFormComponent(),
                 TextInput::make('username')
                     ->unique('users', 'username')
-                    ->rules('required|string|lowercase|alpha_dash:ascii|max:255')
+                    ->rules(['string', 'lowercase', 'alpha_dash:ascii', 'max:255'])
                     ->required()
                     ->maxLength(255),
                 $this->getPasswordFormComponent(),

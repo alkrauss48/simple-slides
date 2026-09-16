@@ -21,8 +21,6 @@ cd /app
 	fi
 	ln -s ../storage/app/public public/storage
 
-	php artisan vendor:publish --force --tag=telescope-assets --tag=horizon-assets
-
 	if [ "$DB_FRESH_ON_START" = "true" ]; then
 		php artisan migrate:fresh
 		php artisan db:seed

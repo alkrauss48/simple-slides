@@ -2,12 +2,13 @@
 
 use App\Filament\Pages\Auth\Register;
 use App\Models\User;
-use App\Providers\RouteServiceProvider;
 
 use function Pest\Livewire\livewire;
 
 test('registration screen can be rendered', function () {
-    $response = $this->get('/register');
+    // Not '/register' — that is not a route, and the catch-all /{user} pattern
+    // swallows it into the ad-hoc slides page, which also answers 200.
+    $response = $this->get(route('filament.admin.auth.register'));
 
     $response->assertStatus(200);
 });
@@ -21,7 +22,7 @@ test('new users can register', function () {
         ->set('data.passwordConfirmation', 'password123')
         ->call('register')
         ->assertHasNoErrors()
-        ->assertRedirect(RouteServiceProvider::HOME);
+        ->assertRedirect(filament()->getUrl());
 
     expect(User::where('email', 'newuser@example.com')->exists())->toBeTrue();
 

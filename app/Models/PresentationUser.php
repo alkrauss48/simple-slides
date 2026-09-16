@@ -3,7 +3,10 @@
 namespace App\Models;
 
 use App\Enums\InviteStatus;
+use App\Observers\PresentationUserObserver;
 use Carbon\Carbon;
+use Illuminate\Database\Eloquent\Attributes\ObservedBy;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\Pivot;
@@ -21,6 +24,7 @@ use Illuminate\Support\Str;
  * @property Presentation $presentation
  * @property User $user
  */
+#[ObservedBy(PresentationUserObserver::class)]
 class PresentationUser extends Pivot
 {
     /**
@@ -50,7 +54,7 @@ class PresentationUser extends Pivot
      *
      * @return array<string, string>
      */
-    public function casts(): array
+    protected function casts(): array
     {
         return [
             'invite_status' => InviteStatus::class,
@@ -62,7 +66,7 @@ class PresentationUser extends Pivot
     /**
      * Boot the model.
      */
-    protected static function boot()
+    protected static function boot(): void
     {
         parent::boot();
 
@@ -71,6 +75,20 @@ class PresentationUser extends Pivot
                 $presentationUser->invite_token = Str::random(32);
             }
         });
+    }
+
+    /**
+     * Scope a query to only include invitations pending for the authenticated user.
+     *
+     * Invitations are addressed by email rather than by user_id, so this is the
+     * single definition of "this invitation is mine to act on".
+     *
+     * @param  Builder<PresentationUser>  $query
+     */
+    public function scopePendingForCurrentUser(Builder $query): void
+    {
+        $query->where('email', auth()->user()->email)
+            ->where('invite_status', InviteStatus::PENDING);
     }
 
     /**

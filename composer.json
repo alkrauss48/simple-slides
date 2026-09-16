@@ -1,10 +1,12 @@
 {
-    "name": "laravel/laravel",
+    "name": "alkrauss48/simple-slides",
     "type": "project",
-    "description": "The skeleton application for the Laravel framework.",
+    "description": "Markdown-driven presentations you can share with a link.",
     "keywords": [
         "laravel",
-        "framework"
+        "presentations",
+        "slides",
+        "markdown"
     ],
     "license": "MIT",
     "require": {
@@ -62,6 +64,15 @@
         ],
         "post-create-project-cmd": [
             "@php artisan key:generate --ansi"
+        ],
+        "dev": [
+            "Composer\\Config::disableProcessTimeout",
+            "@php artisan optimize:clear --ansi",
+            "npm run dev"
+        ],
+        "test": [
+            "@php artisan config:clear --ansi",
+            "@php artisan test"
         ]
     },
     "extra": {

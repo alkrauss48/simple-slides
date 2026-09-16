@@ -54,7 +54,7 @@ class PresentationUser extends Pivot
      *
      * @return array<string, string>
      */
-    public function casts(): array
+    protected function casts(): array
     {
         return [
             'invite_status' => InviteStatus::class,
@@ -66,7 +66,7 @@ class PresentationUser extends Pivot
     /**
      * Boot the model.
      */
-    protected static function boot()
+    protected static function boot(): void
     {
         parent::boot();
 

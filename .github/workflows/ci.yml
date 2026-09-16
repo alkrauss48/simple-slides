@@ -117,7 +117,7 @@ jobs:
     name: Back-end Test
     runs-on: ubuntu-latest
     env:
-      CACHE_DRIVER: redis
+      CACHE_STORE: redis
       DB_CONNECTION: pgsql
       DB_DATABASE: laravel
       DB_HOST: localhost

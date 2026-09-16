@@ -33,7 +33,6 @@ RUN composer install \
 
 COPY . .
 RUN set -x \
-    && export TELESCOPE_ENABLED=false \
     && composer dump-autoload \
         --classmap-authoritative \
         --no-interaction \

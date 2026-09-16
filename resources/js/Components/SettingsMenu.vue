@@ -3,6 +3,7 @@ import { ref, computed, watch } from 'vue'
 import { Link, router } from '@inertiajs/vue3'
 
 import CogIcon from '@/Components/icons/CogIcon.vue';
+import Tooltip from '@/Components/Tooltip.vue';
 import Presentation from '@/interfaces/presentation.ts';
 import { VisualMode, isDarkMode } from '@/enums/visualMode.ts';
 import { getVisualMode, setVisualMode } from '@/utils/handleVisualMode.ts';
@@ -243,30 +244,42 @@ watch(isOpen, (newValue) => {
 
                     <!-- Loop Interval -->
                     <div class="px-4 py-2 space-y-2">
-                        <label
-                            for="loop-interval"
-                            class="block font-medium text-gray-900 dark:text-gray-100"
-                        >
-                            Auto-Loop Interval (seconds)
-                        </label>
-                        <input
-                            id="loop-interval"
-                            v-model.number="loopInterval"
-                            type="number"
-                            min="0"
-                            step="1"
-                            placeholder="0 = disabled"
-                            class="
-                                w-full px-3 py-2 rounded
-                                bg-gray-50 dark:bg-gray-900
-                                border border-gray-300 dark:border-gray-600
-                                text-gray-900 dark:text-gray-100
-                                focus:outline-hidden focus:ring-2 focus:ring-blue-500
-                            "
-                        />
-                        <p class="text-sm text-gray-600 dark:text-gray-400">
-                            Minimum 2 seconds to enable. Set to 0 to disable.
-                        </p>
+                        <div class="relative flex items-center gap-2">
+                            <label
+                                for="loop-interval"
+                                class="block font-medium text-gray-900 dark:text-gray-100"
+                            >
+                                Auto-Loop
+                            </label>
+                            <Tooltip
+                                label="About the auto-loop interval"
+                                text="Slides advance automatically at this interval and wrap back to the first slide. Minimum 2 seconds to enable — set to 0 to disable."
+                            />
+                        </div>
+                        <div class="flex items-center gap-2">
+                            <input
+                                id="loop-interval"
+                                v-model.number="loopInterval"
+                                type="number"
+                                min="0"
+                                step="1"
+                                placeholder="0"
+                                aria-describedby="loop-interval-unit"
+                                class="
+                                    flex-1 min-w-0 px-3 py-2 rounded
+                                    bg-gray-50 dark:bg-gray-900
+                                    border border-gray-300 dark:border-gray-600
+                                    text-gray-900 dark:text-gray-100
+                                    focus:outline-hidden focus:ring-2 focus:ring-blue-500
+                                "
+                            />
+                            <span
+                                id="loop-interval-unit"
+                                class="text-sm text-gray-600 dark:text-gray-400"
+                            >
+                                seconds
+                            </span>
+                        </div>
                     </div>
 
                     <hr class="border-gray-200 dark:border-gray-700" />

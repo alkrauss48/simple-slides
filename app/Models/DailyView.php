@@ -55,8 +55,7 @@ class DailyView extends Model
         if ($presentationId === PresentationFilter::ADHOC->value) {
             $query
                 ->whereNull('presentation_id')
-                ->whereNotNull('adhoc_slug')
-                ->get();
+                ->whereNotNull('adhoc_slug');
 
             return;
         }

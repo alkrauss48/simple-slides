@@ -14,13 +14,13 @@ ARG INSTALL_SQLSRV=false
 ARG INSTALL_XDEBUG=false
 ARG INSTALL_ZIP=true
 ARG INSTALL_INTL=true
-ARG PHP_UPLOAD_MAX_FILESIZE 64m
-ARG PHP_POST_MAX_SIZE 64m
-ARG PHP_MEMORY_LIMIT 512m
+ARG PHP_UPLOAD_MAX_FILESIZE=64M
+ARG PHP_POST_MAX_SIZE=64M
+ARG PHP_MEMORY_LIMIT=512M
 ARG DEPS='nodejs npm chromium'
 
 # Backend build
-FROM ghcr.io/clevyr/php:$PHP_VERSION-base as php-builder
+FROM ghcr.io/clevyr/php:$PHP_VERSION-base AS php-builder
 WORKDIR /app
 
 COPY composer.json composer.lock ./
@@ -40,7 +40,7 @@ RUN set -x \
 
 
 # Frontend build
-FROM node:lts-alpine as node-builder
+FROM node:24-alpine AS node-builder
 WORKDIR /app
 
 RUN set -x \
@@ -65,8 +65,8 @@ RUN set -x \
         pango-dev \
         giflib-dev
 
-ENV PUPPETEER_SKIP_CHROMIUM_DOWNLOAD true
-ENV CHROMIUM_PATH /usr/bin/chromium-browser
+ENV PUPPETEER_SKIP_CHROMIUM_DOWNLOAD=true
+ENV CHROMIUM_PATH=/usr/bin/chromium-browser
 
 COPY artisan package.json package-lock.json ./
 RUN npm ci
@@ -77,8 +77,18 @@ RUN npm run build
 
 
 # Local image
-FROM ghcr.io/clevyr/php:$PHP_VERSION as local-image
+FROM ghcr.io/clevyr/php:$PHP_VERSION AS local-image
 WORKDIR /app
+
+# The base image's php.ini reads these as ${VAR} at runtime, so a build arg
+# alone never reaches it -- without the ENV, uploads stay at the base image's
+# 8M default rather than the 64M this app intends.
+ARG PHP_UPLOAD_MAX_FILESIZE
+ARG PHP_POST_MAX_SIZE
+ARG PHP_MEMORY_LIMIT
+ENV PHP_UPLOAD_MAX_FILESIZE=$PHP_UPLOAD_MAX_FILESIZE \
+    PHP_POST_MAX_SIZE=$PHP_POST_MAX_SIZE \
+    PHP_MEMORY_LIMIT=$PHP_MEMORY_LIMIT
 
 RUN npm --global install puppeteer@v25
 

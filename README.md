@@ -126,13 +126,18 @@ not just the lint step.
 ## Autoformatting
 
 Via [Laravel pint](https://laravel.com/docs/13.x/pint), which is a
-code-formatter following Laravel's best practices. **Note:** This is not a
-linter, and it is not enforced by CI — run it yourself before pushing.
+code-formatter following Laravel's best practices. It is not a linter, but CI
+does check it — a push that is not Pint-clean fails the Back-end Format job.
 
 ```sh
-# Laravel
+# Format everything
+sail bin pint
 
-sail pint
+# Format only what you changed
+sail bin pint --dirty
+
+# Check without writing (what CI runs)
+sail bin pint --test
 ```
 
 ## Linting
@@ -173,20 +178,29 @@ sail artisan test
 sail npx vitest
 
 # Front-end, single run (what CI does)
-sail npx vitest --run
+sail npm run test
+
+# Front-end, with a coverage report
+sail npm run test:coverage
 ```
+
+There are also `composer` entry points for the back end: `sail composer run
+test` clears the config and runs the suite, and `sail composer run dev` starts
+the Vite dev server.
 
 ## Continuous Integration
 
-`.github/workflows/ci.yml` runs on every push, against PHP 8.5 and Node 24:
+`.github/workflows/ci.yml` runs on every push and pull request, against PHP 8.5
+and Node 24. Runs are cancelled when a newer commit lands on the same ref.
 
-| Job            | Command                     |
-| -------------- | --------------------------- |
-| Front-end Lint | `vue-tsc`                   |
-| Back-end Lint  | `phpstan analyse`           |
-| Front-end Test | `vitest --run`              |
-| Back-end Test  | `pest`                      |
-| Build          | Builds and pushes the production image to Docker Hub |
+| Job              | Command                     |
+| ---------------- | --------------------------- |
+| Front-end Lint   | `vue-tsc`                   |
+| Back-end Lint    | `phpstan analyse`           |
+| Back-end Format  | `pint --test`               |
+| Front-end Test   | `vitest --run`              |
+| Back-end Test    | `pest`                      |
+| Build            | Builds and pushes the production image to Docker Hub |
 
 Pint is deliberately **not** part of CI, so formatting will not fail a build —
 run `sail pint` locally.
